@@ -1,0 +1,47 @@
+{
+  "name": "soundcloud-player",
+  "productName": "SoundCloud Player",
+  "version": "1.0.0",
+  "description": "SoundCloud Player — search, stream and manage playlists (synced with the Telegram bot @SoundClouddl_RoBot)",
+  "author": "AnishtayiN",
+  "license": "MIT",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win --publish never"
+  },
+  "devDependencies": {
+    "electron": "22.3.27",
+    "electron-builder": "24.13.3"
+  },
+  "build": {
+    "appId": "com.soundclouddl.player",
+    "productName": "SoundCloud Player",
+    "copyright": "AnishtayiN",
+    "asar": true,
+    "directories": { "output": "dist", "buildResources": "build" },
+    "files": ["main.js", "preload.js", "web/**/*", "build/icon.png"],
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [{ "target": "nsis", "arch": ["x64", "ia32"] }],
+      "artifactName": "SoundCloud-Player-Setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "SoundCloud Player",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "artifactName": "SoundCloud-Player-Setup.${ext}"
+    },
+    "publish": null
+  }
+}

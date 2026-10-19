@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SoundCloud Player</string>
+    <string name="channel_name">پخش موزیک</string>
+    <string name="play">پخش</string>
+    <string name="pause">توقف</string>
+    <string name="next">بعدی</string>
+    <string name="prev">قبلی</string>
+    <string name="close">بستن</string>
+</resources>

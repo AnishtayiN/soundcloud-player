@@ -1,0 +1,16 @@
+node_modules/
+dist/
+out/
+build/
+!desktop/build/
+.gradle/
+android/app/build/
+android/local.properties
+android/app/src/main/assets/www/
+desktop/web/
+*.p12
+*.jks
+*.keystore
+.idea/
+*.iml
+.DS_Store

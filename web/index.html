@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#0b0b10">
+  <title>SoundCloud Player</title>
+  <link rel="icon" href="icon.png">
+  <link rel="stylesheet" href="app.css">
+  <script>
+    // Android: adapt the Java bridge (window.SCAndroid) to the common window.SCNative API.
+    // Windows (Electron) injects window.SCNative from preload.js.
+    if (window.SCAndroid && !window.SCNative) {
+      var A = window.SCAndroid;
+      window.SCNative = {
+        platform: "android", version: A.version(), device: A.device(),
+        openExternal: function (u) { A.openExternal(String(u)); },
+        mediaState: function (s) { A.mediaState(String(s)); },
+        setTheme: function (bg, light) { A.setTheme(String(bg), !!light); }
+      };
+    }
+  </script>
+  <style>
+    :where(html,body){margin:0;background:#0b0b10;color:#fff;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
+    #splash{position:fixed;inset:0;display:grid;place-items:center;z-index:0}
+    #splash img{width:84px;height:84px;animation:p 1.2s infinite ease-in-out;filter:drop-shadow(0 10px 30px rgba(255,85,0,.45))}
+    @keyframes p{50%{transform:scale(.88);opacity:.7}}
+  </style>
+  <script src="hls.light.min.js"></script>
+  <script src="qrcode.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div id="splash"><img src="icon.png" alt=""></div>
+  <script>new MutationObserver(function(){ if (document.getElementById("app")) { var s=document.getElementById("splash"); s && s.remove(); } }).observe(document.body,{childList:true});</script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+name: Build & Release (APK + EXE)
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version (e.g. 1.0.1)"
+        required: true
+        default: "1.0.0"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}-${{ github.event.inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      name: ${{ steps.v.outputs.name }}
+      code: ${{ steps.v.outputs.code }}
+    steps:
+      - id: v
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then V="${{ github.event.inputs.version }}"; else V="${GITHUB_REF_NAME#v}"; fi
+          V="${V#v}"
+          if ! [[ "$V" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo "::error::Version must look like 1.2.3 (got '$V')"; exit 1; fi
+          IFS=. read -r MA MI PA <<< "$V"
+          echo "name=$V" >> "$GITHUB_OUTPUT"
+          echo "code=$((MA*10000 + MI*100 + PA))" >> "$GITHUB_OUTPUT"
+          echo "Version $V (code $((MA*10000 + MI*100 + PA)))"
+
+  android:
+    needs: version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.10.2"
+      - name: Copy shared web UI into the APK
+        run: |
+          mkdir -p android/app/src/main/assets/www
+          cp -r web/* android/app/src/main/assets/www/
+      - name: Decode signing key
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+        run: |
+          if [ -n "$KS_B64" ]; then
+            echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/release.p12"
+            echo "KS_PATH=$RUNNER_TEMP/release.p12" >> "$GITHUB_ENV"
+          else
+            echo "::warning::ANDROID_KEYSTORE_B64 secret missing - APK will be signed with a debug key"
+          fi
+      - name: Build APK
+        working-directory: android
+        env:
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KS_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          VERSION_NAME: ${{ needs.version.outputs.name }}
+          VERSION_CODE: ${{ needs.version.outputs.code }}
+        run: gradle assembleRelease --no-daemon --stacktrace
+      - name: Rename
+        run: |
+          mkdir -p out
+          cp android/app/build/outputs/apk/release/app-release.apk out/SoundCloud-Player.apk
+          ls -la out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: out/SoundCloud-Player.apk
+          if-no-files-found: error
+
+  windows:
+    needs: version
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Copy shared web UI into the desktop app
+        shell: bash
+        run: |
+          mkdir -p desktop/web
+          cp -r web/* desktop/web/
+      - name: Install & build installer (Windows 7 - 11, x64 + x86)
+        working-directory: desktop
+        shell: bash
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm version "${{ needs.version.outputs.name }}" --no-git-tag-version --allow-same-version
+          npm install --no-audit --no-fund
+          npx electron-builder --win --publish never
+          ls -la dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: exe
+          path: desktop/dist/SoundCloud-Player-Setup.exe
+          if-no-files-found: error
+
+  release:
+    needs: [version, android, windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: out
+          merge-multiple: true
+      - run: ls -la out
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.version.outputs.name }}
+          name: SoundCloud Player v${{ needs.version.outputs.name }}
+          target_commitish: ${{ github.sha }}
+          make_latest: "true"
+          files: |
+            out/SoundCloud-Player.apk
+            out/SoundCloud-Player-Setup.exe
+          body: |
+            ## 🎧 SoundCloud Player v${{ needs.version.outputs.name }}
+
+            | | فایل | پشتیبانی |
+            |---|---|---|
+            | 🤖 اندروید | `SoundCloud-Player.apk` | Android 7.0 تا آخرین نسخه |
+            | 🪟 ویندوز | `SoundCloud-Player-Setup.exe` | Windows 7 / 8 / 8.1 / 10 / 11 (۳۲ و ۶۴ بیتی) |
+
+            **ورود:** برنامه رو باز کن ← «ورود با تلگرام» ← توی ربات [@SoundClouddl_RoBot](https://t.me/SoundClouddl_RoBot) دکمه‌ی «تایید ورود» رو بزن. پلی‌لیست‌ها، علاقه‌مندی‌ها و تاریخچه با ربات و مینی‌اپ همگام می‌شن.
+
+            ---
+
+            **Login:** open the app → "Sign in with Telegram" → tap "Confirm" in [@SoundClouddl_RoBot](https://t.me/SoundClouddl_RoBot). Playlists, favorites and history sync with the bot and the Mini App.
+
+            > Windows SmartScreen may warn because the installer isn't code-signed: click **More info → Run anyway**.
+            > On Android allow "Install unknown apps" for your browser / Telegram.
