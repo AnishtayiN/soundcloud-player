@@ -1,6 +1,6 @@
 (() => {
   "use strict";
-  var _a, _b, _c;
+  var _a, _b, _c, _d;
   const API = window.SC_API || "https://fywphggwavthubehvvuh.supabase.co/functions/v1/scbot/api";
   const NATIVE = window.SCNative || null;
   const tg = NATIVE ? null : (_a = window.Telegram) == null ? void 0 : _a.WebApp;
@@ -142,6 +142,36 @@
       updInstallW: "دانلود تموم شد ✅ در حال نصب… برنامه خودش بسته و دوباره باز می‌شه.",
       updPerm: "برای نصب آپدیت، توی صفحه‌ای که باز شد اجازه «نصب برنامه‌های ناشناس» رو روشن کن و برگرد.",
       updFail: "دانلود ناموفق بود، اینترنتت رو چک کن و دوباره امتحان کن.",
+      ofTitle: "آهنگ‌های آفلاین",
+      ofShort: "آفلاین",
+      ofSection: "آفلاین و حافظه",
+      ofAuto: "ذخیره خودکار برای آفلاین",
+      ofOn: "روشن",
+      ofOff: "خاموش",
+      ofLimit: "حداکثر حجم حافظه",
+      ofUnlimited: "نامحدود",
+      ofClear: "پاک کردن حافظه آفلاین",
+      ofClearQ: "همه‌ی آهنگ‌های آفلاین پاک بشن؟",
+      ofCleared: "حافظه‌ی آفلاین پاک شد",
+      ofSave: "دانلود برای آفلاین",
+      ofRemove: "حذف از آفلاین",
+      ofSaved: "برای آفلاین ذخیره شد ✅",
+      ofRemoved: "از آفلاین حذف شد",
+      ofDl: (p) => `در حال دانلود… ${p}%`,
+      ofEmpty: "هنوز آهنگی ذخیره نشده",
+      ofEmptySub: "هر آهنگی که کامل پخش بشه خودکار ذخیره می‌شه و دفعه‌ی بعد بدون مصرف اینترنت پخش می‌شه.",
+      ofMode: "اینترنت قطعه — آهنگ‌های آفلاینت در دسترسن 📥",
+      ofNot: "این آهنگ آفلاین ذخیره نشده",
+      ofAllQ: (n) => `دانلود ${n} آهنگ برای آفلاین؟`,
+      ofAllProg: (d, n) => `📥 ذخیره برای آفلاین: ${d}/${n}`,
+      ofAllDone: (n) => `${n} آهنگ برای آفلاین ذخیره شد ✅`,
+      ofAllHave: "همه‌ی آهنگ‌های این لیست آفلاین هستن ✅",
+      ofBack: "اینترنت وصل شد ✅",
+      ofCount: (n, sz) => `${n} آهنگ · ${sz}`,
+      ofNoNet: "پخش بدون اینترنت",
+      ofPlayAll: "پخش همه",
+      ofFull: "حافظه‌ی آفلاین پره؛ قدیمی‌ترها پاک شدن",
+      yes: "بله",
       shareTitle: "اشتراک‌گذاری",
       shareTg: "ارسال در تلگرام",
       shareOpen: "باز کردن لینک",
@@ -272,6 +302,36 @@
       updInstallW: "Download complete ✅ Installing… the app will close and reopen by itself.",
       updPerm: "To install the update, allow “Install unknown apps” on the screen that opened, then come back.",
       updFail: "Download failed — check your connection and try again.",
+      ofTitle: "Offline songs",
+      ofShort: "Offline",
+      ofSection: "Offline & storage",
+      ofAuto: "Auto-save for offline",
+      ofOn: "On",
+      ofOff: "Off",
+      ofLimit: "Storage limit",
+      ofUnlimited: "Unlimited",
+      ofClear: "Clear offline storage",
+      ofClearQ: "Delete all offline songs?",
+      ofCleared: "Offline storage cleared",
+      ofSave: "Download for offline",
+      ofRemove: "Remove from offline",
+      ofSaved: "Saved for offline ✅",
+      ofRemoved: "Removed from offline",
+      ofDl: (p) => `Downloading… ${p}%`,
+      ofEmpty: "No offline songs yet",
+      ofEmptySub: "Every song you play to the end is saved automatically and plays next time without using data.",
+      ofMode: "You're offline — your saved songs are available 📥",
+      ofNot: "This song isn't saved for offline",
+      ofAllQ: (n) => `Download ${n} songs for offline?`,
+      ofAllProg: (d, n) => `📥 Saving for offline: ${d}/${n}`,
+      ofAllDone: (n) => `${n} songs saved for offline ✅`,
+      ofAllHave: "All songs in this list are already offline ✅",
+      ofBack: "Back online ✅",
+      ofCount: (n, sz) => `${n} songs · ${sz}`,
+      ofNoNet: "Plays without internet",
+      ofPlayAll: "Play all",
+      ofFull: "Offline storage full — oldest songs removed",
+      yes: "Yes",
       shareTitle: "Share",
       shareTg: "Send in Telegram",
       shareOpen: "Open link",
@@ -329,6 +389,9 @@
     android: "M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85a.64.64 0 0 0-.83.22l-1.88 3.24a11.4 11.4 0 0 0-8.94 0L5.65 5.67a.64.64 0 0 0-.87-.2c-.28.18-.37.54-.22.83L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52M7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5m10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5",
     windows: "M3 5.5l7.5-1v7H3zm0 13l7.5 1v-7H3zm8.5-14.1L21 3v8.5h-9.5zm0 15.2L21 21v-8.5h-9.5z",
     info: "M11 7h2v2h-2zm0 4h2v6h-2zm1-9a10 10 0 1 0 0 20 10 10 0 0 0 0-20",
+    offline: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m-1.6 14.6L6 12.2l1.4-1.4 3 3 6.2-6.2 1.4 1.4z",
+    storage: "M2 20h20v-4H2zm2-3h2v2H4zM2 4v4h20V4zm4 3H4V5h2zm-4 7h20v-4H2zm2-3h2v2H4z",
+    trash2: "M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z",
     tg: "M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"
   });
   const I = (n, cls = "") => `<svg viewBox="0 0 24 24" class="${cls}"><path d="${P[n]}"/></svg>`;
@@ -440,7 +503,7 @@
   function render() {
     const v = view();
     document.querySelectorAll(".nav button").forEach((b) => b.classList.toggle("on", b.dataset.tab === S.tab));
-    const r = { home: vHome, search: vSearch, library: vLibrary, settings: vSettings, playlist: vPlaylist, artist: vArtist, set: vSet, shared: vShared }[v.type];
+    const r = { home: vHome, search: vSearch, library: vLibrary, settings: vSettings, playlist: vPlaylist, artist: vArtist, set: vSet, shared: vShared, offline: vOffline }[v.type];
     r(v);
   }
   function trackRow(t, i, opts = {}) {
@@ -451,7 +514,7 @@
     ${opts.num ? `<div class="num">${i + 1}</div>` : ""}
     <div class="art">${img(t.artwork_url, "t120x120")}${cur ? `<div class="eqi"><i></i><i></i><i></i></div>` : ""}</div>
     <div class="meta"><div class="t" dir="auto">${esc(t.title)}</div>
-      <div class="a" dir="auto">${lock ? `<span class="lock">${I("lock")}</span>` : ""}${esc(t.artist)} · ${fmtDur(t.duration_ms)}${t.playback_count ? ` · ▶ ${fmtNum(t.playback_count)}` : ""}</div></div>
+      <div class="a" dir="auto">${OFF.ids.has(t.id) ? `<span class="offi" title="offline">${I("offline")}</span>` : ""}${lock ? `<span class="lock">${I("lock")}</span>` : ""}${esc(t.artist)} · ${fmtDur(t.duration_ms)}${t.playback_count ? ` · ▶ ${fmtNum(t.playback_count)}` : ""}</div></div>
     ${opts.edit ? `<div class="edit-btns"><button data-act="mvup" data-id="${t.id}">${I("up")}</button><button data-act="mvdn" data-id="${t.id}">${I("down")}</button><button class="del" data-act="rmpl" data-id="${t.id}">${I("close")}</button></div>` : `<button class="more" data-act="menu" data-id="${t.id}" data-ctx="${opts.ctx || ""}">${I("more")}</button>`}
   </div>`;
   }
@@ -466,7 +529,7 @@
   };
   const visName = (n) => String(n || "").replace(/[\u115f\u1160\u3164\uffa0\u200b-\u200f\u2060\s]/g, "");
   async function vHome() {
-    var _a2, _b2, _c2, _d, _e, _f, _g;
+    var _a2, _b2, _c2, _d2, _e, _f, _g;
     const u = (_a2 = S.me) == null ? void 0 : _a2.user;
     const rawName = (u == null ? void 0 : u.first_name) || ((_c2 = (_b2 = tg == null ? void 0 : tg.initDataUnsafe) == null ? void 0 : _b2.user) == null ? void 0 : _c2.first_name) || "";
     const name = visName(rawName) ? rawName : (u == null ? void 0 : u.username) || "";
@@ -481,7 +544,7 @@
     <div class="seg" id="genres">${genres.map((g) => `<button class="chip ${S.genre === g ? "on" : ""}" data-act="genre" data-g="${g}">${g === "all" ? L("all") : "#" + g}</button>`).join("")}</div>
     <div id="trend" style="margin-top:10px">${skel(6)}</div>
     <div id="topBox"></div>
-    <div class="foot">🎧 @${esc(((_d = S.bot) == null ? void 0 : _d.username) || "")}</div>
+    <div class="foot">🎧 @${esc(((_d2 = S.bot) == null ? void 0 : _d2.username) || "")}</div>
   </div>`;
     loadTrending();
     try {
@@ -609,17 +672,20 @@
   async function vLibrary() {
     var _a2;
     root().innerHTML = `<div class="view"><div class="hdr"><div class="logo">📂 <b>${L("library")}</b></div></div><div id="pls"><div class="spin"></div></div></div>`;
+    const ofCard0 = OFF.ok ? `<div class="grid"><button class="pc" data-act="offopen"><div class="cv off">${I("offline")}</div><div class="n">${L("ofTitle")}</div><div class="c">${L("ofCount", OFF.ids.size, fmtMB(offUsed()))}</div></button></div>` : "";
     try {
+      if (S.offline) throw new Error("offline");
       await loadPlaylists();
     } catch (e) {
-      $("#pls").innerHTML = emptyBox("lib", L("err"));
+      $("#pls").innerHTML = ofCard0 + emptyBox("lib", S.offline ? L("ofMode") : L("err"));
       return;
     }
     if (((_a2 = view()) == null ? void 0 : _a2.type) !== "library") return;
     const cards = S.playlists.map((p) => `<button class="pc" data-act="pl" data-id="${p.id}">
       <div class="cv ${p.is_favorites ? "fav" : ""}">${p.is_favorites ? I("heart") : p.cover ? img(p.cover, "t300x300") : I("music")}</div>
       <div class="n">${esc(p.is_favorites ? L("favorites") : p.name)}</div><div class="c">${L("tracksN", p.track_count)}${!p.is_favorites ? ` · ${p.is_public ? "🌐" : "🔒"}` : ""}</div></button>`).join("");
-    $("#pls").innerHTML = `<div class="grid">${cards}
+    const ofCard = OFF.ok ? `<button class="pc" data-act="offopen"><div class="cv off">${I("offline")}</div><div class="n">${L("ofTitle")}</div><div class="c">${L("ofCount", OFF.ids.size, fmtMB(offUsed()))}</div></button>` : "";
+    $("#pls").innerHTML = `<div class="grid">${ofCard}${cards}
     <button class="pc" data-act="newpl"><div class="cv new">${I("plus")}</div><div class="n">${L("newPl")}</div><div class="c">&nbsp;</div></button>
     <button class="pc" data-act="importpl"><div class="cv new">${I("import")}</div><div class="n">${L("importPl")}</div><div class="c">SoundCloud</div></button></div>`;
   }
@@ -648,6 +714,7 @@
       <button class="btn pri" data-act="plplay">${I("play")} ${L("play")}</button>
       <button class="btn ic" data-act="plshuffle">${I("shuffle")}</button>
       <button class="btn ic" data-act="plsend" title="${esc(L("sendAll"))}">${I("send")}</button>
+      ${OFF.ok ? `<button class="btn ic ${tr.every((x) => OFF.ids.has(x.id)) ? "on" : ""}" data-act="pldl" title="${esc(L("ofSave"))}">${I(tr.every((x) => OFF.ids.has(x.id)) ? "offline" : "download")}</button>` : ""}
       ${!p.is_favorites ? `<button class="btn ic" data-act="plshare">${I("share")}</button>` : ""}
       <button class="btn ic" data-act="plmenu">${I("more")}</button></div>` : !p.is_favorites ? `<div class="acts"><button class="btn" data-act="plmenu">${I("more")}</button></div>` : ""}
     ${tr.length ? trackList(tr, { ctx: setCtx("pl:" + p.id, tr), edit: v.edit, num: !v.edit }) : emptyBox("music", L("emptyPl"), L("emptyPlSub"))}
@@ -725,17 +792,22 @@
     ${trackList(tracks, { ctx: setCtx("set", tracks), num: true })}</div>`;
   }
   function vSettings() {
-    var _a2, _b2, _c2, _d, _e;
+    var _a2, _b2, _c2, _d2, _e;
     const u0 = ((_a2 = S.me) == null ? void 0 : _a2.user) || {};
     const u = Object.assign({}, u0, { first_name: visName(u0.first_name) ? u0.first_name : u0.username || "" });
     root().innerHTML = `<div class="view">
     <div class="hdr"><div class="av">${u.photo_url ? `<img src="${esc(u.photo_url)}">` : esc((u.first_name || "♪")[0])}</div><div><h1>${esc(u.first_name || "")}</h1><p>${u.username ? "@" + esc(u.username) : ""}</p></div></div>
-    <div class="stats"><div><b>${(_b2 = u.downloads) != null ? _b2 : 0}</b><span>${L("downloads")}</span></div><div><b>${Math.max(0, S.playlists.filter((p) => !p.is_favorites).length)}</b><span>${L("playlists")}</span></div><div><b>${S.favs.size || ((_d = (_c2 = S.playlists.find((p) => p.is_favorites)) == null ? void 0 : _c2.track_count) != null ? _d : 0)}</b><span>${L("favorites")}</span></div></div>
+    <div class="stats"><div><b>${(_b2 = u.downloads) != null ? _b2 : 0}</b><span>${L("downloads")}</span></div><div><b>${Math.max(0, S.playlists.filter((p) => !p.is_favorites).length)}</b><span>${L("playlists")}</span></div><div><b>${S.favs.size || ((_d2 = (_c2 = S.playlists.find((p) => p.is_favorites)) == null ? void 0 : _c2.track_count) != null ? _d2 : 0)}</b><span>${L("favorites")}</span></div></div>
     <div class="card">
       <button class="it" data-act="setlang"><div class="ico" style="background:#4c7dff">${I("globe")}</div><div class="l">${L("lang")}</div><div class="v">${lang === "fa" ? "فارسی 🇮🇷" : "English 🇬🇧"}</div></button>
       <button class="it" data-act="setq"><div class="ico" style="background:#ff8a00">${I("hq")}</div><div class="l">${L("quality")}</div><div class="v">${u.quality === "low" ? L("qLow") : L("qHigh")}</div></button>
       <button class="it" data-act="settheme"><div class="ico" style="background:#8b5cf6">${I("moon")}</div><div class="l">${L("theme")}</div><div class="v">${L(S.theme)}</div></button>
     </div>
+    ${OFF.ok ? `<div class="card"><div class="ch">${L("ofSection")}</div>
+      <button class="it" data-act="offauto"><div class="ico" style="background:#10b981">${I("offline")}</div><div class="l">${L("ofAuto")}<small>${L("ofNoNet")}</small></div><div class="v"><span class="sw ${OFF.auto ? "on" : ""}"><i></i></span></div></button>
+      <button class="it" data-act="offlimit"><div class="ico" style="background:#f59e0b">${I("storage")}</div><div class="l">${L("ofLimit")}</div><div class="v">${OFF.limitMB ? fmtLimit(OFF.limitMB) : L("ofUnlimited")}</div></button>
+      <button class="it" data-act="offopen"><div class="ico" style="background:#6366f1">${I("download")}</div><div class="l">${L("ofTitle")}</div><div class="v">${L("ofCount", OFF.ids.size, fmtMB(offUsed()))}</div></button>
+      <button class="it" data-act="offclear"><div class="ico" style="background:#ef4444">${I("trash2")}</div><div class="l">${L("ofClear")}</div><div class="v"></div></button></div>` : ""}
     <div class="card"><button class="it" data-act="openbot"><div class="ico" style="background:#2aabee">${I("tg")}</div><div class="l">${L("openBot")}</div><div class="v">@${esc(((_e = S.bot) == null ? void 0 : _e.username) || "")}</div></button>
       ${NATIVE ? "" : `<button class="it" data-act="getapp"><div class="ico" style="background:#22c55e">${I("download")}</div><div class="l">${L("getApp")}</div><div class="v">${I("android", "mini-ic")} ${I("windows", "mini-ic")}</div></button>`}</div>
     ${NATIVE ? `<div class="card">
@@ -766,9 +838,20 @@
   }
   function closeSheet() {
     var _a2, _b2;
+    if (S._cf) {
+      const f = S._cf;
+      S._cf = null;
+      f(false);
+    }
     (_a2 = $(".ov")) == null ? void 0 : _a2.classList.remove("show");
     (_b2 = $(".sheet")) == null ? void 0 : _b2.classList.remove("show");
     setTimeout(syncBack, 50);
+  }
+  function confirmAsk(msg, okLabel) {
+    return new Promise((res) => {
+      openSheet(`<div class="cfm"><h3>${esc(msg)}</h3><div class="row2"><button class="btn" data-act="cfno">${L("cancel")}</button><button class="btn pri" data-act="cfyes">${esc(okLabel || L("yes"))}</button></div></div>`);
+      S._cf = res;
+    });
   }
   function trackMenu(id, ctx) {
     const t = S.tracks.get(Number(id));
@@ -782,6 +865,7 @@
     <button class="mi" data-act="m_fav" data-id="${t.id}">${I(fav ? "heart" : "heartO")} ${fav ? L("unfav") : L("fav")}</button>
     <button class="mi" data-act="m_send" data-id="${t.id}">${I("send")} ${L("sendChat")}</button>
     <button class="mi" data-act="m_share" data-id="${t.id}">${I("share")} ${L("share")}</button>
+    ${OFF.ok ? OFF.ids.has(t.id) ? `<button class="mi" data-act="m_offdel" data-id="${t.id}">${I("trash2")} ${L("ofRemove")}</button>` : `<button class="mi" data-act="m_offsave" data-id="${t.id}">${I("download")} ${OFF.busy.has(t.id) ? L("ofDl", OFF.busy.get(t.id)) : L("ofSave")}</button>` : ""}
     <button class="mi" data-act="m_similar" data-id="${t.id}">${I("wave")} ${L("similar")}</button>
     ${t.user_id ? `<button class="mi" data-act="m_artist" data-id="${t.user_id}">${I("user")} ${L("goArtist")}</button>` : ""}
     ${t.permalink_url ? `<button class="mi" data-act="m_open" data-url="${esc(t.permalink_url)}">${I("link")} ${L("openSc")}</button>` : ""}
@@ -850,6 +934,348 @@
     S.qi = 0;
   }
   let loadSeq = 0;
+  const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
+  const OFF = {
+    ok: typeof indexedDB !== "undefined",
+    db: null,
+    ids: /* @__PURE__ */ new Set(),
+    meta: /* @__PURE__ */ new Map(),
+    busy: /* @__PURE__ */ new Map(),
+    arts: /* @__PURE__ */ new Map(),
+    auto: localStorage.getItem("sc_off_auto") !== "0",
+    limitMB: Number((_d = localStorage.getItem("sc_off_limit")) != null ? _d : 1024)
+    // 0 = unlimited
+  };
+  const LIMITS = [250, 500, 1024, 2048, 5120, 0];
+  const fmtLimit = (mb) => mb >= 1024 ? `${mb / 1024} GB` : `${mb} MB`;
+  function offDb() {
+    if (OFF.db) return Promise.resolve(OFF.db);
+    return new Promise((res, rej) => {
+      const r = indexedDB.open("sc_offline", 1);
+      r.onupgradeneeded = () => {
+        const d = r.result;
+        if (!d.objectStoreNames.contains("audio")) d.createObjectStore("audio");
+        if (!d.objectStoreNames.contains("meta")) d.createObjectStore("meta", { keyPath: "id" });
+      };
+      r.onsuccess = () => {
+        OFF.db = r.result;
+        res(OFF.db);
+      };
+      r.onerror = () => rej(r.error);
+    });
+  }
+  function offTx(store, mode, fn) {
+    return offDb().then((d) => new Promise((res, rej) => {
+      const tx = d.transaction(store, mode);
+      const st = tx.objectStore(store);
+      let out;
+      const r = fn(st);
+      if (r) r.onsuccess = () => {
+        out = r.result;
+      };
+      tx.oncomplete = () => res(out);
+      tx.onerror = () => rej(tx.error);
+      tx.onabort = () => rej(tx.error);
+    }));
+  }
+  async function offInit() {
+    var _a2, _b2;
+    if (!OFF.ok) return;
+    try {
+      const all = await offTx("meta", "readonly", (st) => st.getAll()) || [];
+      for (const m of all) {
+        OFF.meta.set(m.id, m);
+        OFF.ids.add(m.id);
+      }
+      (_b2 = (_a2 = navigator.storage) == null ? void 0 : _a2.persist) == null ? void 0 : _b2.call(_a2).catch(() => {
+      });
+    } catch (e) {
+      console.warn("offline db unavailable", e);
+      OFF.ok = false;
+    }
+  }
+  const offUsed = () => {
+    let n = 0;
+    for (const m of OFF.meta.values()) n += m.size || 0;
+    return n;
+  };
+  const offGet = (id) => offTx("audio", "readonly", (st) => st.get(id)).catch(() => null);
+  function offArt(m) {
+    if (!(m == null ? void 0 : m.art)) return (m == null ? void 0 : m.artwork_url) || "";
+    if (!OFF.arts.has(m.id)) OFF.arts.set(m.id, URL.createObjectURL(m.art));
+    return OFF.arts.get(m.id);
+  }
+  async function offPut(t, blob, pinned) {
+    let artBlob = null;
+    try {
+      const r = await fetch(art(t.artwork_url, "t300x300"));
+      if (r.ok) artBlob = await r.blob();
+    } catch (e) {
+    }
+    const m = {
+      id: t.id,
+      title: t.title,
+      artist: t.artist,
+      username: t.username,
+      user_id: t.user_id,
+      permalink_url: t.permalink_url,
+      artwork_url: t.artwork_url,
+      duration_ms: t.duration_ms,
+      genre: t.genre,
+      size: blob.size,
+      mime: blob.type,
+      saved: Date.now(),
+      last: Date.now(),
+      pinned: !!pinned,
+      art: artBlob
+    };
+    await offTx("audio", "readwrite", (st) => st.put(blob, t.id));
+    await offTx("meta", "readwrite", (st) => st.put(m));
+    OFF.meta.set(t.id, m);
+    OFF.ids.add(t.id);
+    await offEvict(t.id);
+    refreshOfflineUI();
+  }
+  async function offDel(id) {
+    await offTx("audio", "readwrite", (st) => st.delete(id)).catch(() => {
+    });
+    await offTx("meta", "readwrite", (st) => st.delete(id)).catch(() => {
+    });
+    OFF.meta.delete(id);
+    OFF.ids.delete(id);
+    if (OFF.arts.has(id)) {
+      URL.revokeObjectURL(OFF.arts.get(id));
+      OFF.arts.delete(id);
+    }
+  }
+  async function offClear() {
+    await offTx("audio", "readwrite", (st) => st.clear());
+    await offTx("meta", "readwrite", (st) => st.clear());
+    for (const u of OFF.arts.values()) URL.revokeObjectURL(u);
+    OFF.meta.clear();
+    OFF.ids.clear();
+    OFF.arts.clear();
+  }
+  let touchT;
+  function offTouch(id) {
+    const m = OFF.meta.get(id);
+    if (!m) return;
+    m.last = Date.now();
+    clearTimeout(touchT);
+    touchT = setTimeout(() => offTx("meta", "readwrite", (st) => st.put(m)).catch(() => {
+    }), 1500);
+  }
+  async function offEvict(keep) {
+    if (!OFF.limitMB) return;
+    const max = OFF.limitMB * 1048576;
+    let used = offUsed(), removed = 0;
+    if (used <= max) return;
+    const order = [...OFF.meta.values()].filter((m) => m.id !== keep).sort((a, b) => a.pinned - b.pinned || (a.last || 0) - (b.last || 0));
+    for (const m of order) {
+      if (used <= max) break;
+      await offDel(m.id);
+      used -= m.size || 0;
+      removed++;
+    }
+    if (removed) toast(L("ofFull"));
+  }
+  function refreshOfflineUI() {
+    updatePlayerUI();
+    const v = view();
+    if (v && (v.type === "offline" || v.type === "library" || v.type === "settings")) render();
+    else document.querySelectorAll(".tr[data-id]").forEach((el) => {
+      const id = Number(el.dataset.id), a = el.querySelector(".a");
+      if (a && OFF.ids.has(id) && !a.querySelector(".offi")) a.insertAdjacentHTML("afterbegin", `<span class="offi">${I("offline")}</span>`);
+    });
+  }
+  function nextOfflineIndex() {
+    var _a2;
+    for (let k = 1; k <= S.queue.length; k++) {
+      const j = (S.qi + k) % S.queue.length;
+      if (OFF.ids.has((_a2 = S.queue[j]) == null ? void 0 : _a2.id)) return j;
+    }
+    return -1;
+  }
+  let curObjUrl = null;
+  function setAudioSrc(src, isBlob) {
+    if (curObjUrl && curObjUrl !== src) {
+      URL.revokeObjectURL(curObjUrl);
+      curObjUrl = null;
+    }
+    if (isBlob) curObjUrl = src;
+    audio.src = src;
+  }
+  let CAP = null;
+  function newCapture(t, kind) {
+    CAP = { t, kind: kind || "hls-aac", init: null, frags: /* @__PURE__ */ new Map(), total: 0, urls: null, done: false };
+    return CAP;
+  }
+  function captureLoader(cap) {
+    const Base = window.Hls.DefaultConfig.loader;
+    return class extends Base {
+      load(ctx, cfg, cb) {
+        const ok = cb.onSuccess;
+        cb.onSuccess = (resp, st, c, nd) => {
+          try {
+            const f = c && c.frag;
+            if (f && resp && resp.data instanceof ArrayBuffer && CAP === cap && !cap.done) {
+              if (f.sn === "initSegment") cap.init = resp.data.slice(0);
+              else cap.frags.set(f.sn, resp.data.slice(0));
+              checkCapture(cap);
+            }
+          } catch (e) {
+            console.warn("capture", e);
+          }
+          ok(resp, st, c, nd);
+        };
+        super.load(ctx, cfg, cb);
+      }
+    };
+  }
+  function checkCapture(cap) {
+    if (cap.done || !cap.total || cap.frags.size < cap.total) return;
+    if (cap.kind === "hls-aac" && !cap.init) return;
+    cap.done = true;
+    saveCapture(cap);
+  }
+  async function saveCapture(cap) {
+    try {
+      if (OFF.ids.has(cap.t.id)) return;
+      const segs = [...cap.frags.keys()].sort((a, b) => a - b).map((k) => new Uint8Array(cap.frags.get(k)));
+      const blob = await buildAudio(cap.kind, cap.init && new Uint8Array(cap.init), segs, cap.t);
+      if (blob) await offPut(cap.t, blob, false);
+    } catch (e) {
+      console.warn("offline save failed", e);
+    } finally {
+      cap.frags.clear();
+      cap.init = null;
+    }
+  }
+  function finishCapture() {
+    const cap = CAP;
+    CAP = null;
+    if (!cap || cap.done || !cap.urls || !cap.total || !navigator.onLine) return;
+    const missing = cap.urls.filter((u) => !cap.frags.has(u.sn));
+    if (missing.length > cap.total * 0.35 || cap.kind === "hls-aac" && !cap.init) return;
+    cap.done = true;
+    (async () => {
+      try {
+        for (const m of missing) {
+          const r = await fetch(m.url);
+          if (!r.ok) throw new Error("seg " + r.status);
+          cap.frags.set(m.sn, await r.arrayBuffer());
+        }
+        await saveCapture(cap);
+      } catch (e) {
+        console.warn("complete capture failed", e);
+      }
+    })();
+  }
+  async function buildAudio(kind, init, segs, t) {
+    if (kind === "hls-aac") {
+      if (!window.SCRemux || !init) return null;
+      return new Blob([window.SCRemux.remuxFmp4ToM4a(init, segs, { title: t.title, artist: t.artist })], { type: "audio/mp4" });
+    }
+    return new Blob(segs, { type: "audio/mpeg" });
+  }
+  async function offDownload(t, quiet) {
+    if (!OFF.ok || OFF.ids.has(t.id) || OFF.busy.has(t.id)) return OFF.ids.has(t.id);
+    OFF.busy.set(t.id, 0);
+    updatePlayerUI();
+    const prog = (p) => {
+      var _a2;
+      OFF.busy.set(t.id, Math.min(99, Math.round(p * 100)));
+      if (((_a2 = S.queue[S.qi]) == null ? void 0 : _a2.id) === t.id) updatePlayerUI();
+    };
+    try {
+      const s = await api(`/stream/${t.id}`);
+      if (s.track) Object.assign(t, s.track);
+      let blob;
+      if (s.kind === "progressive") {
+        const r = await fetch(s.url);
+        if (!r.ok) throw new Error("http " + r.status);
+        blob = new Blob([await r.arrayBuffer()], { type: "audio/mpeg" });
+      } else {
+        let url = s.url, txt = await (await fetch(url)).text();
+        const variant = txt.split("\n").find((l) => l.trim() && !l.startsWith("#") && /EXT-X-STREAM-INF/.test(txt));
+        if (variant) {
+          url = new URL(variant.trim(), url).href;
+          txt = await (await fetch(url)).text();
+        }
+        const mapM = txt.match(/#EXT-X-MAP:URI="([^"]+)"/);
+        const segUrls = txt.split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#")).map((l) => new URL(l, url).href);
+        const init = mapM ? new Uint8Array(await (await fetch(new URL(mapM[1], url).href)).arrayBuffer()) : null;
+        const segs = new Array(segUrls.length);
+        let done = 0, i = 0;
+        const worker = async () => {
+          while (i < segUrls.length) {
+            const k = i++;
+            const r = await fetch(segUrls[k]);
+            if (!r.ok) throw new Error("seg " + r.status);
+            segs[k] = new Uint8Array(await r.arrayBuffer());
+            prog(++done / segUrls.length);
+          }
+        };
+        await Promise.all([worker(), worker(), worker()]);
+        blob = await buildAudio(init ? "hls-aac" : "hls-mp3", init, segs, t);
+      }
+      if (!blob) throw new Error("unsupported");
+      OFF.busy.delete(t.id);
+      await offPut(t, blob, true);
+      if (!quiet) {
+        toast(L("ofSaved"));
+        hapticOk();
+      }
+      return true;
+    } catch (e) {
+      console.warn("offline download failed", e);
+      OFF.busy.delete(t.id);
+      updatePlayerUI();
+      if (!quiet) toast(e.status === 451 ? L("drm") : L("err"));
+      return false;
+    }
+  }
+  let dlQueueRunning = false;
+  async function offDownloadAll(list) {
+    const todo = list.filter((x) => !OFF.ids.has(x.id) && !x.drm && !x.snipped);
+    if (!todo.length) return toast(L("ofAllHave"));
+    if (dlQueueRunning) return;
+    dlQueueRunning = true;
+    let ok = 0;
+    for (let k = 0; k < todo.length; k++) {
+      toast(L("ofAllProg", k + 1, todo.length));
+      if (await offDownload(todo[k], true)) ok++;
+    }
+    dlQueueRunning = false;
+    toast(L("ofAllDone", ok));
+    hapticOk();
+  }
+  function offTracks() {
+    return [...OFF.meta.values()].sort((a, b) => (b.last || 0) - (a.last || 0)).map((m) => ({
+      id: m.id,
+      title: m.title,
+      artist: m.artist,
+      username: m.username,
+      user_id: m.user_id,
+      permalink_url: m.permalink_url,
+      artwork_url: offArt(m),
+      duration_ms: m.duration_ms,
+      genre: m.genre
+    }));
+  }
+  function vOffline() {
+    var _a2;
+    const list = offTracks();
+    remember(list);
+    const total = list.reduce((a, x) => a + (x.duration_ms || 0), 0);
+    root().innerHTML = `<div class="view">
+    <div class="ph"><div class="bgimg" style="background-image:url('${esc(((_a2 = list[0]) == null ? void 0 : _a2.artwork_url) || PH)}')"></div>
+      <div class="in"><div class="cover off">${I("offline")}</div>
+      <div class="info"><div class="kind">${L("ofNoNet")}</div><h1>${L("ofTitle")}</h1><div class="sub">${L("ofCount", list.length, fmtMB(offUsed()))} · ${fmtDur(total)}</div></div></div></div>
+    ${list.length ? `<div class="acts"><button class="btn pri" data-act="offplay">${I("play")} ${L("ofPlayAll")}</button>
+      <button class="btn ic" data-act="offshuffle">${I("shuffle")}</button></div>
+      ${trackList(list, { ctx: setCtx("off", list) })}` : emptyBox("offline", L("ofEmpty"), L("ofEmptySub"))}</div>`;
+  }
   async function loadCurrent(autoplay = true) {
     var _a2;
     const t = S.queue[S.qi];
@@ -859,21 +1285,47 @@
     updatePlayerUI();
     highlightRows();
     try {
+      const blob = OFF.ids.has(t.id) ? await offGet(t.id) : null;
+      if (seq !== loadSeq) return;
+      if (blob) {
+        finishCapture();
+        if (hls) {
+          hls.destroy();
+          hls = null;
+        }
+        setAudioSrc(URL.createObjectURL(blob), true);
+        offTouch(t.id);
+        if (autoplay) await audio.play().catch((e) => console.warn("play blocked", e));
+        setMediaSession(t);
+        pushNative();
+        return;
+      }
+      if (S.offline || navigator.onLine === false) {
+        const e = new Error("offline");
+        e.offline = true;
+        throw e;
+      }
       const s = await api(`/stream/${t.id}`);
       if (seq !== loadSeq) return;
       if (s.track) {
         Object.assign(t, s.track);
         remember([s.track]);
       }
+      finishCapture();
       if (hls) {
         hls.destroy();
         hls = null;
       }
       const isHls = /\.m3u8/i.test(s.url) || ((_a2 = s.kind) == null ? void 0 : _a2.startsWith("hls"));
-      if (!isHls || audio.canPlayType("application/vnd.apple.mpegurl")) {
-        audio.src = s.url;
-      } else if (window.Hls && window.Hls.isSupported()) {
-        hls = new window.Hls({ enableWorker: true, maxBufferLength: 30 });
+      const nativeHls = !!audio.canPlayType("application/vnd.apple.mpegurl");
+      if (isHls && window.Hls && window.Hls.isSupported() && !(IS_IOS && nativeHls)) {
+        const cap = OFF.ok && OFF.auto ? newCapture(t, s.kind) : null;
+        hls = new window.Hls(Object.assign({ enableWorker: true, maxBufferLength: 30 }, cap ? { fLoader: captureLoader(cap) } : {}));
+        if (cap) hls.on(window.Hls.Events.LEVEL_LOADED, (_, d) => {
+          cap.urls = d.details.fragments.map((f) => ({ sn: f.sn, url: f.url }));
+          cap.total = cap.urls.length;
+          checkCapture(cap);
+        });
         hls.loadSource(s.url);
         hls.attachMedia(audio);
         hls.on(window.Hls.Events.ERROR, (_, d) => {
@@ -883,14 +1335,22 @@
           }
         });
       } else {
-        audio.src = s.url;
+        setAudioSrc(s.url, false);
       }
       if (autoplay) await audio.play().catch((e) => console.warn("play blocked", e));
       setMediaSession(t);
       pushNative();
     } catch (e) {
       if (seq !== loadSeq) return;
-      toast(e.status === 451 ? L("drm") : L("err"));
+      toast(e.offline ? L("ofNot") : e.status === 451 ? L("drm") : L("err"));
+      if (e.offline) {
+        const j = nextOfflineIndex();
+        if (j >= 0 && j !== S.qi) {
+          S.qi = j;
+          setTimeout(() => loadCurrent(), 400);
+        }
+        return;
+      }
       if (S.queue.length > 1) setTimeout(() => next(true), 600);
     } finally {
       if (seq === loadSeq) {
@@ -1042,7 +1502,8 @@
     <div class="bar"><button data-act="fpsend">${I("send")}<span>${L("sendChat").split(" ").slice(0, 2).join(" ")}</span></button>
       <button data-act="fpaddpl">${I("plus")}<span>${L("addPl").split(" ")[0]}</span></button>
       <button data-act="showqueue">${I("queue")}<span>${L("queue")}</span></button>
-      <button data-act="fpshare">${I("share")}<span>${L("share")}</span></button></div></div>`;
+      <button data-act="fpshare">${I("share")}<span>${L("share")}</span></button>
+      <button data-act="fpoff" id="fpoff">${I("download")}<span>${L("ofShort")}</span></button></div></div>`;
     document.body.appendChild(fp);
     fp.addEventListener("click", onClick);
     mini.addEventListener("click", onClick);
@@ -1113,6 +1574,13 @@
     $("#bsh").classList.toggle("on", S.shuffle);
     $("#brp").classList.toggle("on", S.repeat !== "off");
     $("#brp").innerHTML = I(S.repeat === "one" ? "repeat1" : "repeat");
+    const fo = $("#fpoff");
+    if (fo) {
+      const have = OFF.ids.has(t.id), busy = OFF.busy.get(t.id);
+      fo.style.display = OFF.ok ? "" : "none";
+      fo.classList.toggle("on", have);
+      fo.innerHTML = `${I(have ? "offline" : "download")}<span>${busy != null ? busy + "%" : L("ofShort")}</span>`;
+    }
   }
   function updateProgress() {
     var _a2, _b2;
@@ -1215,7 +1683,7 @@
     }
   }
   async function onClick(e) {
-    var _a2, _b2, _c2, _d, _e, _f, _g;
+    var _a2, _b2, _c2, _d2, _e, _f, _g, _h, _i;
     const el = e.target.closest("[data-act]");
     if (!el) return;
     const a = el.dataset.act, id = el.dataset.id;
@@ -1599,7 +2067,7 @@
         return vSettings();
       }
       case "openbot": {
-        const u = `https://t.me/${(_d = S.bot) == null ? void 0 : _d.username}`;
+        const u = `https://t.me/${(_d2 = S.bot) == null ? void 0 : _d2.username}`;
         if (tg == null ? void 0 : tg.openTelegramLink) {
           tg.openTelegramLink(u);
           return tg.close();
@@ -1613,6 +2081,74 @@
       case "updnow":
         closeSheet();
         return openExt(el.dataset.url);
+      case "cfyes":
+      case "cfno": {
+        const f = S._cf;
+        S._cf = null;
+        closeSheet();
+        f && f(a === "cfyes");
+        return;
+      }
+      case "offopen":
+        closeSheet();
+        return S.tab === "library" || S.tab === "settings" ? go({ type: "offline" }) : (setTab("library"), go({ type: "offline" }));
+      case "offplay":
+      case "offshuffle": {
+        const l = offTracks();
+        if (!l.length) return;
+        remember(l);
+        if (a === "offshuffle") {
+          S.shuffle = true;
+          l.sort(() => Math.random() - 0.5);
+        }
+        return playList(l, 0);
+      }
+      case "offauto":
+        OFF.auto = !OFF.auto;
+        localStorage.setItem("sc_off_auto", OFF.auto ? "1" : "0");
+        haptic();
+        return vSettings();
+      case "offlimit": {
+        const i = LIMITS.indexOf(OFF.limitMB);
+        OFF.limitMB = LIMITS[(i + 1) % LIMITS.length];
+        localStorage.setItem("sc_off_limit", String(OFF.limitMB));
+        await offEvict((_f = S.queue[S.qi]) == null ? void 0 : _f.id);
+        haptic();
+        return vSettings();
+      }
+      case "offclear": {
+        if (!OFF.ids.size) return;
+        if (!await confirmAsk(L("ofClearQ"))) return;
+        await offClear();
+        toast(L("ofCleared"));
+        return render();
+      }
+      case "m_offsave": {
+        closeSheet();
+        const t = S.tracks.get(Number(id));
+        if (t) offDownload(t);
+        return;
+      }
+      case "m_offdel": {
+        closeSheet();
+        await offDel(Number(id));
+        toast(L("ofRemoved"));
+        return refreshOfflineUI();
+      }
+      case "fpoff": {
+        const t = S.queue[S.qi];
+        if (!t || OFF.busy.has(t.id)) return;
+        if (OFF.ids.has(t.id)) return toast(L("ofSaved"));
+        return offDownload(t);
+      }
+      case "pldl": {
+        const v = view();
+        const l = ((_g = v == null ? void 0 : v.data) == null ? void 0 : _g.tracks) || [];
+        const n = l.filter((x) => !OFF.ids.has(x.id) && !x.drm && !x.snipped).length;
+        if (!n) return toast(L("ofAllHave"));
+        if (!await confirmAsk(L("ofAllQ", n))) return;
+        return offDownloadAll(l);
+      }
       case "updstart": {
         if (!S.update || !(NATIVE == null ? void 0 : NATIVE.downloadUpdate)) return;
         S.upd = { state: "start", received: 0, total: S.update.size };
@@ -1627,14 +2163,14 @@
       }
       case "updcancel":
         try {
-          (_f = NATIVE == null ? void 0 : NATIVE.cancelUpdate) == null ? void 0 : _f.call(NATIVE);
+          (_h = NATIVE == null ? void 0 : NATIVE.cancelUpdate) == null ? void 0 : _h.call(NATIVE);
         } catch (e2) {
         }
         S.upd = null;
         return updSheet(false);
       case "updinstall":
         try {
-          (_g = NATIVE == null ? void 0 : NATIVE.installUpdate) == null ? void 0 : _g.call(NATIVE);
+          (_i = NATIVE == null ? void 0 : NATIVE.installUpdate) == null ? void 0 : _i.call(NATIVE);
         } catch (e2) {
         }
         return;
@@ -1671,7 +2207,7 @@
     document.documentElement.dir = lang === "fa" ? "rtl" : "ltr";
   }
   function applyTheme() {
-    var _a2, _b2, _c2, _d;
+    var _a2, _b2, _c2, _d2;
     const scheme = S.theme === "auto" ? (tg == null ? void 0 : tg.colorScheme) || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark") : S.theme;
     document.body.classList.toggle("light", scheme === "light");
     document.documentElement.classList.toggle("light", scheme === "light");
@@ -1683,7 +2219,7 @@
     } catch (e) {
     }
     try {
-      (_d = NATIVE == null ? void 0 : NATIVE.setTheme) == null ? void 0 : _d.call(NATIVE, bg, scheme === "light");
+      (_d2 = NATIVE == null ? void 0 : NATIVE.setTheme) == null ? void 0 : _d2.call(NATIVE, bg, scheme === "light");
     } catch (e) {
     }
   }
@@ -1713,6 +2249,13 @@
     });
     $("#app").addEventListener("click", onClick);
     buildPlayer();
+    await offInit();
+    window.addEventListener("online", () => {
+      if (S.offline && (appToken || initData)) {
+        toast(L("ofBack"));
+        startApp();
+      }
+    });
     if (NATIVE) {
       document.addEventListener("visibilitychange", () => {
         if (!document.hidden && S.login) loginPollOnce();
@@ -1946,6 +2489,11 @@
     try {
       S.me = await api("/me");
       S.bot = S.me.bot;
+      S.offline = false;
+      try {
+        localStorage.setItem("sc_me", JSON.stringify(S.me));
+      } catch (e) {
+      }
       if (S.me.user.lang && S.me.user.lang !== lang) {
         lang = S.me.user.lang;
         applyLang();
@@ -1954,7 +2502,26 @@
       if (NATIVE) localStorage.setItem("sc_lang", lang);
     } catch (e) {
       if (NATIVE && e.status === 401) return;
-      root().innerHTML = `<div class="view">${emptyBox("bot", e.status === 401 ? L("unauthorized") : L("err"))}<div style="text-align:center"><button class="btn pri" data-act="retry">${L("retry")}</button></div></div>`;
+      let cachedMe = null;
+      try {
+        cachedMe = JSON.parse(localStorage.getItem("sc_me") || "null");
+      } catch (e2) {
+      }
+      if (!e.status && OFF.ids.size) {
+        S.offline = true;
+        if (cachedMe) {
+          S.me = cachedMe;
+          S.bot = cachedMe.bot;
+        }
+        S.tab = "library";
+        S.stack = [{ type: "library" }, { type: "offline" }];
+        document.querySelectorAll(".nav button").forEach((b) => b.classList.toggle("on", b.dataset.tab === "library"));
+        render();
+        syncBack();
+        toast(L("ofMode"));
+        return;
+      }
+      root().innerHTML = `<div class="view">${emptyBox("bot", e.status === 401 ? L("unauthorized") : L("err"))}<div style="text-align:center"><button class="btn pri" data-act="retry">${L("retry")}</button>${OFF.ids.size ? ` <button class="btn" data-act="offopen">${I("offline")} ${L("ofTitle")}</button>` : ""}</div></div>`;
       return;
     }
     if (NATIVE) setTimeout(() => checkUpdate(false), 4e3);
