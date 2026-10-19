@@ -19,8 +19,13 @@
         setTheme: function (bg, light) { A.setTheme(String(bg), !!light); }
       };
     }
+    if (window.SCNative) document.documentElement.classList.add("native", "native-" + window.SCNative.platform);
   </script>
   <style>
+    html.native ::-webkit-scrollbar{width:6px;height:6px;background:transparent}
+    html.native ::-webkit-scrollbar-thumb{background:rgba(128,128,128,.35);border-radius:6px}
+    html.native ::-webkit-scrollbar-thumb:hover{background:rgba(128,128,128,.55)}
+    html.native ::-webkit-scrollbar-button{display:none;height:0}
     :where(html,body){margin:0;background:#0b0b10;color:#fff;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
     #splash{position:fixed;inset:0;display:grid;place-items:center;z-index:0}
     #splash img{width:84px;height:84px;animation:p 1.2s infinite ease-in-out;filter:drop-shadow(0 10px 30px rgba(255,85,0,.45))}
