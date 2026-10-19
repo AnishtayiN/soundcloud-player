@@ -41,30 +41,6 @@ desktop/    پروژه‌ی ویندوز (Electron 22 + electron-builder/NSIS)
 .github/workflows/build.yml   ساخت APK و EXE و انتشار در Releases
 ```
 
-## ساخت نسخه‌ی جدید
-- **روش ۱:** Actions ← *Build & Release (APK + EXE)* ← **Run workflow** ← شماره‌ی نسخه (مثلاً `1.0.1`)
-- **روش ۲:** `git tag v1.0.1 && git push origin v1.0.1`
-
-حدوداً ۵ تا ۸ دقیقه بعد، `SoundCloud-Player.apk` و `SoundCloud-Player-Setup.exe` توی Releases منتشر می‌شن و لینک‌های «latest» (که توی ربات هستن) خودکار به نسخه‌ی جدید اشاره می‌کنن. برنامه‌ها هم به کاربر اطلاع می‌دن.
-
-### Secrets (برای امضای APK)
-| نام | توضیح |
-|---|---|
-| `ANDROID_KEYSTORE_B64` | فایل keystore (PKCS12) به‌صورت base64 |
-| `ANDROID_KEYSTORE_PASSWORD` | رمز keystore و کلید |
-| `ANDROID_KEY_ALIAS` | alias کلید |
-
-> ⚠️ keystore رو عوض نکن؛ وگرنه آپدیت روی نسخه‌ی قبلی نصب نمی‌شه (باید اول حذف بشه).
-
-## اجرای محلی
-```bash
-# ویندوز / دسکتاپ
-cp -r web desktop/web && cd desktop && npm install && npm start
-# اندروید
-mkdir -p android/app/src/main/assets/www && cp -r web/* android/app/src/main/assets/www/
-cd android && gradle assembleDebug
-```
-
 ## نکات
 - نصب‌کننده‌ی ویندوز امضای دیجیتال (code signing) نداره، پس SmartScreen ممکنه هشدار بده ← **More info ← Run anyway**.
 - اندروید: اجازه‌ی «نصب برنامه‌های ناشناس» رو برای مرورگر/تلگرام فعال کن.
