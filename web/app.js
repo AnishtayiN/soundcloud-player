@@ -142,6 +142,24 @@
       updInstallW: "دانلود تموم شد ✅ در حال نصب… برنامه خودش بسته و دوباره باز می‌شه.",
       updPerm: "برای نصب آپدیت، توی صفحه‌ای که باز شد اجازه «نصب برنامه‌های ناشناس» رو روشن کن و برگرد.",
       updFail: "دانلود ناموفق بود، اینترنتت رو چک کن و دوباره امتحان کن.",
+      recTitle: "تشخیص آهنگ",
+      recListen: "دارم گوش می‌دم…",
+      recHint: "گوشی رو نزدیک منبع صدا بگیر",
+      recFinding: "دارم پیدا می‌کنم…",
+      recNone: "آهنگ پیدا نشد 😕",
+      recNoneSub: "نزدیک‌تر به منبع صدا و با صدای بلندتر دوباره امتحان کن",
+      recAgain: "دوباره امتحان کن",
+      recFile: "از فایل صوتی",
+      recMicErr: "به میکروفون دسترسی ندارم",
+      recMicErrSub: "اجازه‌ی میکروفون رو بده، یا از فایل صوتی استفاده کن، یا ویس رو برای ربات بفرست",
+      recBot: "ویس رو برای ربات می‌فرستم",
+      recBusy: "سرویس تشخیص شلوغه؛ چند ثانیه دیگه دوباره امتحان کن",
+      recNoSc: "این آهنگ توی ساندکلاد پیدا نشد",
+      recOnSc: "در ساندکلاد",
+      recStop: "توقف",
+      recFileErr: "این فایل قابل پخش نیست",
+      lyFound: "پیدا شده از روی متن آهنگ",
+      lyOther: "نتایج دیگر",
       ofTitle: "آهنگ‌های آفلاین",
       ofShort: "آفلاین",
       ofSection: "آفلاین و حافظه",
@@ -302,6 +320,24 @@
       updInstallW: "Download complete ✅ Installing… the app will close and reopen by itself.",
       updPerm: "To install the update, allow “Install unknown apps” on the screen that opened, then come back.",
       updFail: "Download failed — check your connection and try again.",
+      recTitle: "Recognize song",
+      recListen: "Listening…",
+      recHint: "Hold your phone close to the music",
+      recFinding: "Finding it…",
+      recNone: "No match 😕",
+      recNoneSub: "Get closer to the speaker and try again",
+      recAgain: "Try again",
+      recFile: "From an audio file",
+      recMicErr: "Can't access the microphone",
+      recMicErrSub: "Allow microphone access, use an audio file, or send a voice message to the bot",
+      recBot: "Send a voice to the bot",
+      recBusy: "Recognition is busy — try again in a few seconds",
+      recNoSc: "Not found on SoundCloud",
+      recOnSc: "On SoundCloud",
+      recStop: "Stop",
+      recFileErr: "Can't read this file",
+      lyFound: "Found by the lyrics",
+      lyOther: "Other results",
       ofTitle: "Offline songs",
       ofShort: "Offline",
       ofSection: "Offline & storage",
@@ -389,6 +425,8 @@
     android: "M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85a.64.64 0 0 0-.83.22l-1.88 3.24a11.4 11.4 0 0 0-8.94 0L5.65 5.67a.64.64 0 0 0-.87-.2c-.28.18-.37.54-.22.83L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52M7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5m10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5",
     windows: "M3 5.5l7.5-1v7H3zm0 13l7.5 1v-7H3zm8.5-14.1L21 3v8.5h-9.5zm0 15.2L21 21v-8.5h-9.5z",
     info: "M11 7h2v2h-2zm0 4h2v6h-2zm1-9a10 10 0 1 0 0 20 10 10 0 0 0 0-20",
+    mic: "M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3m5.3-3A5.3 5.3 0 0 1 12 16.1 5.3 5.3 0 0 1 6.7 11H5c0 3.4 2.7 6.2 6 6.7V21h2v-3.3c3.3-.5 6-3.3 6-6.7z",
+    afile: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm2 10h-3v4.5a2.5 2.5 0 1 1-1-2V10h4zm-3-3V3.5L18.5 9z",
     offline: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m-1.6 14.6L6 12.2l1.4-1.4 3 3 6.2-6.2 1.4 1.4z",
     storage: "M2 20h20v-4H2zm2-3h2v2H4zM2 4v4h20V4zm4 3H4V5h2zm-4 7h20v-4H2zm2-3h2v2H4z",
     trash2: "M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z",
@@ -518,7 +556,7 @@
     ${opts.edit ? `<div class="edit-btns"><button data-act="mvup" data-id="${t.id}">${I("up")}</button><button data-act="mvdn" data-id="${t.id}">${I("down")}</button><button class="del" data-act="rmpl" data-id="${t.id}">${I("close")}</button></div>` : `<button class="more" data-act="menu" data-id="${t.id}" data-ctx="${opts.ctx || ""}">${I("more")}</button>`}
   </div>`;
   }
-  const trackList = (arr, opts = {}) => `<div class="list">${arr.map((t, i) => trackRow(t, i, opts)).join("")}</div>`;
+  const trackList = (arr, opts = {}) => `<div class="list">${arr.map((t, i) => trackRow(t, i + (opts.start || 0), opts)).join("")}</div>`;
   const skel = (n = 6) => `<div>${Array.from({ length: n }, () => `<div class="skrow"><div class="sk" style="width:52px;height:52px"></div><div style="flex:1"><div class="sk" style="height:13px;width:70%"></div><div class="sk" style="height:11px;width:40%;margin-top:8px"></div></div></div>`).join("")}</div>`;
   const emptyBox = (icon, h, p = "") => `<div class="empty"><div class="ico">${I(icon)}</div><h3>${esc(h)}</h3><div>${esc(p)}</div></div>`;
   const hCard = (t, ctx, i) => `<div class="hc" data-act="play" data-id="${t.id}" data-ctx="${ctx}" data-i="${i}"><div class="art">${img(t.artwork_url, "t300x300")}<div class="pp">${I("play")}</div></div><div class="t">${esc(t.title)}</div><div class="a">${esc(t.artist)}</div></div>`;
@@ -570,10 +608,183 @@
       box.innerHTML = emptyBox("wave", L("err"));
     }
   }
+  const REC = { stream: null, ctx: null, node: null, chunks: [], len: 0, rate: 48e3, run: 0, busy: false };
+  function recSheet(state, extra = "") {
+    const orb = (cls) => `<div class="recorb ${cls}"><span></span><span></span><span></span><button data-act="${cls === "on" ? "recstop" : "recagain"}">${I("mic")}</button></div>`;
+    if (state === "listen") return `<div class="rec">${orb("on")}<h3>${L("recListen")}</h3><p>${L("recHint")}</p><div class="recbar"><i id="recprog"></i></div><button class="btn" data-act="recfile">${I("afile")} ${L("recFile")}</button></div>`;
+    if (state === "file") return `<div class="rec">${orb("on")}<h3>${L("recFinding")}</h3><p>${extra}</p></div>`;
+    if (state === "none") return `<div class="rec">${orb("")}<h3>${L("recNone")}</h3><p>${L("recNoneSub")}</p><div class="row2"><button class="btn pri" data-act="recagain">${I("mic")} ${L("recAgain")}</button><button class="btn" data-act="recfile">${I("afile")} ${L("recFile")}</button></div></div>`;
+    if (state === "err") return `<div class="rec">${orb("")}<h3>${extra || L("recMicErr")}</h3><p>${extra ? "" : L("recMicErrSub")}</p><div class="row2"><button class="btn pri" data-act="recfile">${I("afile")} ${L("recFile")}</button>${NATIVE ? "" : `<button class="btn" data-act="recbot">${I("send")} ${L("recBot")}</button>`}</div></div>`;
+    return "";
+  }
+  function recSet(html) {
+    const sh = $(".sheet");
+    if (sh && sh.classList.contains("show")) sh.innerHTML = `<div class="grab"></div>${html}`;
+    else openSheet(html);
+  }
+  function recStop(manual) {
+    const r = REC;
+    r.run++;
+    try {
+      r.node && (r.node.onaudioprocess = null, r.node.disconnect());
+    } catch (e) {
+    }
+    try {
+      r.stream && r.stream.getTracks().forEach((t) => t.stop());
+    } catch (e) {
+    }
+    try {
+      r.ctx && r.ctx.close();
+    } catch (e) {
+    }
+    r.node = r.stream = r.ctx = null;
+    if (manual) recSet(recSheet("none"));
+  }
+  function recPcm(maxSec) {
+    const n = Math.min(REC.len, Math.floor(maxSec * REC.rate)), out = new Float32Array(n);
+    let o = n;
+    for (let i = REC.chunks.length - 1; i >= 0 && o > 0; i--) {
+      const c = REC.chunks[i], take = Math.min(c.length, o);
+      out.set(c.subarray(c.length - take), o - take);
+      o -= take;
+    }
+    return out;
+  }
+  async function recSend(pcmFloat, rate) {
+    const sig = window.SCSig.makeSignature(window.SCSig.toSig16k(pcmFloat, rate));
+    return api("/recognize", { method: "POST", body: { uri: sig.uri, samplems: sig.samplems } });
+  }
+  async function recOpen() {
+    var _a2, _b2, _c2;
+    recStop();
+    if (!window.SCSig) return toast(L("err"));
+    recSet(recSheet("listen"));
+    haptic("light");
+    const run = ++REC.run;
+    let stream;
+    try {
+      if (!((_a2 = navigator.mediaDevices) == null ? void 0 : _a2.getUserMedia)) throw new Error("no gum");
+      stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 } });
+    } catch (e) {
+      if (run === REC.run) recSet(recSheet("err"));
+      return;
+    }
+    if (run !== REC.run) {
+      stream.getTracks().forEach((t) => t.stop());
+      return;
+    }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AC(), src = ctx.createMediaStreamSource(stream), node = ctx.createScriptProcessor(4096, 1, 1), mute = ctx.createGain();
+    mute.gain.value = 0;
+    Object.assign(REC, { stream, ctx, node, chunks: [], len: 0, rate: ctx.sampleRate });
+    node.onaudioprocess = (e) => {
+      const d = new Float32Array(e.inputBuffer.getChannelData(0));
+      REC.chunks.push(d);
+      REC.len += d.length;
+    };
+    src.connect(node);
+    node.connect(mute);
+    mute.connect(ctx.destination);
+    (_b2 = ctx.resume) == null ? void 0 : _b2.call(ctx);
+    const t0 = Date.now(), TOTAL = 13e3;
+    const prog = setInterval(() => {
+      const p = $("#recprog");
+      if (run !== REC.run) return clearInterval(prog);
+      if (p) p.style.width = Math.min(100, (Date.now() - t0) / TOTAL * 100) + "%";
+    }, 200);
+    for (const at of [4.5, 8.5, 12.5]) {
+      while (run === REC.run && REC.len < at * REC.rate) {
+        await new Promise((r) => setTimeout(r, 200));
+        if (Date.now() - t0 > 4e3 && REC.len === 0) break;
+      }
+      if (run !== REC.run) return;
+      if (REC.len === 0) {
+        clearInterval(prog);
+        recStop();
+        return recSet(recSheet("err"));
+      }
+      try {
+        const r = await recSend(recPcm(12), REC.rate);
+        if (run !== REC.run) return;
+        if (r.hit) {
+          clearInterval(prog);
+          recStop();
+          return recShow(r);
+        }
+      } catch (e) {
+        if (run !== REC.run) return;
+        if (e.status === 503) {
+          clearInterval(prog);
+          recStop();
+          return recSet(recSheet("err", L("recBusy")));
+        }
+      }
+    }
+    clearInterval(prog);
+    if (run === REC.run) {
+      recStop();
+      recSet(recSheet("none"));
+      try {
+        (_c2 = tg == null ? void 0 : tg.HapticFeedback) == null ? void 0 : _c2.notificationOccurred("error");
+      } catch (e) {
+      }
+    }
+  }
+  function recPickFile() {
+    recStop();
+    const inp = document.createElement("input");
+    inp.type = "file";
+    inp.accept = "audio/*,video/*,.mp3,.m4a,.ogg,.opus,.wav,.aac,.flac";
+    inp.onchange = async () => {
+      var _a2;
+      const f = inp.files && inp.files[0];
+      if (!f) return;
+      recSet(recSheet("file", esc(f.name)));
+      const run = ++REC.run;
+      try {
+        const buf = await f.arrayBuffer();
+        const AC = window.AudioContext || window.webkitAudioContext, ac = new AC();
+        const ab = await new Promise((res, rej) => {
+          const p = ac.decodeAudioData(buf, res, rej);
+          if (p && p.then) p.then(res, rej);
+        });
+        (_a2 = ac.close) == null ? void 0 : _a2.call(ac);
+        const n = ab.length, rate = ab.sampleRate, W = Math.floor(12 * rate);
+        const mono = new Float32Array(Math.min(n, W)), start = n > W ? Math.floor((n - W) / 2) : 0;
+        for (let c = 0; c < ab.numberOfChannels; c++) {
+          const d = ab.getChannelData(c);
+          for (let i = 0; i < mono.length; i++) mono[i] += d[start + i] / ab.numberOfChannels;
+        }
+        const r = await recSend(mono, rate);
+        if (run !== REC.run) return;
+        if (r.hit) return recShow(r);
+        recSet(recSheet("none"));
+      } catch (e) {
+        if (run !== REC.run) return;
+        recSet(recSheet("err", e.status === 503 ? L("recBusy") : e.status ? L("err") : L("recFileErr")));
+      }
+    };
+    inp.click();
+  }
+  function recShow(r) {
+    const h = r.hit, tracks = r.tracks || [];
+    remember(tracks);
+    hapticOk();
+    const ctx = setCtx("rec", tracks);
+    const links = [h.url && [`Shazam`, h.url], h.spotify && ["Spotify", h.spotify], h.apple && ["Apple Music", h.apple]].filter(Boolean);
+    recSet(`<div class="rres">
+    <div class="rcov">${h.cover ? `<img src="${esc(h.cover)}" alt="">` : I("music")}</div>
+    <div class="rmeta"><small>🎯 ${L("recTitle")}</small><h3 dir="auto">${esc(h.title)}</h3><p dir="auto">${esc(h.artist)}</p>
+      <span>${[h.album, h.year, h.genre].filter(Boolean).map(esc).join(" · ")}</span>
+      <div class="rlinks">${links.map(([n, u]) => `<button class="chip" data-act="recext" data-url="${esc(u)}">${n}</button>`).join("")}</div></div>
+  </div>
+  ${tracks.length ? `<div class="lyo">${L("recOnSc")}</div>${trackList(tracks.slice(0, 12), { ctx })}` : `<div class="lyo">${L("recNoSc")}</div>`}
+  <div class="row2" style="margin-top:12px"><button class="btn" data-act="recagain">${I("mic")} ${L("recAgain")}</button></div>`);
+  }
   function vSearch() {
     const s = S.search;
     root().innerHTML = `<div class="view">
-    <div class="sbox"><div class="sinput">${I("search")}<input id="q" type="search" enterkeyhint="search" autocomplete="off" placeholder="${esc(L("searchPh"))}" value="${esc(s.q)}"></div>
+    <div class="sbox"><div class="sinput">${I("search")}<input id="q" type="search" enterkeyhint="search" autocomplete="off" placeholder="${esc(L("searchPh"))}" value="${esc(s.q)}"><button class="mic" data-act="rec" aria-label="${esc(L("recTitle"))}">${I("mic")}</button></div>
       <div class="seg">${["tracks", "users", "playlists"].map((k) => `<button class="chip ${s.type === k ? "on" : ""}" data-act="stype" data-k="${k}">${L(k === "users" ? "artists" : k === "playlists" ? "albums" : "tracks")}</button>`).join("")}</div></div>
     <div id="sres"></div><div id="smore"></div></div>`;
     const inp = $("#q");
@@ -593,6 +804,7 @@
     drawSearch();
   }
   function drawSearch() {
+    var _a2, _b2, _c2, _d2;
     const s = S.search, box = $("#sres");
     if (!box) return;
     if (s.loading && !s.items.length) {
@@ -603,11 +815,14 @@
       box.innerHTML = emptyBox("search", L("startSearch"), L("startSearchSub"));
       return;
     }
-    if (!s.items.length) {
+    if (!s.items.length && !((_b2 = (_a2 = s.lyr) == null ? void 0 : _a2.tracks) == null ? void 0 : _b2.length)) {
       box.innerHTML = emptyBox("music", L("noRes"), L("tryElse"));
       return;
     }
-    if (s.type === "tracks") box.innerHTML = trackList(s.items, { ctx: setCtx("search", s.items) });
+    if (s.type === "tracks" && ((_d2 = (_c2 = s.lyr) == null ? void 0 : _c2.tracks) == null ? void 0 : _d2.length)) {
+      const all = s.lyr.tracks.concat(s.items), ctx = setCtx("search", all);
+      box.innerHTML = `<div class="lyh">${I("mic")}<div><small>${L("lyFound")}</small><b dir="auto">${esc(s.lyr.title)}</b> — <span dir="auto">${esc(s.lyr.artist)}</span></div></div>` + trackList(s.lyr.tracks, { ctx }) + (s.items.length ? `<div class="lyo">${L("lyOther")}</div>` + trackList(s.items, { ctx, start: s.lyr.tracks.length }) : "");
+    } else if (s.type === "tracks") box.innerHTML = trackList(s.items, { ctx: setCtx("search", s.items) });
     else if (s.type === "users") box.innerHTML = `<div class="list">${s.items.map((u) => `<div class="tr ur" data-act="artist" data-id="${u.id}"><div class="art">${img(u.avatar_url, "t120x120")}</div><div class="meta"><div class="t">${esc(u.username)} ${u.verified ? "✅" : ""}</div><div class="a">👥 ${fmtNum(u.followers)} · 🎵 ${u.tracks}${u.city ? " · " + esc(u.city) : ""}</div></div></div>`).join("")}</div>`;
     else box.innerHTML = `<div class="list">${s.items.map((p) => `<div class="tr" data-act="set" data-id="${p.id}"><div class="art">${img(p.artwork_url, "t120x120")}</div><div class="meta"><div class="t">${esc(p.title)}</div><div class="a"><span class="badge">${p.is_album ? L("album") : L("playlist")}</span> ${esc(p.username)} · ${p.track_count} 🎵</div></div></div>`).join("")}</div>`;
     $("#smore").innerHTML = s.more ? `<div class="spin" id="sentinel"></div>` : "";
@@ -631,6 +846,7 @@
       s.items = [];
       s.offset = 0;
       s.more = false;
+      s.lyr = null;
     }
     if (!q) return drawSearch();
     s.loading = true;
@@ -640,6 +856,10 @@
       if (seq !== searchSeq) return;
       const items = r.items || [];
       if (s.type === "tracks") remember(items);
+      if (!more && r.lyrics) {
+        s.lyr = r.lyrics;
+        remember(r.lyrics.tracks || []);
+      }
       s.items = more ? s.items.concat(items) : items;
       s.offset += items.length;
       s.more = items.length >= 20 && s.offset < 200;
@@ -843,6 +1063,7 @@
       S._cf = null;
       f(false);
     }
+    if (REC.stream || REC.busy) recStop();
     (_a2 = $(".ov")) == null ? void 0 : _a2.classList.remove("show");
     (_b2 = $(".sheet")) == null ? void 0 : _b2.classList.remove("show");
     setTimeout(syncBack, 50);
@@ -1683,7 +1904,7 @@
     }
   }
   async function onClick(e) {
-    var _a2, _b2, _c2, _d2, _e, _f, _g, _h, _i;
+    var _a2, _b2, _c2, _d2, _e, _f, _g, _h, _i, _j, _k;
     const el = e.target.closest("[data-act]");
     if (!el) return;
     const a = el.dataset.act, id = el.dataset.id;
@@ -1693,6 +1914,7 @@
         return setTab(el.dataset.tab);
       case "play": {
         const ctx = el.dataset.ctx, list = CTX[ctx] || [S.tracks.get(Number(id))];
+        if (ctx === "rec" && el.closest(".sheet")) closeSheet();
         haptic();
         return playList(list, Number((_a2 = el.dataset.i) != null ? _a2 : 0));
       }
@@ -2081,6 +2303,26 @@
       case "updnow":
         closeSheet();
         return openExt(el.dataset.url);
+      case "rec":
+        return recOpen();
+      case "recstop":
+        return recStop(true);
+      case "recagain":
+        return recOpen();
+      case "recfile":
+        return recPickFile();
+      case "recbot": {
+        recStop();
+        closeSheet();
+        const u = `https://t.me/${((_f = S.bot) == null ? void 0 : _f.username) || "SoundClouddl_RoBot"}`;
+        if ((tg == null ? void 0 : tg.openTelegramLink) && !NATIVE) {
+          tg.openTelegramLink(u);
+          (_g = tg.close) == null ? void 0 : _g.call(tg);
+        } else openExt(u);
+        return;
+      }
+      case "recext":
+        return openExt(el.dataset.url);
       case "cfyes":
       case "cfno": {
         const f = S._cf;
@@ -2112,7 +2354,7 @@
         const i = LIMITS.indexOf(OFF.limitMB);
         OFF.limitMB = LIMITS[(i + 1) % LIMITS.length];
         localStorage.setItem("sc_off_limit", String(OFF.limitMB));
-        await offEvict((_f = S.queue[S.qi]) == null ? void 0 : _f.id);
+        await offEvict((_h = S.queue[S.qi]) == null ? void 0 : _h.id);
         haptic();
         return vSettings();
       }
@@ -2143,7 +2385,7 @@
       }
       case "pldl": {
         const v = view();
-        const l = ((_g = v == null ? void 0 : v.data) == null ? void 0 : _g.tracks) || [];
+        const l = ((_i = v == null ? void 0 : v.data) == null ? void 0 : _i.tracks) || [];
         const n = l.filter((x) => !OFF.ids.has(x.id) && !x.drm && !x.snipped).length;
         if (!n) return toast(L("ofAllHave"));
         if (!await confirmAsk(L("ofAllQ", n))) return;
@@ -2163,14 +2405,14 @@
       }
       case "updcancel":
         try {
-          (_h = NATIVE == null ? void 0 : NATIVE.cancelUpdate) == null ? void 0 : _h.call(NATIVE);
+          (_j = NATIVE == null ? void 0 : NATIVE.cancelUpdate) == null ? void 0 : _j.call(NATIVE);
         } catch (e2) {
         }
         S.upd = null;
         return updSheet(false);
       case "updinstall":
         try {
-          (_i = NATIVE == null ? void 0 : NATIVE.installUpdate) == null ? void 0 : _i.call(NATIVE);
+          (_k = NATIVE == null ? void 0 : NATIVE.installUpdate) == null ? void 0 : _k.call(NATIVE);
         } catch (e2) {
         }
         return;
