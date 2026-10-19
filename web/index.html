@@ -16,7 +16,13 @@
         platform: "android", version: A.version(), device: A.device(),
         openExternal: function (u) { A.openExternal(String(u)); },
         mediaState: function (s) { A.mediaState(String(s)); },
-        setTheme: function (bg, light) { A.setTheme(String(bg), !!light); }
+        setTheme: function (bg, light) { A.setTheme(String(bg), !!light); },
+        takeLink: function () { return A.takeLink(); },
+        share: function (text, url) { A.share(String(text || ""), String(url)); },
+        copy: function (t) { A.copy(String(t)); },
+        downloadUpdate: function (url, v) { A.downloadUpdate(String(url), String(v)); },
+        cancelUpdate: function () { A.cancelUpdate(); },
+        installUpdate: function () { A.installUpdate(); }
       };
     }
     if (window.SCNative) document.documentElement.classList.add("native", "native-" + window.SCNative.platform);

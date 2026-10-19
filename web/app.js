@@ -7,6 +7,7 @@
   const initData = NATIVE ? "" : (tg == null ? void 0 : tg.initData) || new URLSearchParams(location.hash.slice(1)).get("tgWebAppData") || "";
   let appToken = NATIVE ? localStorage.getItem("sc_token") || "" : "";
   const GH_REPO = "AnishtayiN/soundcloud-player";
+  const APP_LINK = "https://soundclouddl-player.netlify.app";
   const DL = {
     page: `https://github.com/${GH_REPO}/releases/latest`,
     apk: `https://github.com/${GH_REPO}/releases/latest/download/SoundCloud-Player.apk`,
@@ -134,6 +135,16 @@
       updTitle: "نسخه جدید آمادست 🎉",
       updAvail: (v) => `نسخه ${v} منتشر شده.`,
       updDl: "دانلود نسخه جدید",
+      updDlInstall: "دانلود و نصب",
+      updInstall: "نصب",
+      updDownloading: "در حال دانلود…",
+      updInstallA: "دانلود تموم شد ✅ توی صفحه‌ای که باز شد «نصب» رو بزن.",
+      updInstallW: "دانلود تموم شد ✅ در حال نصب… برنامه خودش بسته و دوباره باز می‌شه.",
+      updPerm: "برای نصب آپدیت، توی صفحه‌ای که باز شد اجازه «نصب برنامه‌های ناشناس» رو روشن کن و برگرد.",
+      updFail: "دانلود ناموفق بود، اینترنتت رو چک کن و دوباره امتحان کن.",
+      shareTitle: "اشتراک‌گذاری",
+      shareTg: "ارسال در تلگرام",
+      shareOpen: "باز کردن لینک",
       later: "بعداً",
       upToDate: "آخرین نسخه رو داری ✅",
       getApp: "اپ اندروید و ویندوز",
@@ -254,6 +265,16 @@
       updTitle: "A new version is available 🎉",
       updAvail: (v) => `Version ${v} has been released.`,
       updDl: "Download update",
+      updDlInstall: "Download & install",
+      updInstall: "Install",
+      updDownloading: "Downloading…",
+      updInstallA: "Download complete ✅ Tap “Install” on the screen that opened.",
+      updInstallW: "Download complete ✅ Installing… the app will close and reopen by itself.",
+      updPerm: "To install the update, allow “Install unknown apps” on the screen that opened, then come back.",
+      updFail: "Download failed — check your connection and try again.",
+      shareTitle: "Share",
+      shareTg: "Send in Telegram",
+      shareOpen: "Open link",
       later: "Later",
       upToDate: "You're on the latest version ✅",
       getApp: "Android & Windows apps",
@@ -760,6 +781,7 @@
     <button class="mi" data-act="m_addpl" data-id="${t.id}">${I("plus")} ${L("addPl")}</button>
     <button class="mi" data-act="m_fav" data-id="${t.id}">${I(fav ? "heart" : "heartO")} ${fav ? L("unfav") : L("fav")}</button>
     <button class="mi" data-act="m_send" data-id="${t.id}">${I("send")} ${L("sendChat")}</button>
+    <button class="mi" data-act="m_share" data-id="${t.id}">${I("share")} ${L("share")}</button>
     <button class="mi" data-act="m_similar" data-id="${t.id}">${I("wave")} ${L("similar")}</button>
     ${t.user_id ? `<button class="mi" data-act="m_artist" data-id="${t.user_id}">${I("user")} ${L("goArtist")}</button>` : ""}
     ${t.permalink_url ? `<button class="mi" data-act="m_open" data-url="${esc(t.permalink_url)}">${I("link")} ${L("openSc")}</button>` : ""}
@@ -1150,6 +1172,38 @@
     const url = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text || "")}`;
     openExt(url);
   }
+  async function copyText(txt) {
+    try {
+      if (NATIVE == null ? void 0 : NATIVE.copy) NATIVE.copy(txt);
+      else await navigator.clipboard.writeText(txt);
+      toast(L("copied"));
+      hapticOk();
+    } catch (e) {
+      prompt("", txt);
+    }
+  }
+  function nativeShare(link, text) {
+    if (NATIVE == null ? void 0 : NATIVE.share) {
+      try {
+        NATIVE.share(text, link);
+        return;
+      } catch (e) {
+      }
+    }
+    S.shareData = { link, text };
+    openSheet(`<div class="shr"><div class="ico">${I("share")}</div><h3>${L("shareTitle")}</h3><div class="t">${esc(text)}</div><div class="lnk" dir="ltr">${esc(link)}</div></div>
+    <button class="mi" data-act="sh_copy">${I("link")} ${L("copyLink")}</button>
+    <button class="mi" data-act="sh_tg">${I("tg")} ${L("shareTg")}</button>
+    <button class="mi" data-act="sh_open">${I("share")} ${L("shareOpen")}</button>`);
+  }
+  function shareTrack(t) {
+    var _a2;
+    if (!t) return;
+    const text = `🎧 ${t.artist} — ${t.title}`;
+    if (NATIVE) return nativeShare(`${APP_LINK}/t/${t.id}`, text);
+    return shareLink(`https://t.me/${(_a2 = S.bot) == null ? void 0 : _a2.username}?start=t_${t.id}`, text);
+  }
+  const plCode = (r) => r.code || String(r.link || "").split("pl_")[1] || "";
   async function loadFavs() {
     try {
       if (!S.favId) await loadPlaylists();
@@ -1161,7 +1215,7 @@
     }
   }
   async function onClick(e) {
-    var _a2, _b2, _c2, _d, _e, _f, _g, _h;
+    var _a2, _b2, _c2, _d, _e, _f, _g;
     const el = e.target.closest("[data-act]");
     if (!el) return;
     const a = el.dataset.act, id = el.dataset.id;
@@ -1255,11 +1309,20 @@
         if (t) return trackMenu(t.id);
         return;
       }
-      case "fpshare": {
-        const t = S.queue[S.qi];
-        if (t) return shareLink(`https://t.me/${(_b2 = S.bot) == null ? void 0 : _b2.username}?start=t_${t.id}`, `🎧 ${t.artist} — ${t.title}`);
-        return;
-      }
+      case "fpshare":
+        return shareTrack(S.queue[S.qi]);
+      case "m_share":
+        closeSheet();
+        return setTimeout(() => shareTrack(S.tracks.get(Number(id))), 200);
+      case "sh_copy":
+        closeSheet();
+        return S.shareData && copyText(S.shareData.link);
+      case "sh_tg":
+        closeSheet();
+        return S.shareData && shareLink(S.shareData.link, S.shareData.text);
+      case "sh_open":
+        closeSheet();
+        return S.shareData && openExt(S.shareData.link);
       case "showqueue":
         return showQueue();
       case "qjump":
@@ -1424,7 +1487,7 @@
         const v = view();
         try {
           const r = await api(`/playlists/${v.id}/share`);
-          shareLink(r.link, "🎧 " + v.data.playlist.name);
+          NATIVE ? nativeShare(`${APP_LINK}/p/${plCode(r)}`, "🎧 " + v.data.playlist.name) : shareLink(r.link, "🎧 " + v.data.playlist.name);
         } catch (e2) {
           toast(L("err"));
         }
@@ -1474,8 +1537,7 @@
         const v = view();
         try {
           const r = await api(`/playlists/${v.id}/share`);
-          await ((_c2 = navigator.clipboard) == null ? void 0 : _c2.writeText(r.link));
-          toast(L("copied"));
+          await copyText(NATIVE ? `${APP_LINK}/p/${plCode(r)}` : r.link);
         } catch (e2) {
           toast(L("err"));
         }
@@ -1524,7 +1586,7 @@
         return render();
       }
       case "setq": {
-        const q = ((_e = (_d = S.me) == null ? void 0 : _d.user) == null ? void 0 : _e.quality) === "low" ? "high" : "low";
+        const q = ((_c2 = (_b2 = S.me) == null ? void 0 : _b2.user) == null ? void 0 : _c2.quality) === "low" ? "high" : "low";
         if (S.me) S.me.user.quality = q;
         api("/settings", { method: "PATCH", body: { quality: q } }).catch(() => {
         });
@@ -1537,7 +1599,7 @@
         return vSettings();
       }
       case "openbot": {
-        const u = `https://t.me/${(_f = S.bot) == null ? void 0 : _f.username}`;
+        const u = `https://t.me/${(_d = S.bot) == null ? void 0 : _d.username}`;
         if (tg == null ? void 0 : tg.openTelegramLink) {
           tg.openTelegramLink(u);
           return tg.close();
@@ -1545,12 +1607,37 @@
         return openExt(u);
       }
       case "getapp":
-        return openExt(((_g = S.bot) == null ? void 0 : _g.username) ? `https://t.me/${S.bot.username}?start=download` : DL.page);
+        return openExt(((_e = S.bot) == null ? void 0 : _e.username) ? `https://t.me/${S.bot.username}?start=download` : DL.page);
       case "checkupd":
         return checkUpdate(true);
       case "updnow":
         closeSheet();
         return openExt(el.dataset.url);
+      case "updstart": {
+        if (!S.update || !(NATIVE == null ? void 0 : NATIVE.downloadUpdate)) return;
+        S.upd = { state: "start", received: 0, total: S.update.size };
+        updSheet(true);
+        haptic();
+        try {
+          NATIVE.downloadUpdate(S.update.url, S.update.v);
+        } catch (e2) {
+          onUpdEvent({ state: "error" });
+        }
+        return;
+      }
+      case "updcancel":
+        try {
+          (_f = NATIVE == null ? void 0 : NATIVE.cancelUpdate) == null ? void 0 : _f.call(NATIVE);
+        } catch (e2) {
+        }
+        S.upd = null;
+        return updSheet(false);
+      case "updinstall":
+        try {
+          (_g = NATIVE == null ? void 0 : NATIVE.installUpdate) == null ? void 0 : _g.call(NATIVE);
+        } catch (e2) {
+        }
+        return;
       case "logout": {
         const doOut = async () => {
           try {
@@ -1566,15 +1653,8 @@
         return loginStart();
       case "loginreopen":
         return S.login && openExt(S.login.link);
-      case "logincopy": {
-        try {
-          await navigator.clipboard.writeText(S.login.link);
-          toast(L("copied"));
-        } catch (e2) {
-          prompt("", ((_h = S.login) == null ? void 0 : _h.link) || "");
-        }
-        return;
-      }
+      case "logincopy":
+        return S.login && copyText(S.login.link);
       case "logincancel":
         loginStop();
         return showLogin();
@@ -1750,24 +1830,114 @@
     }
     return 0;
   };
+  const fmtMB = (b) => `${((b || 0) / 1048576).toFixed(1)} MB`;
   async function checkUpdate(manual) {
     var _a2;
     if (!NATIVE) return;
+    if (manual && S.update) return updSheet(true);
     try {
       const r = await fetch(`https://api.github.com/repos/${GH_REPO}/releases/latest`, { headers: { Accept: "application/vnd.github+json" } });
       const j = await r.json();
       const v = String(j.tag_name || "").replace(/^v/, "");
       if (v && cmpVer(v, NATIVE.version) > 0) {
-        const url = NATIVE.platform === "android" ? DL.apk : DL.exe;
-        S.update = { v, url };
+        const android = NATIVE.platform === "android";
+        const a = (j.assets || []).find((x) => (android ? /\.apk$/i : /\.exe$/i).test(x.name));
+        S.update = { v, url: (a == null ? void 0 : a.browser_download_url) || (android ? DL.apk : DL.exe), size: (a == null ? void 0 : a.size) || 0 };
         if (S.tab === "settings" && ((_a2 = view()) == null ? void 0 : _a2.type) === "settings") render();
-        if (!manual && localStorage.getItem("sc_upd_seen") === v) return;
-        localStorage.setItem("sc_upd_seen", v);
-        openSheet(`<div class="upd"><div class="ico">${I("download")}</div><h3>${L("updTitle")}</h3><p>${L("updAvail", esc(v))}</p>
-        <div class="row2"><button class="btn" data-act="closesheet">${L("later")}</button><button class="btn pri" data-act="updnow" data-url="${esc(url)}">${I("download")} ${L("updDl")}</button></div></div>`);
+        if (!manual && S.updShown) return;
+        S.updShown = true;
+        updSheet(true);
       } else if (manual) toast(L("upToDate"));
     } catch (e) {
       if (manual) toast(L("err"));
+    }
+  }
+  function updSheet(open) {
+    const u = S.update;
+    if (!u) return;
+    const d = S.upd || {}, android = (NATIVE == null ? void 0 : NATIVE.platform) === "android", inApp = !!(NATIVE == null ? void 0 : NATIVE.downloadUpdate);
+    const total = d.total || u.size || 0, pct = d.state === "done" ? 100 : total ? Math.min(100, Math.floor((d.received || 0) * 100 / total)) : 0;
+    let body;
+    if (d.state === "start" || d.state === "progress") {
+      body = `<div class="upd-bar"><i style="width:${pct}%"></i></div>
+      <div class="upd-pct"><b>${pct}%</b><span dir="ltr">${fmtMB(d.received)} / ${fmtMB(total)}</span></div>
+      <p class="upd-st">${L("updDownloading")}</p>
+      <div class="row2"><button class="btn" data-act="updcancel">${L("cancel")}</button></div>`;
+    } else if (d.state === "done") {
+      body = `<div class="upd-bar ok"><i style="width:100%"></i></div><div class="upd-pct"><b>100%</b><span dir="ltr">${fmtMB(total)}</span></div>
+      <p class="upd-st">${android ? L("updInstallA") : `<span class="mini-spin"></span> ${L("updInstallW")}`}</p>
+      ${android ? `<div class="row2"><button class="btn pri" data-act="updinstall">${I("download")} ${L("updInstall")}</button></div>` : ""}`;
+    } else if (d.state === "perm") {
+      body = `<div class="upd-bar ok"><i style="width:100%"></i></div><p class="upd-st">${L("updPerm")}</p>
+      <div class="row2"><button class="btn pri" data-act="updinstall">${I("download")} ${L("updInstall")}</button></div>`;
+    } else {
+      body = `${d.state === "error" ? `<p class="upd-err">${L("updFail")}</p>` : ""}
+      <div class="row2"><button class="btn" data-act="closesheet">${L("later")}</button>
+      <button class="btn pri" data-act="${inApp ? "updstart" : "updnow"}" data-url="${esc(u.url)}">${I("download")} ${inApp ? L("updDlInstall") : L("updDl")}</button></div>`;
+    }
+    const html = `<div class="upd"><div class="ico">${I("download")}</div><h3>${L("updTitle")}</h3>
+    <p>${L("updAvail", esc(u.v))}${u.size ? ` · <span dir="ltr">${fmtMB(u.size)}</span>` : ""}</p>${body}</div>`;
+    const cur = $(".sheet.show .upd");
+    if (cur) cur.outerHTML = html;
+    else if (open) openSheet(html);
+  }
+  function onUpdEvent(d) {
+    var _a2;
+    const prev2 = (_a2 = S.upd) == null ? void 0 : _a2.state;
+    S.upd = d.state === "canceled" ? null : d;
+    if (d.state === "error" && !$(".sheet.show .upd")) toast(L("updFail"));
+    if ((d.state === "done" || d.state === "perm") && prev2 !== d.state) {
+      hapticOk();
+      updSheet(true);
+      return;
+    }
+    updSheet(false);
+  }
+  window.addEventListener("message", (e) => {
+    const d = e.data;
+    if (!NATIVE || !d || typeof d !== "object" || !d.__sc) return;
+    if (d.__sc === "upd") onUpdEvent(d);
+    if (d.__sc === "link" && S.me) openDeep(takeNativeLink());
+  });
+  const takeNativeLink = () => {
+    try {
+      return (NATIVE == null ? void 0 : NATIVE.takeLink) && NATIVE.takeLink() || "";
+    } catch (e) {
+      return "";
+    }
+  };
+  async function openDeep(sp, initial) {
+    sp = String(sp || "");
+    if (!sp) return;
+    if (sp.startsWith("pl_")) {
+      if (!initial) {
+        closeSheet();
+        $(".fp.show") && (closePlayer == null ? void 0 : closePlayer());
+        S.tab = "home";
+        S.stack = [{ type: "home" }];
+        rebuildChrome == null ? void 0 : rebuildChrome();
+      }
+      S.stack.push({ type: "shared", code: sp.slice(3) });
+      render();
+      syncBack();
+      return;
+    }
+    if (sp.startsWith("t_")) {
+      try {
+        const d = await api(`/track/${sp.slice(2)}`);
+        remember([d.track]);
+        playList([d.track], 0);
+        closeSheet();
+        openPlayer();
+      } catch (e) {
+        toast(L("err"));
+      }
+      return;
+    }
+    if (sp.startsWith("s_")) {
+      S.search.q = "";
+      setTab("search");
+      doSearch(decodeURIComponent(sp.slice(2)).replace(/_/g, " "));
     }
   }
   async function startApp() {
@@ -1788,25 +1958,11 @@
       return;
     }
     if (NATIVE) setTimeout(() => checkUpdate(false), 4e3);
-    const sp = ((_a2 = tg == null ? void 0 : tg.initDataUnsafe) == null ? void 0 : _a2.start_param) || "";
+    const sp = ((_a2 = tg == null ? void 0 : tg.initDataUnsafe) == null ? void 0 : _a2.start_param) || takeNativeLink();
     S.stack = [{ type: "home" }];
-    if (sp.startsWith("pl_")) S.stack.push({ type: "shared", code: sp.slice(3) });
     render();
     syncBack();
-    if (sp.startsWith("t_")) {
-      try {
-        const d = await api(`/track/${sp.slice(2)}`);
-        remember([d.track]);
-        playList([d.track], 0);
-        openPlayer();
-      } catch (e) {
-      }
-    }
-    if (sp.startsWith("s_")) {
-      S.search.q = "";
-      setTab("search");
-      doSearch(decodeURIComponent(sp.slice(2)).replace(/_/g, " "));
-    }
+    openDeep(sp, true);
     loadFavs();
   }
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", boot) : boot();

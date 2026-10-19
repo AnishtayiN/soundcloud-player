@@ -51,6 +51,8 @@ public class MainActivity extends Activity {
     private FrameLayout root;
     private WebView web;
     private WebViewAssetLoader assets;
+    private Updater updater;
+    private volatile String pendingLink = "";
 
     /** Run JavaScript in the current UI (used by PlaybackService for notification buttons). */
     static boolean js(final String code) {
@@ -84,6 +86,9 @@ public class MainActivity extends Activity {
             return WindowInsetsCompat.CONSUMED;
         });
 
+        updater = new Updater(this, this::postToWeb);
+        if (savedInstanceState == null) pendingLink = routeOf(getIntent());
+
         createWebView();
         if (savedInstanceState != null) web.restoreState(savedInstanceState);
         if (web.getUrl() == null) web.loadUrl(START_URL);
@@ -92,6 +97,41 @@ public class MainActivity extends Activity {
                 checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 7);
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        String r = routeOf(intent);
+        if (!r.isEmpty()) {
+            pendingLink = r;
+            try { postToWeb(new JSONObject().put("__sc", "link")); } catch (Exception ignored) { }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (updater != null) updater.onResume();
+    }
+
+    /** https://soundclouddl-player.netlify.app/t/123 | scplayer://t/123  →  "t_123";  …/p/<code> → "pl_<code>" */
+    static String routeOf(Intent intent) {
+        if (intent == null || !Intent.ACTION_VIEW.equals(intent.getAction()) || intent.getData() == null) return "";
+        Uri u = intent.getData();
+        java.util.List<String> seg = new java.util.ArrayList<>(u.getPathSegments());
+        if ("scplayer".equals(u.getScheme()) && u.getHost() != null) seg.add(0, u.getHost());
+        if (seg.size() < 2) return "";
+        String kind = seg.get(0), val = seg.get(1);
+        if ("t".equals(kind) && val.matches("\\d{1,15}")) return "t_" + val;
+        if ("p".equals(kind) && val.matches("[\\w-]{3,64}")) return "pl_" + val;
+        return "";
+    }
+
+    /** Deliver an event to the web UI as window.postMessage(obj). */
+    void postToWeb(final JSONObject o) {
+        main.post(() -> { if (web != null) web.evaluateJavascript("window.postMessage(" + o.toString() + ",'*')", null); });
     }
 
     private boolean isNight() {
@@ -184,6 +224,28 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface public void openExternal(final String url) { main.post(() -> MainActivity.this.openExternal(url)); }
+
+        @JavascriptInterface public String takeLink() { String l = pendingLink; pendingLink = ""; return l == null ? "" : l; }
+
+        @JavascriptInterface public void share(final String text, final String url) {
+            main.post(() -> {
+                Intent send = new Intent(Intent.ACTION_SEND).setType("text/plain")
+                        .putExtra(Intent.EXTRA_SUBJECT, text)
+                        .putExtra(Intent.EXTRA_TEXT, (text == null || text.isEmpty() ? "" : text + "\n") + url);
+                try { startActivity(Intent.createChooser(send, null)); } catch (Exception ignored) { }
+            });
+        }
+
+        @JavascriptInterface public void copy(final String text) {
+            main.post(() -> {
+                android.content.ClipboardManager cm = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                if (cm != null) cm.setPrimaryClip(android.content.ClipData.newPlainText("link", text));
+            });
+        }
+
+        @JavascriptInterface public void downloadUpdate(final String url, final String version) { updater.start(url, version); }
+        @JavascriptInterface public void cancelUpdate() { updater.cancel(); }
+        @JavascriptInterface public void installUpdate() { main.post(() -> updater.install()); }
 
         @JavascriptInterface public void mediaState(final String json) {
             main.post(() -> {
