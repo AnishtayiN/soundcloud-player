@@ -32,7 +32,8 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            signingConfig (ksPath != null && new File(ksPath).exists()) ? signingConfigs.release : signingConfigs.debug
+            def hasKs = ksPath != null && new File(ksPath).exists()
+            signingConfig = hasKs ? signingConfigs.release : signingConfigs.debug
         }
     }
 
