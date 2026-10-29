@@ -45,7 +45,10 @@ import java.lang.ref.WeakReference;
 public class MainActivity extends Activity {
 
     static final String HOST = "appassets.androidplatform.net";
-    static final String START_URL = "https://" + HOST + "/assets/www/index.html";
+    static final String ORIGIN = "https://" + HOST;
+    static final String START_URL = ORIGIN + "/assets/www/index.html";
+    /** loaded after the renderer died: the web UI restores queue / track / position and resumes playback */
+    static final String RECOVER_URL = START_URL + "#recover=1";
 
     private static WeakReference<MainActivity> current = new WeakReference<>(null);
 
@@ -134,9 +137,19 @@ public class MainActivity extends Activity {
         return "";
     }
 
-    /** Deliver an event to the web UI as window.postMessage(obj). */
+    /**
+     * Deliver an event to the web UI as window.postMessage(obj, ORIGIN). The target origin is the asset loader's
+     * origin, so the message is only delivered while our own page is loaded; web/app.js additionally checks
+     * e.origin and e.source before handling it.
+     */
     void postToWeb(final JSONObject o) {
-        main.post(() -> { if (web != null) web.evaluateJavascript("window.postMessage(" + o.toString() + ",'*')", null); });
+        final String js = "window.postMessage(" + o.toString() + "," + JSONObject.quote(ORIGIN) + ")";
+        main.post(() -> {
+            if (web == null) return;
+            String url = web.getUrl();
+            if (url == null || !url.startsWith(ORIGIN + "/")) return; // never hand native events to a foreign page
+            web.evaluateJavascript(js, null);
+        });
     }
 
     private boolean isNight() {
@@ -178,7 +191,8 @@ public class MainActivity extends Activity {
                 main.post(() -> {
                     boolean wantsMic = false;
                     for (String r : request.getResources()) if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(r)) wantsMic = true;
-                    if (!wantsMic || !HOST.equals(request.getOrigin().getHost())) { request.deny(); return; }
+                    Uri origin = request.getOrigin();
+                    if (!wantsMic || origin == null || !"https".equals(origin.getScheme()) || !HOST.equals(origin.getHost())) { request.deny(); return; }
                     if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
                         request.grant(new String[]{PermissionRequest.RESOURCE_AUDIO_CAPTURE});
                     } else {
@@ -222,12 +236,15 @@ public class MainActivity extends Activity {
 
             @Override
             public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
-                // renderer crashed or was killed — rebuild the WebView instead of crashing the app
-                root.removeView(web);
-                web.destroy();
-                web = null;
+                // renderer crashed or was killed — rebuild the WebView instead of crashing the app.
+                // The UI persists queue / current track / position in localStorage and resumes them on #recover=1.
+                if (web != null) {
+                    root.removeView(web);
+                    web.destroy();
+                    web = null;
+                }
                 createWebView();
-                web.loadUrl(START_URL);
+                web.loadUrl(RECOVER_URL);
                 return true;
             }
         });

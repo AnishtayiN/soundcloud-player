@@ -4,6 +4,13 @@ plugins {
 
 def envOr = { String k, String d -> def v = System.getenv(k); return (v == null || v.isEmpty()) ? d : v }
 def ksPath = System.getenv("KS_PATH")
+// Release builds (CI tag / workflow_dispatch sets RELEASE_BUILD=true) must be signed with the real release key.
+// The debug key is only allowed for local and non-published test builds.
+if (System.getenv("RELEASE_BUILD") == "true" && (ksPath == null || ksPath.isEmpty() || !file(ksPath).exists()
+        || System.getenv("KS_PASS") == null || System.getenv("KS_PASS").isEmpty()
+        || System.getenv("KS_ALIAS") == null || System.getenv("KS_ALIAS").isEmpty())) {
+    throw new GradleException("RELEASE_BUILD=true but the release keystore (KS_PATH / KS_PASS / KS_ALIAS) is missing - refusing to sign a release with the debug key")
+}
 
 android {
     namespace "com.soundclouddl.player"

@@ -190,6 +190,15 @@
       ofPlayAll: "پخش همه",
       ofFull: "حافظه‌ی آفلاین پره؛ قدیمی‌ترها پاک شدن",
       yes: "بله",
+      ofTooBig: (l) => `این آهنگ از سقف حافظه‌ی آفلاین (${l}) بزرگ‌تره؛ از تنظیمات سقف رو بیشتر کن.`,
+      ofAllTooBig: (n, l) => `حجم این لیست (حدود ${n}) از سقف حافظه‌ی آفلاین (${l}) بیشتره؛ از تنظیمات سقف رو بیشتر کن.`,
+      ofCanceled: "دانلود آفلاین لغو شد",
+      ofCancelQ: "دانلود این آهنگ لغو بشه؟",
+      ofCancelAllQ: "دانلود آفلاین این لیست در حال انجامه. لغوش کنم؟",
+      updVerify: "در حال بررسی سالم بودن فایل…",
+      updReadyA: "دانلود تموم شد و سالم بودن فایل تأیید شد ✅ برای نصب، «نصب» رو بزن.",
+      updReadyW: "دانلود تموم شد و سالم بودن فایل تأیید شد ✅ برای نصب، «نصب» رو بزن؛ برنامه بسته و دوباره باز می‌شه.",
+      updBad: "فایل دانلودشده سالم نبود و برای امنیتت نصب نشد. دوباره امتحان کن.",
       shareTitle: "اشتراک‌گذاری",
       shareTg: "ارسال در تلگرام",
       shareOpen: "باز کردن لینک",
@@ -368,6 +377,15 @@
       ofPlayAll: "Play all",
       ofFull: "Offline storage full — oldest songs removed",
       yes: "Yes",
+      ofTooBig: (l) => `This song is larger than the offline storage limit (${l}). Raise the limit in Settings.`,
+      ofAllTooBig: (n, l) => `This list (about ${n}) is larger than the offline storage limit (${l}). Raise the limit in Settings.`,
+      ofCanceled: "Offline download canceled",
+      ofCancelQ: "Cancel downloading this song?",
+      ofCancelAllQ: "This list is being downloaded for offline. Cancel it?",
+      updVerify: "Verifying the download…",
+      updReadyA: "Download complete and verified ✅ Tap “Install” to install it.",
+      updReadyW: "Download complete and verified ✅ Tap “Install” — the app will close and reopen.",
+      updBad: "The downloaded file failed the integrity check and was not installed. Please try again.",
       shareTitle: "Share",
       shareTg: "Send in Telegram",
       shareOpen: "Open link",
@@ -510,6 +528,7 @@
   };
   const view = () => S.stack[S.stack.length - 1];
   function go(v) {
+    if (recLive()) closeSheet();
     S.stack.push(v);
     render();
     window.scrollTo(0, 0);
@@ -525,6 +544,7 @@
     }
   }
   function setTab(t) {
+    if (recLive()) closeSheet();
     S.tab = t;
     S.stack = [{ type: t }];
     render();
@@ -608,7 +628,7 @@
       box.innerHTML = emptyBox("wave", L("err"));
     }
   }
-  const REC = { stream: null, ctx: null, node: null, chunks: [], len: 0, rate: 48e3, run: 0, busy: false };
+  const REC = { stream: null, ctx: null, node: null, chunks: [], len: 0, rate: 48e3, run: 0, busy: false, active: false, fileCtx: null };
   function recSheet(state, extra = "") {
     const orb = (cls) => `<div class="recorb ${cls}"><span></span><span></span><span></span><button data-act="${cls === "on" ? "recstop" : "recagain"}">${I("mic")}</button></div>`;
     if (state === "listen") return `<div class="rec">${orb("on")}<h3>${L("recListen")}</h3><p>${L("recHint")}</p><div class="recbar"><i id="recprog"></i></div><button class="btn" data-act="recfile">${I("afile")} ${L("recFile")}</button></div>`;
@@ -620,11 +640,13 @@
   function recSet(html) {
     const sh = $(".sheet");
     if (sh && sh.classList.contains("show")) sh.innerHTML = `<div class="grab"></div>${html}`;
-    else openSheet(html);
+    else openSheet(html, true);
   }
   function recStop(manual) {
     const r = REC;
     r.run++;
+    r.active = false;
+    r.busy = false;
     try {
       r.node && (r.node.onaudioprocess = null, r.node.disconnect());
     } catch (e) {
@@ -634,12 +656,28 @@
     } catch (e) {
     }
     try {
-      r.ctx && r.ctx.close();
+      r.ctx && r.ctx.state !== "closed" && r.ctx.close();
     } catch (e) {
     }
-    r.node = r.stream = r.ctx = null;
+    try {
+      r.fileCtx && r.fileCtx.state !== "closed" && r.fileCtx.close();
+    } catch (e) {
+    }
+    r.node = r.stream = r.ctx = r.fileCtx = null;
+    r.chunks = [];
+    r.len = 0;
     if (manual) recSet(recSheet("none"));
   }
+  const recLive = () => REC.active || REC.busy || !!REC.stream || !!REC.ctx || !!REC.fileCtx;
+  function recOnHide() {
+    if (!recLive()) return;
+    recStop();
+    if ($(".sheet.show .rec")) recSet(recSheet("none"));
+  }
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) recOnHide();
+  });
+  window.addEventListener("pagehide", recOnHide);
   function recPcm(maxSec) {
     const n = Math.min(REC.len, Math.floor(maxSec * REC.rate)), out = new Float32Array(n);
     let o = n;
@@ -661,16 +699,21 @@
     recSet(recSheet("listen"));
     haptic("light");
     const run = ++REC.run;
+    REC.active = true;
     let stream;
     try {
       if (!((_a2 = navigator.mediaDevices) == null ? void 0 : _a2.getUserMedia)) throw new Error("no gum");
       stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 } });
     } catch (e) {
-      if (run === REC.run) recSet(recSheet("err"));
+      if (run === REC.run) {
+        REC.active = false;
+        recSet(recSheet("err"));
+      }
       return;
     }
-    if (run !== REC.run) {
+    if (run !== REC.run || document.hidden) {
       stream.getTracks().forEach((t) => t.stop());
+      if (run === REC.run) recOnHide();
       return;
     }
     const AC = window.AudioContext || window.webkitAudioContext;
@@ -736,19 +779,30 @@
     inp.type = "file";
     inp.accept = "audio/*,video/*,.mp3,.m4a,.ogg,.opus,.wav,.aac,.flac";
     inp.onchange = async () => {
-      var _a2;
       const f = inp.files && inp.files[0];
       if (!f) return;
       recSet(recSheet("file", esc(f.name)));
       const run = ++REC.run;
+      REC.busy = true;
       try {
         const buf = await f.arrayBuffer();
+        if (run !== REC.run) return;
         const AC = window.AudioContext || window.webkitAudioContext, ac = new AC();
-        const ab = await new Promise((res, rej) => {
-          const p = ac.decodeAudioData(buf, res, rej);
-          if (p && p.then) p.then(res, rej);
-        });
-        (_a2 = ac.close) == null ? void 0 : _a2.call(ac);
+        REC.fileCtx = ac;
+        let ab;
+        try {
+          ab = await new Promise((res, rej) => {
+            const p = ac.decodeAudioData(buf, res, rej);
+            if (p && p.then) p.then(res, rej);
+          });
+        } finally {
+          try {
+            ac.state !== "closed" && ac.close();
+          } catch (e) {
+          }
+          if (REC.fileCtx === ac) REC.fileCtx = null;
+        }
+        if (run !== REC.run) return;
         const n = ab.length, rate = ab.sampleRate, W = Math.floor(12 * rate);
         const mono = new Float32Array(Math.min(n, W)), start = n > W ? Math.floor((n - W) / 2) : 0;
         for (let c = 0; c < ab.numberOfChannels; c++) {
@@ -757,10 +811,12 @@
         }
         const r = await recSend(mono, rate);
         if (run !== REC.run) return;
+        REC.busy = false;
         if (r.hit) return recShow(r);
         recSet(recSheet("none"));
       } catch (e) {
         if (run !== REC.run) return;
+        REC.busy = false;
         recSet(recSheet("err", e.status === 503 ? L("recBusy") : e.status ? L("err") : L("recFileErr")));
       }
     };
@@ -826,18 +882,23 @@
     else if (s.type === "users") box.innerHTML = `<div class="list">${s.items.map((u) => `<div class="tr ur" data-act="artist" data-id="${u.id}"><div class="art">${img(u.avatar_url, "t120x120")}</div><div class="meta"><div class="t">${esc(u.username)} ${u.verified ? "✅" : ""}</div><div class="a">👥 ${fmtNum(u.followers)} · 🎵 ${u.tracks}${u.city ? " · " + esc(u.city) : ""}</div></div></div>`).join("")}</div>`;
     else box.innerHTML = `<div class="list">${s.items.map((p) => `<div class="tr" data-act="set" data-id="${p.id}"><div class="art">${img(p.artwork_url, "t120x120")}</div><div class="meta"><div class="t">${esc(p.title)}</div><div class="a"><span class="badge">${p.is_album ? L("album") : L("playlist")}</span> ${esc(p.username)} · ${p.track_count} 🎵</div></div></div>`).join("")}</div>`;
     $("#smore").innerHTML = s.more ? `<div class="spin" id="sentinel"></div>` : "";
+    if (searchObs) {
+      searchObs.disconnect();
+      searchObs = null;
+    }
     const sen = $("#sentinel");
-    if (sen) new IntersectionObserver((en, ob) => {
-      if (en[0].isIntersecting) {
-        ob.disconnect();
-        doSearch(s.q, false, true);
-      }
-    }).observe(sen);
+    if (sen && typeof IntersectionObserver !== "undefined") {
+      searchObs = new IntersectionObserver((en) => {
+        if (en[0].isIntersecting) doSearch(s.q, false, true);
+      });
+      searchObs.observe(sen);
+    }
   }
-  let searchSeq = 0;
+  let searchSeq = 0, searchObs = null;
   async function doSearch(q, force = false, more = false) {
     const s = S.search;
     q = (q || "").trim();
+    if (more && (s.loading || !s.more || q !== s.q)) return;
     if (!more && q === s.q && !force && s.items.length) return;
     if (/soundcloud\.com|snd\.sc/i.test(q)) return openLink(q);
     const seq = ++searchSeq;
@@ -860,12 +921,16 @@
         s.lyr = r.lyrics;
         remember(r.lyrics.tracks || []);
       }
-      s.items = more ? s.items.concat(items) : items;
+      if (more) {
+        const seen = new Set(s.items.map((x) => x.id));
+        s.items = s.items.concat(items.filter((x) => !seen.has(x.id)));
+      } else s.items = items;
       s.offset += items.length;
       s.more = items.length >= 20 && s.offset < 200;
     } catch (e) {
-      toast(L("err"));
+      if (seq === searchSeq) toast(L("err"));
     }
+    if (seq !== searchSeq) return;
     s.loading = false;
     drawSearch();
   }
@@ -1035,7 +1100,8 @@
       <button class="it" data-act="logout"><div class="ico" style="background:#ef4444">${I("logout")}</div><div class="l">${L("logout")}</div><div class="v"></div></button></div>` : ""}
     <div class="foot">🎧 SoundCloud ${NATIVE ? `Player v${esc(NATIVE.version)}` : "Mini App"}<br>${L("feat")}</div></div>`;
   }
-  function openSheet(html) {
+  function openSheet(html, keepRec) {
+    if (!keepRec && recLive()) recStop();
     let ov = $(".ov"), sh = $(".sheet");
     if (!ov) {
       ov = document.createElement("div");
@@ -1063,7 +1129,7 @@
       S._cf = null;
       f(false);
     }
-    if (REC.stream || REC.busy) recStop();
+    if (recLive()) recStop();
     (_a2 = $(".ov")) == null ? void 0 : _a2.classList.remove("show");
     (_b2 = $(".sheet")) == null ? void 0 : _b2.classList.remove("show");
     setTimeout(syncBack, 50);
@@ -1124,9 +1190,12 @@
   const audio = new Audio();
   audio.preload = "auto";
   let hls = null;
+  const UNLOCK_SRC = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=";
+  const isUnlockSrc = () => (audio.src || "").startsWith("data:audio/wav");
+  const isPlaying = () => !audio.paused && !isUnlockSrc();
   function unlockAudio() {
     if (audio.src) return;
-    audio.src = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=";
+    audio.src = UNLOCK_SRC;
     audio.play().catch(() => {
     });
   }
@@ -1199,6 +1268,23 @@
       tx.onabort = () => rej(tx.error);
     }));
   }
+  function offTxAll(stores, fn) {
+    return offDb().then((d) => new Promise((res, rej) => {
+      const tx = d.transaction(stores, "readwrite");
+      try {
+        fn(Object.fromEntries(stores.map((n) => [n, tx.objectStore(n)])));
+      } catch (e) {
+        try {
+          tx.abort();
+        } catch (e2) {
+        }
+        return rej(e);
+      }
+      tx.oncomplete = () => res();
+      tx.onerror = () => rej(tx.error);
+      tx.onabort = () => rej(tx.error || new Error("aborted"));
+    }));
+  }
   async function offInit() {
     var _a2, _b2;
     if (!OFF.ok) return;
@@ -1250,17 +1336,20 @@
       pinned: !!pinned,
       art: artBlob
     };
-    await offTx("audio", "readwrite", (st) => st.put(blob, t.id));
-    await offTx("meta", "readwrite", (st) => st.put(m));
+    await offTxAll(["audio", "meta"], (st) => {
+      st.audio.put(blob, t.id);
+      st.meta.put(m);
+    });
     OFF.meta.set(t.id, m);
     OFF.ids.add(t.id);
     await offEvict(t.id);
     refreshOfflineUI();
   }
   async function offDel(id) {
-    await offTx("audio", "readwrite", (st) => st.delete(id)).catch(() => {
-    });
-    await offTx("meta", "readwrite", (st) => st.delete(id)).catch(() => {
+    await offTxAll(["audio", "meta"], (st) => {
+      st.audio.delete(id);
+      st.meta.delete(id);
+    }).catch(() => {
     });
     OFF.meta.delete(id);
     OFF.ids.delete(id);
@@ -1270,8 +1359,10 @@
     }
   }
   async function offClear() {
-    await offTx("audio", "readwrite", (st) => st.clear());
-    await offTx("meta", "readwrite", (st) => st.clear());
+    await offTxAll(["audio", "meta"], (st) => {
+      st.audio.clear();
+      st.meta.clear();
+    });
     for (const u of OFF.arts.values()) URL.revokeObjectURL(u);
     OFF.meta.clear();
     OFF.ids.clear();
@@ -1327,9 +1418,21 @@
     audio.src = src;
   }
   let CAP = null;
+  const CAP_MAX_BYTES = 80 * 1048576;
   function newCapture(t, kind) {
-    CAP = { t, kind: kind || "hls-aac", init: null, frags: /* @__PURE__ */ new Map(), total: 0, urls: null, done: false };
+    CAP = { t, kind: kind || "hls-aac", init: null, frags: /* @__PURE__ */ new Map(), bytes: 0, total: 0, urls: null, done: false };
     return CAP;
+  }
+  function dropCapture(cap) {
+    if (!cap) return;
+    cap.done = true;
+    cap.frags.clear();
+    cap.init = null;
+    cap.bytes = 0;
+  }
+  function capLimit() {
+    const lim = OFF.limitMB ? OFF.limitMB * 1048576 : Infinity;
+    return Math.min(CAP_MAX_BYTES, lim);
   }
   function captureLoader(cap) {
     const Base = window.Hls.DefaultConfig.loader;
@@ -1341,8 +1444,14 @@
             const f = c && c.frag;
             if (f && resp && resp.data instanceof ArrayBuffer && CAP === cap && !cap.done) {
               if (f.sn === "initSegment") cap.init = resp.data.slice(0);
-              else cap.frags.set(f.sn, resp.data.slice(0));
-              checkCapture(cap);
+              else if (!cap.frags.has(f.sn)) {
+                cap.frags.set(f.sn, resp.data.slice(0));
+                cap.bytes += resp.data.byteLength;
+              }
+              if (cap.bytes > capLimit()) {
+                dropCapture(cap);
+                if (CAP === cap) CAP = null;
+              } else checkCapture(cap);
             }
           } catch (e) {
             console.warn("capture", e);
@@ -1370,25 +1479,31 @@
     } finally {
       cap.frags.clear();
       cap.init = null;
+      cap.bytes = 0;
     }
   }
   function finishCapture() {
     const cap = CAP;
     CAP = null;
-    if (!cap || cap.done || !cap.urls || !cap.total || !navigator.onLine) return;
+    if (!cap || cap.done) return;
+    if (!cap.urls || !cap.total || !navigator.onLine) return dropCapture(cap);
     const missing = cap.urls.filter((u) => !cap.frags.has(u.sn));
-    if (missing.length > cap.total * 0.35 || cap.kind === "hls-aac" && !cap.init) return;
+    if (missing.length > cap.total * 0.35 || cap.kind === "hls-aac" && !cap.init) return dropCapture(cap);
     cap.done = true;
     (async () => {
       try {
         for (const m of missing) {
-          const r = await fetch(m.url);
+          const r = await fetchT(m.url, SEG_TIMEOUT);
           if (!r.ok) throw new Error("seg " + r.status);
-          cap.frags.set(m.sn, await r.arrayBuffer());
+          const b = await r.arrayBuffer();
+          cap.frags.set(m.sn, b);
+          cap.bytes += b.byteLength;
+          if (cap.bytes > capLimit()) throw new Error("capture too large");
         }
         await saveCapture(cap);
       } catch (e) {
         console.warn("complete capture failed", e);
+        dropCapture(cap);
       }
     })();
   }
@@ -1399,8 +1514,59 @@
     }
     return new Blob(segs, { type: "audio/mpeg" });
   }
-  async function offDownload(t, quiet) {
+  const SEG_TIMEOUT = 3e4, FILE_TIMEOUT = 18e4;
+  function fetchT(url, ms, outer) {
+    if (typeof AbortController === "undefined") {
+      return Promise.race([fetch(url), new Promise((_, rej) => setTimeout(() => rej(Object.assign(new Error("timeout"), { timeout: true })), ms))]);
+    }
+    const c = new AbortController();
+    const tm = setTimeout(() => c.abort(), ms);
+    const onOuter = () => c.abort();
+    if (outer) {
+      if (outer.aborted) c.abort();
+      else outer.addEventListener("abort", onOuter, { once: true });
+    }
+    return fetch(url, { signal: c.signal }).catch((e) => {
+      throw (outer == null ? void 0 : outer.aborted) ? Object.assign(new Error("canceled"), { canceled: true }) : Object.assign(e, { timeout: e.name === "AbortError" });
+    }).finally(() => {
+      var _a2;
+      clearTimeout(tm);
+      (_a2 = outer == null ? void 0 : outer.removeEventListener) == null ? void 0 : _a2.call(outer, "abort", onOuter);
+    });
+  }
+  const offEstimate = (t) => Math.round((t.duration_ms || 0) / 1e3 * 2e4);
+  const offLimitBytes = () => OFF.limitMB ? OFF.limitMB * 1048576 : Infinity;
+  function offCancel(id) {
+    var _a2;
+    const c = (_a2 = OFF.ctrl) == null ? void 0 : _a2.get(id);
+    if (!c) return false;
+    try {
+      c.abort();
+    } catch (e) {
+    }
+    return true;
+  }
+  async function offDownload(t, quiet, outerSignal) {
     if (!OFF.ok || OFF.ids.has(t.id) || OFF.busy.has(t.id)) return OFF.ids.has(t.id);
+    if (offEstimate(t) > offLimitBytes()) {
+      if (!quiet) toast(L("ofTooBig", fmtLimit(OFF.limitMB)));
+      return false;
+    }
+    OFF.ctrl = OFF.ctrl || /* @__PURE__ */ new Map();
+    const ctrl = typeof AbortController !== "undefined" ? new AbortController() : { signal: { aborted: false, addEventListener() {
+    }, removeEventListener() {
+    } }, abort() {
+      this.signal.aborted = true;
+    } };
+    if (outerSignal) {
+      if (outerSignal.aborted) ctrl.abort();
+      else outerSignal.addEventListener("abort", () => ctrl.abort(), { once: true });
+    }
+    const sig = ctrl.signal;
+    const check = () => {
+      if (sig.aborted) throw Object.assign(new Error("canceled"), { canceled: true });
+    };
+    OFF.ctrl.set(t.id, ctrl);
     OFF.busy.set(t.id, 0);
     updatePlayerUI();
     const prog = (p) => {
@@ -1408,40 +1574,58 @@
       OFF.busy.set(t.id, Math.min(99, Math.round(p * 100)));
       if (((_a2 = S.queue[S.qi]) == null ? void 0 : _a2.id) === t.id) updatePlayerUI();
     };
+    const get = async (u, ms) => {
+      check();
+      const r = await fetchT(u, ms, sig);
+      if (!r.ok) throw new Error("http " + r.status);
+      return r;
+    };
     try {
       const s = await api(`/stream/${t.id}`);
+      check();
       if (s.track) Object.assign(t, s.track);
+      if (offEstimate(t) > offLimitBytes()) throw Object.assign(new Error("too big"), { tooBig: true });
       let blob;
       if (s.kind === "progressive") {
-        const r = await fetch(s.url);
-        if (!r.ok) throw new Error("http " + r.status);
+        const r = await get(s.url, FILE_TIMEOUT);
+        const len = Number(r.headers.get("content-length") || 0);
+        if (len > offLimitBytes()) throw Object.assign(new Error("too big"), { tooBig: true });
         blob = new Blob([await r.arrayBuffer()], { type: "audio/mpeg" });
       } else {
-        let url = s.url, txt = await (await fetch(url)).text();
+        let url = s.url, txt = await (await get(url, SEG_TIMEOUT)).text();
         const variant = txt.split("\n").find((l) => l.trim() && !l.startsWith("#") && /EXT-X-STREAM-INF/.test(txt));
         if (variant) {
           url = new URL(variant.trim(), url).href;
-          txt = await (await fetch(url)).text();
+          txt = await (await get(url, SEG_TIMEOUT)).text();
         }
         const mapM = txt.match(/#EXT-X-MAP:URI="([^"]+)"/);
         const segUrls = txt.split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#")).map((l) => new URL(l, url).href);
-        const init = mapM ? new Uint8Array(await (await fetch(new URL(mapM[1], url).href)).arrayBuffer()) : null;
+        const init = mapM ? new Uint8Array(await (await get(new URL(mapM[1], url).href, SEG_TIMEOUT)).arrayBuffer()) : null;
         const segs = new Array(segUrls.length);
-        let done = 0, i = 0;
+        let done = 0, i = 0, bytes = 0;
         const worker = async () => {
           while (i < segUrls.length) {
             const k = i++;
-            const r = await fetch(segUrls[k]);
-            if (!r.ok) throw new Error("seg " + r.status);
-            segs[k] = new Uint8Array(await r.arrayBuffer());
+            const b = new Uint8Array(await (await get(segUrls[k], SEG_TIMEOUT)).arrayBuffer());
+            check();
+            segs[k] = b;
+            bytes += b.length;
+            if (bytes > offLimitBytes()) throw Object.assign(new Error("too big"), { tooBig: true });
             prog(++done / segUrls.length);
           }
         };
-        await Promise.all([worker(), worker(), worker()]);
+        try {
+          await Promise.all([worker(), worker(), worker()]);
+        } catch (e) {
+          i = segUrls.length;
+          ctrl.abort();
+          throw e;
+        }
+        check();
         blob = await buildAudio(init ? "hls-aac" : "hls-mp3", init, segs, t);
       }
       if (!blob) throw new Error("unsupported");
-      OFF.busy.delete(t.id);
+      check();
       await offPut(t, blob, true);
       if (!quiet) {
         toast(L("ofSaved"));
@@ -1449,27 +1633,55 @@
       }
       return true;
     } catch (e) {
+      if (e.canceled || sig.aborted) {
+        if (!quiet) toast(L("ofCanceled"));
+        return false;
+      }
       console.warn("offline download failed", e);
+      if (!quiet) toast(e.tooBig ? L("ofTooBig", fmtLimit(OFF.limitMB)) : e.status === 451 ? L("drm") : L("err"));
+      return false;
+    } finally {
+      if (OFF.ctrl.get(t.id) === ctrl) OFF.ctrl.delete(t.id);
       OFF.busy.delete(t.id);
       updatePlayerUI();
-      if (!quiet) toast(e.status === 451 ? L("drm") : L("err"));
-      return false;
     }
   }
-  let dlQueueRunning = false;
+  let dlQueueRunning = false, dlAll = null;
   async function offDownloadAll(list) {
     const todo = list.filter((x) => !OFF.ids.has(x.id) && !x.drm && !x.snipped);
     if (!todo.length) return toast(L("ofAllHave"));
     if (dlQueueRunning) return;
+    const need = todo.reduce((a, x) => a + offEstimate(x), 0);
+    if (need > offLimitBytes()) return toast(L("ofAllTooBig", fmtMB(need), fmtLimit(OFF.limitMB)));
     dlQueueRunning = true;
     let ok = 0;
-    for (let k = 0; k < todo.length; k++) {
-      toast(L("ofAllProg", k + 1, todo.length));
-      if (await offDownload(todo[k], true)) ok++;
+    dlAll = typeof AbortController !== "undefined" ? new AbortController() : { signal: { aborted: false, addEventListener() {
+    } }, abort() {
+      this.signal.aborted = true;
+    } };
+    const sig = dlAll.signal;
+    try {
+      for (let k = 0; k < todo.length && !sig.aborted; k++) {
+        toast(L("ofAllProg", k + 1, todo.length));
+        if (await offDownload(todo[k], true, sig)) ok++;
+      }
+    } finally {
+      dlQueueRunning = false;
+      dlAll = null;
     }
-    dlQueueRunning = false;
+    if (sig.aborted) {
+      toast(L("ofCanceled"));
+      return;
+    }
     toast(L("ofAllDone", ok));
     hapticOk();
+  }
+  function offCancelAll() {
+    if (dlAll) {
+      dlAll.abort();
+      return true;
+    }
+    return false;
   }
   function offTracks() {
     return [...OFF.meta.values()].sort((a, b) => (b.last || 0) - (a.last || 0)).map((m) => ({
@@ -1497,10 +1709,129 @@
       <button class="btn ic" data-act="offshuffle">${I("shuffle")}</button></div>
       ${trackList(list, { ctx: setCtx("off", list) })}` : emptyBox("offline", L("ofEmpty"), L("ofEmptySub"))}</div>`;
   }
+  const PLAYER_KEY = "sc_player";
+  const RECOVER = /(^|[#&?])recover=1/.test(location.hash + location.search);
+  if (RECOVER) {
+    try {
+      history.replaceState(null, "", location.pathname);
+    } catch (e) {
+    }
+  }
+  const slimTrack = (t) => {
+    var _a2;
+    return {
+      id: t.id,
+      title: t.title,
+      artist: t.artist,
+      username: t.username,
+      user_id: t.user_id,
+      permalink_url: t.permalink_url,
+      artwork_url: /^blob:/.test(t.artwork_url || "") ? ((_a2 = OFF.meta.get(t.id)) == null ? void 0 : _a2.artwork_url) || null : t.artwork_url || null,
+      duration_ms: t.duration_ms,
+      genre: t.genre,
+      drm: !!t.drm,
+      snipped: !!t.snipped
+    };
+  };
+  let persistAt = 0, persistTimer = null;
+  function writePlayer() {
+    persistAt = Date.now();
+    clearTimeout(persistTimer);
+    persistTimer = null;
+    try {
+      if (!S.queue.length || S.qi < 0) {
+        localStorage.removeItem(PLAYER_KEY);
+        return;
+      }
+      const start = Math.max(0, Math.min(S.qi - 200, S.queue.length - 400));
+      const cur = S.queue[S.qi];
+      const pos = S.needLoad || isUnlockSrc() ? S.pendingSeek || 0 : audio.currentTime || 0;
+      localStorage.setItem(PLAYER_KEY, JSON.stringify({
+        v: 1,
+        queue: S.queue.slice(start, start + 400).map(slimTrack),
+        qi: S.qi - start,
+        id: cur == null ? void 0 : cur.id,
+        pos: Math.floor(pos * 10) / 10,
+        playing: !S.needLoad && isPlaying(),
+        shuffle: !!S.shuffle,
+        repeat: S.repeat,
+        ts: Date.now()
+      }));
+    } catch (e) {
+      console.warn("persist player", e);
+    }
+  }
+  function persistPlayer(now) {
+    if (now) return writePlayer();
+    if (persistTimer) return;
+    persistTimer = setTimeout(writePlayer, Math.max(0, persistAt + 2e3 - Date.now()));
+  }
+  function readSavedPlayer() {
+    var _a2;
+    try {
+      const d = JSON.parse(localStorage.getItem(PLAYER_KEY) || "null");
+      if (d && Array.isArray(d.queue) && d.queue.length && d.qi >= 0 && d.qi < d.queue.length && ((_a2 = d.queue[d.qi]) == null ? void 0 : _a2.id)) return d;
+    } catch (e) {
+    }
+    return null;
+  }
+  function restorePlayer() {
+    if (S.queue.length) return false;
+    const d = readSavedPlayer();
+    if (!d) return false;
+    S.queue = d.queue.filter((t) => t && t.id);
+    S.qi = Math.max(0, S.queue.findIndex((t) => t.id === d.id));
+    remember(S.queue);
+    S.shuffle = !!d.shuffle;
+    S.repeat = ["off", "all", "one"].includes(d.repeat) ? d.repeat : "off";
+    S.pendingSeek = Math.max(0, Number(d.pos) || 0);
+    S.pendingSeekId = S.queue[S.qi].id;
+    if (RECOVER && d.playing) {
+      S.needLoad = false;
+      loadCurrent(true);
+    } else {
+      S.needLoad = true;
+      updatePlayerUI();
+      updateProgress();
+    }
+    return true;
+  }
+  function playNow() {
+    if (S.needLoad) {
+      S.needLoad = false;
+      return loadCurrent(true);
+    }
+    return audio.play().catch(() => {
+    });
+  }
+  audio.addEventListener("loadedmetadata", () => {
+    var _a2;
+    if (isUnlockSrc() || !S.pendingSeek || ((_a2 = S.queue[S.qi]) == null ? void 0 : _a2.id) !== S.pendingSeekId) return;
+    const p = S.pendingSeek;
+    S.pendingSeek = 0;
+    S.pendingSeekId = null;
+    if (isFinite(audio.duration) && p < audio.duration - 1) {
+      try {
+        audio.currentTime = p;
+      } catch (e) {
+      }
+    }
+  });
+  ["pause", "play", "seeked"].forEach((ev) => audio.addEventListener(ev, () => persistPlayer(true)));
+  audio.addEventListener("timeupdate", () => persistPlayer());
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) persistPlayer(true);
+  });
   async function loadCurrent(autoplay = true) {
     var _a2;
     const t = S.queue[S.qi];
     if (!t) return;
+    S.needLoad = false;
+    if (S.pendingSeekId && S.pendingSeekId !== t.id) {
+      S.pendingSeek = 0;
+      S.pendingSeekId = null;
+    }
+    persistPlayer(true);
     const seq = ++loadSeq;
     S.loadingTrack = true;
     updatePlayerUI();
@@ -1582,7 +1913,7 @@
   }
   function toggle() {
     if (!S.queue.length) return;
-    audio.paused ? audio.play() : audio.pause();
+    S.needLoad || audio.paused ? playNow() : audio.pause();
     haptic();
   }
   function next(auto = false) {
@@ -1609,7 +1940,9 @@
     else S.qi = S.queue.length - 1;
     loadCurrent();
   }
-  audio.addEventListener("ended", () => next(true));
+  audio.addEventListener("ended", () => {
+    if (!isUnlockSrc()) next(true);
+  });
   function pushNative() {
     if (!(NATIVE == null ? void 0 : NATIVE.mediaState)) return;
     const t = S.queue[S.qi];
@@ -1619,7 +1952,7 @@
         title: t.title || "",
         artist: t.artist || "",
         artwork: art(t.artwork_url, "t500x500") || "",
-        playing: !audio.paused,
+        playing: isPlaying(),
         loading: !!S.loadingTrack,
         position: Math.floor((audio.currentTime || 0) * 1e3),
         duration: Math.floor((audio.duration && isFinite(audio.duration) ? audio.duration : (t.duration_ms || 0) / 1e3) * 1e3)
@@ -1631,8 +1964,7 @@
   window.__scMedia = (cmd, arg) => {
     switch (cmd) {
       case "play":
-        audio.play().catch(() => {
-        });
+        playNow();
         break;
       case "pause":
         audio.pause();
@@ -1694,7 +2026,7 @@
     });
     const h = navigator.mediaSession.setActionHandler.bind(navigator.mediaSession);
     try {
-      h("play", () => audio.play());
+      h("play", () => playNow());
       h("pause", () => audio.pause());
       h("nexttrack", () => next());
       h("previoustrack", () => prev());
@@ -1736,7 +2068,13 @@
       $("#tcur").textContent = fmtDur(seek.value / 1e3 * (audio.duration || 0) * 1e3);
     });
     seek.addEventListener("change", () => {
-      if (audio.duration) audio.currentTime = seek.value / 1e3 * audio.duration;
+      var _a2, _b2;
+      if (S.needLoad) {
+        const d = (((_a2 = S.queue[S.qi]) == null ? void 0 : _a2.duration_ms) || 0) / 1e3;
+        S.pendingSeek = seek.value / 1e3 * d;
+        S.pendingSeekId = (_b2 = S.queue[S.qi]) == null ? void 0 : _b2.id;
+        persistPlayer(true);
+      } else if (audio.duration) audio.currentTime = seek.value / 1e3 * audio.duration;
       dragging = false;
     });
     seek._drag = () => dragging;
@@ -1766,7 +2104,7 @@
     if (!mini) return;
     mini.classList.toggle("show", !!t);
     if (!t) return;
-    const playing = !audio.paused;
+    const playing = isPlaying();
     const ic = S.loadingTrack ? `<div class="spin" style="width:22px;height:22px;margin:0;border-width:3px"></div>` : I(playing ? "pause" : "play");
     $("#mpp").innerHTML = ic;
     $("#fpp").innerHTML = S.loadingTrack ? `<div class="spin" style="width:30px;height:30px;margin:0;border-color:rgba(255,255,255,.35);border-top-color:#fff"></div>` : I(playing ? "pause" : "play");
@@ -1787,6 +2125,7 @@
     $("#fpt").textContent = t.title;
     $("#fpa").textContent = t.artist;
     $("#fpctx").textContent = `${S.qi + 1} / ${S.queue.length}`;
+    persistPlayer();
     fp.classList.toggle("paused", !playing);
     fp.classList.toggle("loading", S.loadingTrack);
     const fav = S.favs.has(t.id);
@@ -1805,15 +2144,16 @@
   }
   function updateProgress() {
     var _a2, _b2;
-    const d = audio.duration || (((_a2 = S.queue[S.qi]) == null ? void 0 : _a2.duration_ms) || 0) / 1e3;
-    const p = d ? audio.currentTime / d * 100 : 0;
+    const d = !S.needLoad && audio.duration || (((_a2 = S.queue[S.qi]) == null ? void 0 : _a2.duration_ms) || 0) / 1e3;
+    const ct = S.needLoad ? S.pendingSeek || 0 : audio.currentTime;
+    const p = d ? ct / d * 100 : 0;
     const bar = $(".mini .prog i");
     if (bar) bar.style.width = p + "%";
     const seek = $("#seek");
     if (seek && !((_b2 = seek._drag) == null ? void 0 : _b2.call(seek))) {
       seek.value = String(p * 10);
       seek.style.setProperty("--p", p + "%");
-      $("#tcur").textContent = fmtDur(audio.currentTime * 1e3);
+      $("#tcur").textContent = fmtDur(ct * 1e3);
     }
     const td = $("#tdur");
     if (td) td.textContent = fmtDur(d * 1e3);
@@ -1904,7 +2244,7 @@
     }
   }
   async function onClick(e) {
-    var _a2, _b2, _c2, _d2, _e, _f, _g, _h, _i, _j, _k;
+    var _a2, _b2, _c2, _d2, _e, _f, _g, _h, _i, _j, _k, _l;
     const el = e.target.closest("[data-act]");
     if (!el) return;
     const a = el.dataset.act, id = el.dataset.id;
@@ -2368,7 +2708,12 @@
       case "m_offsave": {
         closeSheet();
         const t = S.tracks.get(Number(id));
-        if (t) offDownload(t);
+        if (!t) return;
+        if (OFF.busy.has(t.id)) {
+          if (await confirmAsk(L("ofCancelQ"))) offCancel(t.id);
+          return;
+        }
+        offDownload(t);
         return;
       }
       case "m_offdel": {
@@ -2379,11 +2724,19 @@
       }
       case "fpoff": {
         const t = S.queue[S.qi];
-        if (!t || OFF.busy.has(t.id)) return;
+        if (!t) return;
+        if (OFF.busy.has(t.id)) {
+          if (await confirmAsk(L("ofCancelQ"))) offCancel(t.id);
+          return;
+        }
         if (OFF.ids.has(t.id)) return toast(L("ofSaved"));
         return offDownload(t);
       }
       case "pldl": {
+        if (dlQueueRunning) {
+          if (await confirmAsk(L("ofCancelAllQ"))) offCancelAll();
+          return;
+        }
         const v = view();
         const l = ((_i = v == null ? void 0 : v.data) == null ? void 0 : _i.tracks) || [];
         const n = l.filter((x) => !OFF.ids.has(x.id) && !x.drm && !x.snipped).length;
@@ -2392,7 +2745,7 @@
         return offDownloadAll(l);
       }
       case "updstart": {
-        if (!S.update || !(NATIVE == null ? void 0 : NATIVE.downloadUpdate)) return;
+        if (!((_j = S.update) == null ? void 0 : _j.verified) || !(NATIVE == null ? void 0 : NATIVE.downloadUpdate)) return;
         S.upd = { state: "start", received: 0, total: S.update.size };
         updSheet(true);
         haptic();
@@ -2405,14 +2758,14 @@
       }
       case "updcancel":
         try {
-          (_j = NATIVE == null ? void 0 : NATIVE.cancelUpdate) == null ? void 0 : _j.call(NATIVE);
+          (_k = NATIVE == null ? void 0 : NATIVE.cancelUpdate) == null ? void 0 : _k.call(NATIVE);
         } catch (e2) {
         }
         S.upd = null;
         return updSheet(false);
       case "updinstall":
         try {
-          (_k = NATIVE == null ? void 0 : NATIVE.installUpdate) == null ? void 0 : _k.call(NATIVE);
+          (_l = NATIVE == null ? void 0 : NATIVE.installUpdate) == null ? void 0 : _l.call(NATIVE);
         } catch (e2) {
         }
         return;
@@ -2597,6 +2950,11 @@
     }
     S.queue = [];
     S.qi = -1;
+    S.needLoad = false;
+    try {
+      localStorage.removeItem(PLAYER_KEY);
+    } catch (e) {
+    }
     S.me = null;
     S.playlists = [];
     S.favs = /* @__PURE__ */ new Set();
@@ -2626,8 +2984,11 @@
       const v = String(j.tag_name || "").replace(/^v/, "");
       if (v && cmpVer(v, NATIVE.version) > 0) {
         const android = NATIVE.platform === "android";
-        const a = (j.assets || []).find((x) => (android ? /\.apk$/i : /\.exe$/i).test(x.name));
-        S.update = { v, url: (a == null ? void 0 : a.browser_download_url) || (android ? DL.apk : DL.exe), size: (a == null ? void 0 : a.size) || 0 };
+        const name = android ? "SoundCloud-Player.apk" : "SoundCloud-Player-Setup.exe";
+        const assets = j.assets || [];
+        const a = assets.find((x) => x.name === name);
+        const sums = assets.some((x) => x.name === "SHA256SUMS");
+        S.update = { v, url: (a == null ? void 0 : a.browser_download_url) || (android ? DL.apk : DL.exe), size: (a == null ? void 0 : a.size) || 0, verified: !!(a && sums) };
         if (S.tab === "settings" && ((_a2 = view()) == null ? void 0 : _a2.type) === "settings") render();
         if (!manual && S.updShown) return;
         S.updShown = true;
@@ -2640,7 +3001,7 @@
   function updSheet(open) {
     const u = S.update;
     if (!u) return;
-    const d = S.upd || {}, android = (NATIVE == null ? void 0 : NATIVE.platform) === "android", inApp = !!(NATIVE == null ? void 0 : NATIVE.downloadUpdate);
+    const d = S.upd || {}, android = (NATIVE == null ? void 0 : NATIVE.platform) === "android", inApp = !!(NATIVE == null ? void 0 : NATIVE.downloadUpdate) && !!u.verified;
     const total = d.total || u.size || 0, pct = d.state === "done" ? 100 : total ? Math.min(100, Math.floor((d.received || 0) * 100 / total)) : 0;
     let body;
     if (d.state === "start" || d.state === "progress") {
@@ -2648,15 +3009,20 @@
       <div class="upd-pct"><b>${pct}%</b><span dir="ltr">${fmtMB(d.received)} / ${fmtMB(total)}</span></div>
       <p class="upd-st">${L("updDownloading")}</p>
       <div class="row2"><button class="btn" data-act="updcancel">${L("cancel")}</button></div>`;
+    } else if (d.state === "verifying") {
+      body = `<div class="upd-bar ok"><i style="width:100%"></i></div><div class="upd-pct"><b>100%</b><span dir="ltr">${fmtMB(total)}</span></div>
+      <p class="upd-st"><span class="mini-spin"></span> ${L("updVerify")}</p>`;
     } else if (d.state === "done") {
       body = `<div class="upd-bar ok"><i style="width:100%"></i></div><div class="upd-pct"><b>100%</b><span dir="ltr">${fmtMB(total)}</span></div>
-      <p class="upd-st">${android ? L("updInstallA") : `<span class="mini-spin"></span> ${L("updInstallW")}`}</p>
-      ${android ? `<div class="row2"><button class="btn pri" data-act="updinstall">${I("download")} ${L("updInstall")}</button></div>` : ""}`;
+      <p class="upd-st">${android ? L("updReadyA") : L("updReadyW")}</p>
+      <div class="row2"><button class="btn" data-act="closesheet">${L("later")}</button><button class="btn pri" data-act="updinstall">${I("download")} ${L("updInstall")}</button></div>`;
+    } else if (d.state === "installing") {
+      body = `<div class="upd-bar ok"><i style="width:100%"></i></div><p class="upd-st"><span class="mini-spin"></span> ${L("updInstallW")}</p>`;
     } else if (d.state === "perm") {
       body = `<div class="upd-bar ok"><i style="width:100%"></i></div><p class="upd-st">${L("updPerm")}</p>
       <div class="row2"><button class="btn pri" data-act="updinstall">${I("download")} ${L("updInstall")}</button></div>`;
     } else {
-      body = `${d.state === "error" ? `<p class="upd-err">${L("updFail")}</p>` : ""}
+      body = `${d.state === "error" ? `<p class="upd-err">${d.msg === "verify" ? L("updBad") : L("updFail")}</p>` : ""}
       <div class="row2"><button class="btn" data-act="closesheet">${L("later")}</button>
       <button class="btn pri" data-act="${inApp ? "updstart" : "updnow"}" data-url="${esc(u.url)}">${I("download")} ${inApp ? L("updDlInstall") : L("updDl")}</button></div>`;
     }
@@ -2670,7 +3036,7 @@
     var _a2;
     const prev2 = (_a2 = S.upd) == null ? void 0 : _a2.state;
     S.upd = d.state === "canceled" ? null : d;
-    if (d.state === "error" && !$(".sheet.show .upd")) toast(L("updFail"));
+    if (d.state === "error" && !$(".sheet.show .upd")) toast(d.msg === "verify" ? L("updBad") : L("updFail"));
     if ((d.state === "done" || d.state === "perm") && prev2 !== d.state) {
       hapticOk();
       updSheet(true);
@@ -2678,11 +3044,22 @@
     }
     updSheet(false);
   }
-  window.addEventListener("message", (e) => {
-    const d = e.data;
-    if (!NATIVE || !d || typeof d !== "object" || !d.__sc) return;
+  const NATIVE_ORIGIN = "https://appassets.androidplatform.net";
+  function onNativeEvent(d) {
+    if (!d || typeof d !== "object" || typeof d.__sc !== "string") return;
     if (d.__sc === "upd") onUpdEvent(d);
     if (d.__sc === "link" && S.me) openDeep(takeNativeLink());
+  }
+  if (NATIVE == null ? void 0 : NATIVE.onEvent) {
+    try {
+      NATIVE.onEvent(onNativeEvent);
+    } catch (e) {
+    }
+  }
+  window.addEventListener("message", (e) => {
+    if (!NATIVE || NATIVE.onEvent) return;
+    if (e.source !== window || e.origin !== location.origin || e.origin !== NATIVE_ORIGIN) return;
+    onNativeEvent(e.data);
   });
   const takeNativeLink = () => {
     try {
@@ -2761,6 +3138,7 @@
         render();
         syncBack();
         toast(L("ofMode"));
+        restorePlayer();
         return;
       }
       root().innerHTML = `<div class="view">${emptyBox("bot", e.status === 401 ? L("unauthorized") : L("err"))}<div style="text-align:center"><button class="btn pri" data-act="retry">${L("retry")}</button>${OFF.ids.size ? ` <button class="btn" data-act="offopen">${I("offline")} ${L("ofTitle")}</button>` : ""}</div></div>`;
@@ -2771,8 +3149,32 @@
     S.stack = [{ type: "home" }];
     render();
     syncBack();
+    restorePlayer();
     openDeep(sp, true);
     loadFavs();
+  }
+  if (window.__SC_TEST__) {
+    window.__scTest = {
+      S,
+      REC,
+      OFF,
+      applyLang: (l) => {
+        if (l) lang = l;
+        applyLang();
+        return document.documentElement.dir;
+      },
+      doSearch,
+      searchSeq: () => searchSeq,
+      recOpen,
+      closeSheet,
+      openSheet,
+      offPut,
+      offDownload,
+      offDownloadAll,
+      offCancel,
+      persistPlayer,
+      savedPlayer: () => readSavedPlayer()
+    };
   }
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", boot) : boot();
 })();

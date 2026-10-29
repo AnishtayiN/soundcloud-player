@@ -1,8 +1,12 @@
 name: Build & Release (APK + EXE)
 
+# • every push to main / pull request: smoke + regression tests, then APK + EXE builds (artifacts only, no release)
+# • tag v1.2.3 or manual run: the same, then a signed GitHub Release with SHA256SUMS
 on:
   push:
+    branches: [main]
     tags: ["v*"]
+  pull_request:
   workflow_dispatch:
     inputs:
       version:
@@ -17,23 +21,83 @@ concurrency:
   group: release-${{ github.ref }}-${{ github.event.inputs.version }}
   cancel-in-progress: false
 
+env:
+  # SHA-256 of the release signing certificate (must match web assetlinks.json → Android App Links)
+  APP_CERT_SHA256: "7E:2D:8D:75:31:B0:9C:69:87:F7:0E:C7:F5:61:12:98:87:E5:3D:5A:CD:8D:85:25:B0:5B:8E:68:27:68:A7:5C"
+  ASSETLINKS_URL: "https://soundclouddl-player.netlify.app/.well-known/assetlinks.json"
+
 jobs:
+  test:
+    name: Web UI smoke + regression tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install Playwright + Chromium (+ Persian fonts for the screenshots)
+        working-directory: tests
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          sudo apt-get install -y -qq fonts-vazirmatn fonts-noto-core >/dev/null || true
+      - name: Run tests (home renders, searchSeq, applyLang fa→rtl, pagination, mic release, playback restore, updates)
+        working-directory: tests
+        env:
+          CI: "true"
+        run: npx playwright test
+      - name: Upload Persian/RTL screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: tests/screenshots/
+          if-no-files-found: warn
+
   version:
+    needs: test
     runs-on: ubuntu-latest
     outputs:
       name: ${{ steps.v.outputs.name }}
       code: ${{ steps.v.outputs.code }}
+      release: ${{ steps.v.outputs.release }}
     steps:
       - id: v
         shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then V="${{ github.event.inputs.version }}"; else V="${GITHUB_REF_NAME#v}"; fi
+          RELEASE=false
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then RELEASE=true; V="${{ github.event.inputs.version }}"
+          elif [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref_type }}" = "tag" ]; then RELEASE=true; V="${GITHUB_REF_NAME#v}"
+          fi
+          echo "release=$RELEASE" >> "$GITHUB_OUTPUT"
+          if [ "$RELEASE" != "true" ]; then
+            # test builds: never published, never installable over a release (debug key / versionCode 1)
+            echo "name=0.0.0-dev.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+            echo "code=1" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           V="${V#v}"
           if ! [[ "$V" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo "::error::Version must look like 1.2.3 (got '$V')"; exit 1; fi
           IFS=. read -r MA MI PA <<< "$V"
+          # Android versionCode = MA*10000 + MI*100 + PA. This is only monotonic while MINOR and PATCH stay below 100
+          # (e.g. 1.2.100 would collide with 1.3.0), and MAJOR must stay ≤ 214748 (versionCode is a 32-bit int,
+          # Google Play max 2100000000). Enforced here instead of silently producing a wrong / colliding code.
+          if [ "$MI" -gt 99 ] || [ "$PA" -gt 99 ]; then echo "::error::MINOR and PATCH must be ≤ 99 (versionCode = MA*10000+MI*100+PA); bump the next component instead"; exit 1; fi
+          if [ "$MA" -gt 2099 ]; then echo "::error::MAJOR too large for an Android versionCode"; exit 1; fi
+          CODE=$((10#$MA*10000 + 10#$MI*100 + 10#$PA))
+          # must be strictly greater than the latest published release, otherwise in-app updates would never offer it
+          PREV=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/${{ github.repository }}/releases/latest" 2>/dev/null | python3 -c "import json,sys; print(json.load(sys.stdin).get('tag_name',''))" 2>/dev/null || true)
+          PREV="${PREV#v}"
+          if [[ "$PREV" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] && [ "$PREV" != "$V" ]; then
+            IFS=. read -r PMA PMI PPA <<< "$PREV"
+            PCODE=$((10#$PMA*10000 + 10#$PMI*100 + 10#$PPA))
+            if [ "$CODE" -le "$PCODE" ]; then echo "::error::Version $V (code $CODE) is not newer than the latest release $PREV (code $PCODE)"; exit 1; fi
+          fi
           echo "name=$V" >> "$GITHUB_OUTPUT"
-          echo "code=$((MA*10000 + MI*100 + PA))" >> "$GITHUB_OUTPUT"
-          echo "Version $V (code $((MA*10000 + MI*100 + PA)))"
+          echo "code=$CODE" >> "$GITHUB_OUTPUT"
+          echo "Release $V (versionCode $CODE, previous: ${PREV:-none})"
 
   android:
     needs: version
@@ -54,12 +118,16 @@ jobs:
       - name: Decode signing key
         env:
           KS_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          RELEASE: ${{ needs.version.outputs.release }}
         run: |
           if [ -n "$KS_B64" ]; then
             echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/release.p12"
             echo "KS_PATH=$RUNNER_TEMP/release.p12" >> "$GITHUB_ENV"
+          elif [ "$RELEASE" = "true" ]; then
+            echo "::error::ANDROID_KEYSTORE_B64 secret is missing - refusing to publish a release signed with a debug key"
+            exit 1
           else
-            echo "::warning::ANDROID_KEYSTORE_B64 secret missing - APK will be signed with a debug key"
+            echo "::warning::ANDROID_KEYSTORE_B64 secret missing - test build (not published) is signed with a debug key"
           fi
       - name: Build APK
         working-directory: android
@@ -68,12 +136,29 @@ jobs:
           KS_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           VERSION_NAME: ${{ needs.version.outputs.name }}
           VERSION_CODE: ${{ needs.version.outputs.code }}
+          RELEASE_BUILD: ${{ needs.version.outputs.release }}
         run: gradle assembleRelease --no-daemon --stacktrace
       - name: Rename
         run: |
           mkdir -p out
           cp android/app/build/outputs/apk/release/app-release.apk out/SoundCloud-Player.apk
           ls -la out
+      - name: Verify release signature + App Links fingerprint
+        if: needs.version.outputs.release == 'true'
+        run: |
+          BT=$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)
+          "$ANDROID_HOME/build-tools/$BT/apksigner" verify --print-certs out/SoundCloud-Player.apk | tee certs.txt
+          GOT=$(grep -m1 "certificate SHA-256 digest" certs.txt | awk '{print $NF}' | tr 'a-f' 'A-F')
+          WANT=$(echo "$APP_CERT_SHA256" | tr -d ':' | tr 'a-f' 'A-F')
+          if [ "$GOT" != "$WANT" ]; then echo "::error::APK signed with $GOT, expected $WANT"; exit 1; fi
+          curl -fsSL "$ASSETLINKS_URL" -o assetlinks.json
+          python3 - <<'PY'
+          import json, os
+          d = json.load(open("assetlinks.json"))
+          fps = [f for s in d if s.get("target", {}).get("package_name") == "com.soundclouddl.player" for f in s["target"].get("sha256_cert_fingerprints", [])]
+          assert os.environ["APP_CERT_SHA256"] in fps, f"assetlinks.json does not list the release certificate: {fps}"
+          print("assetlinks.json OK:", fps)
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: apk
@@ -112,13 +197,19 @@ jobs:
 
   release:
     needs: [version, android, windows]
+    if: needs.version.outputs.release == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
         with:
           path: out
           merge-multiple: true
-      - run: ls -la out
+      - name: SHA-256 checksums (verified by the in-app updaters before installing)
+        working-directory: out
+        run: |
+          sha256sum SoundCloud-Player.apk SoundCloud-Player-Setup.exe > SHA256SUMS
+          cat SHA256SUMS
+          ls -la
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ needs.version.outputs.name }}
@@ -128,6 +219,7 @@ jobs:
           files: |
             out/SoundCloud-Player.apk
             out/SoundCloud-Player-Setup.exe
+            out/SHA256SUMS
           body: |
             ## 🎧 SoundCloud Player v${{ needs.version.outputs.name }}
 
@@ -138,9 +230,13 @@ jobs:
 
             **ورود:** برنامه رو باز کن ← «ورود با تلگرام» ← توی ربات [@SoundClouddl_RoBot](https://t.me/SoundClouddl_RoBot) دکمه‌ی «تایید ورود» رو بزن. پلی‌لیست‌ها، علاقه‌مندی‌ها و تاریخچه با ربات و مینی‌اپ همگام می‌شن.
 
+            **سالم بودن فایل‌ها:** هش SHA-256 هر دو فایل در `SHA256SUMS` منتشر شده و آپدیت داخل برنامه قبل از نصب آن را بررسی می‌کند.
+
             ---
 
             **Login:** open the app → "Sign in with Telegram" → tap "Confirm" in [@SoundClouddl_RoBot](https://t.me/SoundClouddl_RoBot). Playlists, favorites and history sync with the bot and the Mini App.
+
+            **Integrity:** SHA-256 checksums of both files are published in `SHA256SUMS`; the in-app updater verifies them before installing.
 
             > Windows SmartScreen may warn because the installer isn't code-signed: click **More info → Run anyway**.
             > On Android allow "Install unknown apps" for your browser / Telegram.
