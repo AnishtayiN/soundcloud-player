@@ -38,7 +38,7 @@
 | `https://soundclouddl-player.netlify.app/p/<playlistCode>` | باز کردن پلی‌لیست اشتراکی |
 | `scplayer://t/<trackId>` · `scplayer://p/<code>` | اسکیم مستقیم برنامه (اندروید و ویندوز) |
 
-فایل `/.well-known/assetlinks.json` روی همون دامنه با اثر انگشت کلید امضا ست شده تا اندروید لینک‌ها رو مستقیم به برنامه بده.
+فایل `/.well-known/assetlinks.json` روی همون دامنه با اثر انگشت کلید امضا ست شده تا اندروید لینک‌ها رو مستقیم به برنامه بده. (محل دقیق میزبانی و محتوا: [SECURITY.md](SECURITY.md#app-links))
 
 ## سازگاری
 | پلتفرم | حداقل | حداکثر |
@@ -53,7 +53,11 @@
 web/        رابط کاربری مشترک (همون مینی‌اپ، ترنسپایل‌شده برای WebViewهای قدیمی‌تر)
 android/    پروژه‌ی اندروید (Java · WebView + MediaSession + Foreground Service)
 desktop/    پروژه‌ی ویندوز (Electron 22 + electron-builder/NSIS)
-.github/workflows/build.yml   ساخت APK و EXE و انتشار در Releases
+tests/      تست‌های خودکار رابط کاربری (Playwright · smoke + regression + اسکرین‌شات فارسی/RTL)
+.github/workflows/build.yml        تست ← ساخت APK و EXE ← انتشار در Releases همراه SHA256SUMS
+.github/workflows/android-e2e.yml  تست روی امولاتور اندروید (App Links + کشتن رندرر WebView)
+SECURITY.md   توکن ورود، پشتیبان‌گیری، بررسی آپدیت، امضا و App Links
+CHANGELOG.md  تغییرات هر نسخه
 ```
 
 ## نکات

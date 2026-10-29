@@ -26,9 +26,14 @@ import androidx.core.content.ContextCompat;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Foreground "mediaPlayback" service: keeps the process alive while music plays in the WebView,
@@ -52,6 +57,19 @@ public class PlaybackService extends Service {
     private PowerManager.WakeLock wake;
     private WifiManager.WifiLock wifi;
     private boolean foreground;
+
+    // wake lock is held only for the rest of the current track + a small margin (renewed on every state update)
+    private static final long LOCK_MARGIN_MS = 2 * 60 * 1000L;          // buffering / gap before the next track
+    private static final long LOCK_UNKNOWN_MS = 15 * 60 * 1000L;        // duration unknown (live / still loading)
+    private static final long LOCK_MAX_MS = 3 * 60 * 60 * 1000L;        // hard ceiling for very long mixes
+    private final Runnable lockTimeout = this::releaseLocks;            // also drops the Wi-Fi lock (it has no timeout)
+
+    // artwork: one background thread, newest request wins, older downloads are cancelled
+    private final ExecutorService artExec = Executors.newSingleThreadExecutor(r -> new Thread(r, "sc-artwork"));
+    private final AtomicInteger artGen = new AtomicInteger();
+    private Future<?> artJob;
+    private static final int ART_PX = 512;
+    private static final int ART_MAX_BYTES = 4 * 1024 * 1024;
 
     // ---------- called from MainActivity (main thread) ----------
 
@@ -132,6 +150,10 @@ public class PlaybackService extends Service {
     @Override
     public void onDestroy() {
         releaseLocks();
+        main.removeCallbacks(lockTimeout);
+        artGen.incrementAndGet();
+        if (artJob != null) artJob.cancel(true);
+        artExec.shutdownNow();
         if (session != null) { session.setActive(false); session.release(); }
         if (instance == this) instance = null;
         super.onDestroy();
@@ -148,6 +170,16 @@ public class PlaybackService extends Service {
     }
 
     private void update(JSONObject s) {
+        try {
+            applyState(s);
+        } catch (RuntimeException e) {
+            // never leave a wake lock / Wi-Fi lock behind because of a bad state update
+            releaseLocks();
+            throw e;
+        }
+    }
+
+    private void applyState(JSONObject s) {
         state = s;
         boolean playing = s.optBoolean("playing"), loading = s.optBoolean("loading");
         long pos = s.optLong("position", 0), dur = s.optLong("duration", 0);
@@ -171,7 +203,7 @@ public class PlaybackService extends Service {
                 .setState(st, pos, playing ? 1f : 0f)
                 .build());
 
-        if (playing || loading) acquireLocks(); else releaseLocks();
+        if (playing || loading) acquireLocks(lockDuration(playing, pos, dur)); else releaseLocks();
         goForeground();
     }
 
@@ -186,7 +218,8 @@ public class PlaybackService extends Service {
                 ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIF_ID, n);
             }
         } catch (Exception e) {
-            // e.g. ForegroundServiceStartNotAllowedException — give up quietly
+            // e.g. ForegroundServiceStartNotAllowedException — give up quietly, without holding any lock
+            releaseLocks();
             stopSelf();
         }
     }
@@ -223,32 +256,86 @@ public class PlaybackService extends Service {
         return b.build();
     }
 
+    /** Downloads the cover off the main thread; a newer track cancels the older download. */
     private void loadArt(final String url) {
-        if (url.isEmpty()) return;
-        new Thread(() -> {
-            Bitmap bmp = null;
-            HttpURLConnection c = null;
-            try {
-                c = (HttpURLConnection) new URL(url).openConnection();
-                c.setConnectTimeout(8000);
-                c.setReadTimeout(8000);
-                try (InputStream in = c.getInputStream()) { bmp = BitmapFactory.decodeStream(in); }
-                if (bmp != null && bmp.getWidth() > 512) bmp = Bitmap.createScaledBitmap(bmp, 512, 512 * bmp.getHeight() / bmp.getWidth(), true);
-            } catch (Exception ignored) {
-            } finally { if (c != null) c.disconnect(); }
-            final Bitmap result = bmp;
-            main.post(() -> {
-                if (result != null && url.equals(artUrl) && instance == this) { art = result; update(state); }
+        final int gen = artGen.incrementAndGet();
+        if (artJob != null) { artJob.cancel(true); artJob = null; }
+        if (url.isEmpty() || !url.startsWith("https://")) return;
+        try {
+            artJob = artExec.submit(() -> {
+                final Bitmap result = fetchArt(url, gen);
+                if (result == null) return;
+                main.post(() -> {
+                    if (gen == artGen.get() && url.equals(artUrl) && instance == this) { art = result; update(state); }
+                    else result.recycle();
+                });
             });
-        }, "sc-artwork").start();
+        } catch (Exception ignored) { /* executor shut down */ }
     }
 
-    private void acquireLocks() {
-        try { if (!wake.isHeld()) wake.acquire(6 * 60 * 60 * 1000L); } catch (Exception ignored) { }
-        try { if (wifi != null && !wifi.isHeld()) wifi.acquire(); } catch (Exception ignored) { }
+    /** Bounds-first decode: read the header, pick a power-of-two inSampleSize for ~ART_PX, then decode once. */
+    private Bitmap fetchArt(String url, int gen) {
+        HttpURLConnection c = null;
+        try {
+            c = (HttpURLConnection) new URL(url).openConnection();
+            c.setConnectTimeout(8000);
+            c.setReadTimeout(8000);
+            if (c.getResponseCode() != 200) return null;
+            byte[] data;
+            try (InputStream in = c.getInputStream(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                byte[] buf = new byte[16 * 1024];
+                int n;
+                while ((n = in.read(buf)) > 0) {
+                    if (gen != artGen.get() || Thread.currentThread().isInterrupted()) return null; // superseded
+                    out.write(buf, 0, n);
+                    if (out.size() > ART_MAX_BYTES) return null;
+                }
+                data = out.toByteArray();
+            }
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeByteArray(data, 0, data.length, o);
+            if (o.outWidth <= 0 || o.outHeight <= 0) return null;
+            int sample = 1;
+            while (Math.max(o.outWidth, o.outHeight) / (sample * 2) >= ART_PX) sample *= 2;
+            o = new BitmapFactory.Options();
+            o.inSampleSize = sample;
+            o.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            if (gen != artGen.get()) return null;
+            Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length, o);
+            if (bmp != null && Math.max(bmp.getWidth(), bmp.getHeight()) > ART_PX) {
+                float k = (float) ART_PX / Math.max(bmp.getWidth(), bmp.getHeight());
+                Bitmap scaled = Bitmap.createScaledBitmap(bmp, Math.max(1, Math.round(bmp.getWidth() * k)), Math.max(1, Math.round(bmp.getHeight() * k)), true);
+                if (scaled != bmp) bmp.recycle();
+                bmp = scaled;
+            }
+            return bmp;
+        } catch (Exception | OutOfMemoryError ignored) {
+            return null;
+        } finally { if (c != null) c.disconnect(); }
+    }
+
+    /** remaining time of the current track + margin (bounded); unknown duration → a short default */
+    static long lockDuration(boolean playing, long posMs, long durMs) {
+        if (!playing || durMs <= 0) return LOCK_UNKNOWN_MS;
+        long left = Math.max(0, durMs - Math.max(0, posMs));
+        return Math.min(LOCK_MAX_MS, left + LOCK_MARGIN_MS);
+    }
+
+    private void acquireLocks(long timeoutMs) {
+        try {
+            // non-reference-counted: acquiring again just moves the timeout → renewed on every track / seek / play
+            wake.acquire(timeoutMs);
+            if (wifi != null && !wifi.isHeld()) wifi.acquire();
+            main.removeCallbacks(lockTimeout);
+            main.postDelayed(lockTimeout, timeoutMs);
+        } catch (Exception e) {
+            releaseLocks();
+        }
     }
 
     private void releaseLocks() {
+        main.removeCallbacks(lockTimeout);
         try { if (wake != null && wake.isHeld()) wake.release(); } catch (Exception ignored) { }
         try { if (wifi != null && wifi.isHeld()) wifi.release(); } catch (Exception ignored) { }
     }

@@ -1,0 +1,11 @@
+{
+  "name": "soundcloud-player-tests",
+  "private": true,
+  "description": "Smoke + regression tests for the shared web UI (web/app.js) in headless Chromium",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.49.1"
+  }
+}
