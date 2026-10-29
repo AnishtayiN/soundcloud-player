@@ -119,7 +119,7 @@ test.describe("microphone release", () => {
 });
 
 // ───────────── playback survives a renderer crash ─────────────
-test("queue, index and position are restored after the renderer is killed", async ({ page, context }) => {
+test("queue, index and position are restored after the renderer is killed", async ({ page, context, browser }) => {
   const calls = [];
   await setup(page, { calls });
   await boot(page);
@@ -133,10 +133,21 @@ test("queue, index and position are restored after the renderer is killed", asyn
   expect(before.saved.playing).toBe(true);
 
   // kill the renderer, then do what MainActivity.onRenderProcessGone() does: a fresh WebView loading START_URL#recover=1
-  const crashed = new Promise((r) => page.once("crash", r));
+  // what the renderer had already persisted at the moment it dies (no pagehide / unload flush happens on a crash)
+  const persisted = await context.storageState();
+  const timeout = (ms) => new Promise((r) => setTimeout(() => r("timeout"), ms));
+  const crashed = new Promise((r) => page.once("crash", () => r("crash")));
   page.goto("chrome://crash").catch(() => {});
-  await crashed; // renderer process is gone (same as Android's onRenderProcessGone)
-  const page2 = await context.newPage();
+  let how = await Promise.race([crashed, timeout(5000)]);
+  if (how !== "crash") { // some headless builds ignore chrome://crash → CDP Page.crash
+    const cdp = await context.newCDPSession(page).catch(() => null);
+    if (cdp) cdp.send("Page.crash").catch(() => {});
+    how = await Promise.race([crashed, timeout(5000)]);
+  }
+  console.log("renderer:", how);
+  // a brand-new WebView (fresh context, only the persisted storage) loading START_URL#recover=1 — like onRenderProcessGone
+  const ctx2 = await browser.newContext({ storageState: persisted });
+  const page2 = await ctx2.newPage();
   await setup(page2, { calls });
   await page2.goto(START_URL + "#recover=1");
   await page2.waitForSelector(".mini.show");
@@ -144,6 +155,7 @@ test("queue, index and position are restored after the renderer is killed", asyn
   const after = await page2.evaluate(() => ({ id: window.__scTest.S.queue[window.__scTest.S.qi].id, n: window.__scTest.S.queue.length, qi: window.__scTest.S.qi, hash: location.hash }));
   expect(after).toEqual({ id: before.id, n: before.n, qi: before.qi, hash: "" });
   await expect(page2.locator(".mini .t")).toHaveText(await page2.evaluate(() => window.__scTest.S.queue[window.__scTest.S.qi].title));
+  await ctx2.close();
 });
 
 test("normal restart restores the queue paused, without using the network until play", async ({ page, context }) => {
