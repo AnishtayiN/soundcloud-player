@@ -1406,6 +1406,7 @@
       if (el && !n.known) el.textContent = L("favAutoUnknown");
     });
   }
+  let sheetTok = 0;
   function openSheet(html, keepRec) {
     if (!keepRec && recLive()) recStop();
     let ov = $(".ov"), sh = $(".sheet");
@@ -1423,7 +1424,9 @@
       sh.addEventListener("pointerdown", qDragStart);
     }
     sh.innerHTML = `<div class="grab"></div>${html}`;
+    const tok = ++sheetTok;
     requestAnimationFrame(() => {
+      if (tok !== sheetTok) return;
       ov.classList.add("show");
       sh.classList.add("show");
       syncBack();
@@ -1431,6 +1434,7 @@
   }
   function closeSheet() {
     var _a2, _b2;
+    sheetTok++;
     if (S._cf) {
       const f = S._cf;
       S._cf = null;
@@ -3739,8 +3743,8 @@
     };
     const tick = () => {
       const r = sheet.getBoundingClientRect();
-      if (lastY < r.top + 60) sheet.scrollTop -= 10;
-      else if (lastY > r.bottom - 60) sheet.scrollTop += 10;
+      if (lastY < r.top + 60 && lastY < y0 - 8) sheet.scrollTop -= 10;
+      else if (lastY > r.bottom - 60 && lastY > y0 + 8) sheet.scrollTop += 10;
       layout();
       raf = requestAnimationFrame(tick);
     };

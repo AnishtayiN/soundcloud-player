@@ -24,6 +24,7 @@ test.describe("queue", () => {
     await boot(page);
     await playTrend(page, 5);
     expect(await cur(page)).toMatchObject({ qi: 5, id: 105 });
+    await T(page, () => window.__scTest.audio.pause()); // the 30 s mock song must not end (→ next song) on a slow runner while the queue is edited
     await page.click(".mini .meta"); // open player
     await page.click(".fp [data-act=showqueue]");
     await expect(page.locator(".sheet.show .qrow")).toHaveCount(12);
@@ -45,6 +46,10 @@ test.describe("queue", () => {
     // drag item 8 two rows up
     const h = page.locator(".sheet.show .qrow[data-qi='8'] .qdrag");
     const before = (await cur(page)).ids;
+    // put the handle inside the sheet's bottom auto-scroll zone: grabbing it there must not scroll the list away from the finger
+    await page.evaluate(() => { const sh = document.querySelector(".sheet.show"), r = sh.getBoundingClientRect(), hb = sh.querySelector(".qrow[data-qi='8'] .qdrag").getBoundingClientRect(); sh.scrollTop -= (r.bottom - 30) - (hb.top + hb.height / 2); });
+    await page.waitForTimeout(100);
+    const st0 = await page.evaluate(() => document.querySelector(".sheet.show").scrollTop);
     const box = await h.boundingBox(), rowH = (await page.locator(".sheet.show .qrow[data-qi='8']").boundingBox()).height;
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
     await page.mouse.down();
@@ -52,6 +57,7 @@ test.describe("queue", () => {
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2 - rowH * 2);
     await page.mouse.up(); // released right after the last move, before another animation frame
     q = await cur(page);
+    expect(Math.abs((await page.evaluate(() => document.querySelector(".sheet.show").scrollTop)) - st0)).toBeLessThan(2); // no runaway auto-scroll
     const exp = before.slice(); const [mv] = exp.splice(8, 1); exp.splice(6, 0, mv);
     expect(q.ids).toEqual(exp);
     expect(q.id).toBe(105); // current song untouched
@@ -651,6 +657,12 @@ test.describe("recognition", () => {
       await T(page, () => window.__scTest.closeSheet());
       await expect(page.locator(".sheet.show")).toHaveCount(0);
     }
+    // closed in the same frame it was opened (fast back/navigation): the sheet must stay closed and the mic released
+    await page.click(".nav button[data-tab=search]");
+    await page.evaluate(() => { document.querySelector(".sinput .mic").click(); window.__scTest.closeSheet(); });
+    await page.waitForTimeout(400);
+    await expect(page.locator(".sheet.show")).toHaveCount(0);
+    await expect.poll(() => micLive(page)).toEqual({ live: 0, openCtx: 0 });
   });
 });
 

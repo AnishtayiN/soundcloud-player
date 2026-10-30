@@ -22,7 +22,7 @@ Nothing here changes the UI design (dark/orange), the app name, the package (`co
 - The queue, original order, index, position, shuffle and repeat are persisted (`sc_player` v2). They survive closing the app and `onRenderProcessGone` / `render-process-gone`.
 - An unavailable song (404, DRM, broken file) is skipped with a Persian toast, never retried in a loop, even with repeat-one. If every song fails, playback stops with a message.
 - An expired direct CDN link is refreshed once and resumes at the same position.
-- Drag-to-reorder drops the song where the finger is lifted, even when the release comes before the next animation frame (it used to land one row short on slow devices).
+- Drag-to-reorder drops the song where the finger is lifted, even when the release comes before the next animation frame. Grabbing a song near the sheet's edge no longer auto-scrolls the list away from the finger: edge scrolling only starts when you drag toward that edge. Before, the song could land a row short.
 
 **Files:** `web/app.js`, `web/app.css`, `tests/features.spec.mjs`, `tests/harness.mjs`
 
@@ -124,6 +124,11 @@ Nothing here changes the UI design (dark/orange), the app name, the package (`co
   - Android 13 WebView: speed 1.47× / 0.80× / 1.92×, EQ bass +5.4 dB / treble +7.2 dB, timer stopped at 18.3 s.
 - `tests/telegram.spec.mjs` (new): the Mini App inside Telegram (no native bridge) — `initData` auth only, queue, real 1.5× speed, timer/EQ tools, and the honest «این دستگاه نوع اتصال رو گزارش نمی‌ده» note with favorites auto-download off.
 - `tests/screens.spec.mjs`: Persian/RTL screenshots of the queue, lyrics, «آمار من», downloads + quality sheet, resume banner, player tools, sleep timer, EQ and recognition result (CI artifact `screenshots`, copies in `docs/screenshots/v1.4/`).
+
+### Fix: sheets closed right after opening
+- A sheet (recognizer, queue, menus) that was closed before its opening animation frame (fast back, navigation or app hide right after a tap) reappeared a moment later. Now a close always wins.
+
+**Files:** `web/app.js`, `tests/features.spec.mjs`
 
 ### Windows: sandbox fallback on new Windows builds
 - On the newest Windows builds (seen on Windows Server 2025 / build 26100, the Windows 11 24H2 kernel, with the October 2026 updates), Electron 22's sandboxed GPU and renderer processes crash at startup (0xC0000005) and the window stays blank. Electron 22 can't be upgraded: it's the last version that runs on Windows 7.
