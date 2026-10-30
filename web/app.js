@@ -321,7 +321,178 @@
       eqVocal: "وکال",
       eqTreble: "تریبل",
       eqCustom: "دستی",
-      eqNote: "تغییرات مستقیم روی صدای در حال پخش اعمال می‌شه."
+      eqNote: "تغییرات مستقیم روی صدای در حال پخش اعمال می‌شه.",
+      // ── v1.5 ──
+      today: "امروز",
+      tomorrow: "فردا",
+      partyLbl: "هم‌زمان",
+      partyStart: "شروع نشست هم‌زمان",
+      partyTitle: "گوش دادن هم‌زمان",
+      partySub: "دوستانت با لینک یا کد دعوت، همین آهنگ را هم‌زمان با تو می‌شنوند. فهرست عمومی ندارد و فقط کسی که لینک را دارد می‌تواند بپیوندد.",
+      partyInvite: "ارسال لینک دعوت",
+      partyInviteText: "🎧 بیا با هم گوش بدیم! روی لینک بزن تا به نشست هم‌زمان من بپیوندی:",
+      partyCode: "کد نشست",
+      partyJoin: "پیوستن با کد",
+      partyJoinPh: "کد ۱۰ حرفی نشست",
+      partyJoinBtn: "پیوستن",
+      partyHost: "تو میزبان این نشستی",
+      partyGuestOf: (n) => `در نشست ${n}`,
+      partyGuestOf0: "در نشست هم‌زمان",
+      partyGuests: (n) => n ? `${n} نفر همراهت گوش می‌دهند` : "هنوز کسی نپیوسته",
+      partyEnd: "پایان نشست",
+      partyLeave: "خروج از نشست",
+      partyEndQ: "نشست برای همه تمام شود؟",
+      partyEndedHost: "میزبان نشست را تمام کرد",
+      partyEnded: "نشست تمام شد",
+      partyExpired: "نشست به‌خاطر ۳۰ دقیقه بی‌فعالیتی تمام شد",
+      partyLeft: "از نشست خارج شدی",
+      partyOffline: "برای نشست هم‌زمان باید آنلاین باشی",
+      partyNotFound: "این نشست پیدا نشد یا تمام شده",
+      partyFull: "ظرفیت این نشست پر است",
+      partyHostOnly: "در نشست هم‌زمان فقط میزبان آهنگ را عوض یا جابه‌جا می‌کند",
+      partyNoTrack: "اول یک آهنگ پخش کن",
+      partyJoined: "به نشست هم‌زمان پیوستی",
+      partyNote: "هر ۳ ثانیه با میزبان هم‌گام می‌شود (بدون اتصال دائمی)",
+      partyPausedLocal: "فقط برای خودت مکث شد؛ با پخش دوباره به میزبان می‌رسی",
+      vsTitle: "جستجوی صوتی",
+      vsListen: "بگو چی می‌خوای بشنوی…",
+      vsHint: "متن را قبل از جستجو می‌توانی ویرایش کنی",
+      vsGo: "جستجو",
+      vsAgain: "دوباره بگو",
+      vsNA: "جستجوی صوتی روی این دستگاه در دسترس نیست",
+      vsNAfa: "تشخیص گفتار فارسی روی این دستگاه نصب نیست",
+      vsNoMatch: "چیزی شنیده نشد؛ دوباره امتحان کن",
+      vsPerm: "برای جستجوی صوتی اجازه‌ی میکروفون لازم است",
+      vsErr: "تشخیص گفتار انجام نشد",
+      vsEnOnly: "فارسی در دسترس نبود؛ با انگلیسی گوش می‌دهم",
+      vsNet: "جستجوی صوتی اینجا به اینترنت نیاز دارد",
+      offBadge: "آفلاین",
+      offResults: "در دانلودهای همین دستگاه",
+      offSearchMode: "اینترنت نداری؛ فقط بین دانلودهای همین دستگاه جستجو می‌شود",
+      notFound: "یافت نشد",
+      recentS: "جستجوهای اخیر",
+      recentClear: "پاک کردن",
+      recentCleared: "جستجوهای اخیر پاک شد",
+      stoTitle: "حافظه",
+      stoTotal: "حجم دانلودها",
+      stoFree: "فضای آزاد (حدودی)",
+      stoLimit: "سقف حافظه‌ی آفلاین",
+      stoByArtist: "بر اساس خواننده",
+      stoByPl: "بر اساس پلی‌لیست",
+      stoByTrack: "بر اساس آهنگ",
+      stoOther: "خارج از پلی‌لیست‌ها",
+      stoPlNote: "آهنگی که در چند پلی‌لیست هست، در هر کدام حساب می‌شود",
+      stoPlOffline: "فهرست پلی‌لیست‌ها از آخرین باری است که آنلاین بودی",
+      stoSuggest: "پیشنهاد پاک‌سازی",
+      stoSuggestSub: "آهنگ‌هایی که ۹۰ روز پخش نشده‌اند یا هیچ‌وقت پخش نشده‌اند",
+      stoNoSuggest: "پیشنهادی نیست؛ همه‌ی دانلودها اخیراً پخش شده‌اند",
+      stoNever: "هرگز پخش نشده",
+      stoDays: (n) => `${n} روز پیش پخش شده`,
+      stoSelAll: "انتخاب همه",
+      stoSel: (n, mb) => `${n} آهنگ · ${mb}`,
+      stoDelSel: "حذف انتخاب‌شده‌ها",
+      stoDelQ: (n, mb) => `${n} آهنگ (${mb}) از این دستگاه حذف شود؟ متن ذخیره‌شده‌ی آن‌ها هم پاک می‌شود.`,
+      stoDeleted: (n, mb) => `${n} آهنگ حذف شد · ${mb} آزاد شد`,
+      stoFav: "علاقه‌مندی",
+      stoEmpty: "هنوز آهنگی دانلود نکرده‌ای",
+      stoAuto: "پاک‌سازی خودکار",
+      stoAutoSub: "پیش‌فرض خاموش است؛ قانونش را خودت انتخاب می‌کنی",
+      stoAutoRule: "قانون پاک‌سازی",
+      stoRule90: "۹۰ روز پخش نشده",
+      stoRule180: "۱۸۰ روز پخش نشده",
+      stoRuleNever: "هرگز پخش نشده و بیش از ۳۰ روز از دانلودش گذشته",
+      stoAutoList: (n) => `با این قانون همین الان این ${n} آهنگ حذف می‌شوند:`,
+      stoAutoNone: "با این قانون فعلاً چیزی حذف نمی‌شود",
+      stoAutoOn: "روشن کردن با این قانون",
+      stoAutoFav: "علاقه‌مندی‌ها هیچ‌وقت بدون اجازه‌ی تو حذف نمی‌شوند",
+      stoAutoRan: (n, mb) => `پاک‌سازی خودکار: ${n} آهنگ حذف شد (${mb})`,
+      stoAutoFavAsk: (n) => `${n} آهنگ از علاقه‌مندی‌ها هم با قانون پاک‌سازی جور است. حذف شوند؟`,
+      travel: "حالت سفر",
+      travelSub: "همه‌ی علاقه‌مندی‌ها با کیفیت کم دانلود می‌شوند",
+      travelQ: (n, mb) => `${n} آهنگ از علاقه‌مندی‌ها با کیفیت کم (حدود ${mb}) دانلود شود؟`,
+      travelNone: "همه‌ی علاقه‌مندی‌ها روی این دستگاه هست",
+      travelWifi: "حالت سفر فقط با وای‌فای دانلود می‌کند",
+      travelNoFav: "هنوز علاقه‌مندی‌ای نداری",
+      bkTitle: "پشتیبان و انتقال",
+      bkSub: "پلی‌لیست‌ها، علاقه‌مندی‌ها، خواننده‌های دنبال‌شده، تنظیمات و فهرست آهنگ‌های آفلاین در یک فایل.",
+      bkNoAudio: "فایل‌های صوتی داخل پشتیبان نیستند؛ فقط فهرست آن‌ها ذخیره می‌شود.",
+      bkExport: "ساخت فایل پشتیبان",
+      bkSave: "ذخیره‌ی فایل",
+      bkShare: "اشتراک‌گذاری فایل (مثلاً در Saved Messages تلگرام)",
+      bkSendBot: "ارسال فایل به چت ربات",
+      bkSent: "فایل پشتیبان در چت ربات فرستاده شد",
+      bkSaved: "فایل پشتیبان ذخیره شد",
+      bkImport: "بازیابی از فایل پشتیبان",
+      bkBad: "این فایل پشتیبان معتبر نیست یا خراب است؛ چیزی تغییر نکرد",
+      bkVer: (v) => `نسخه‌ی این فایل پشتیبان (${v}) پشتیبانی نمی‌شود؛ چیزی تغییر نکرد`,
+      bkSummary: (p, f, a, o) => `${p} پلی‌لیست · ${f} علاقه‌مندی · ${a} خواننده · ${o} آهنگ آفلاین`,
+      bkMerge: "ادغام با اطلاعات فعلی",
+      bkMergeSub: "چیزی حذف نمی‌شود و موارد تکراری دوباره اضافه نمی‌شوند",
+      bkReplace: "جایگزینی کامل",
+      bkReplaceSub: "پلی‌لیست‌ها، علاقه‌مندی‌ها، دنبال‌شده‌ها و تنظیمات فعلی با فایل جایگزین می‌شوند",
+      bkReplaceQ: "همه‌ی پلی‌لیست‌ها و علاقه‌مندی‌های فعلی‌ات پاک و با فایل پشتیبان جایگزین شوند؟ این کار برگشت‌پذیر نیست.",
+      bkWorking: "در حال بازیابی…",
+      bkDone: (p, t) => `بازیابی انجام شد: ${p} پلی‌لیست و ${t} آهنگ`,
+      bkMissing: (n) => `${n} آهنگ دیگر در ساندکلاد نیست`,
+      bkOffline: (n) => `${n} آهنگ روی دستگاه قبلی آفلاین بود. دوباره دانلود شوند؟`,
+      bkOnline: "برای این کار باید آنلاین باشی",
+      bkFailed: "بازیابی کامل نشد؛ دوباره امتحان کن",
+      schTitle: "زمان‌بندی دانلود",
+      schSub: "دانلودها فقط در بازه‌ی انتخابی شروع می‌شوند",
+      schOn: "زمان‌بندی روشن",
+      schFrom: "از ساعت",
+      schTo: "تا ساعت",
+      schDays: "روزها",
+      schWifi: "فقط با وای‌فای",
+      schCharge: "فقط هنگام شارژ",
+      schSave: "ذخیره",
+      schNext: (w) => `اجرای بعدی: ${w}`,
+      schNow: "الان دانلود کن",
+      schInWin: "داخل بازه‌ی زمان‌بندی",
+      schWaitWifi: "منتظر وای‌فای",
+      schWaitCharge: "منتظر شارژ",
+      schChargeUnknown: "وضعیت شارژ روی این دستگاه قابل تشخیص نیست",
+      schWifiUnknown: "نوع اتصال روی این دستگاه قابل تشخیص نیست",
+      schQueued: (n, w) => `${n} آهنگ در صف زمان‌بندی · ${w}`,
+      schQLbl: "در صف زمان‌بندی",
+      schPaused: "بیرون از بازه؛ در بازه‌ی بعدی دوباره شروع می‌شود",
+      schOff: "خاموش",
+      schNoDays: "حداقل یک روز را انتخاب کن",
+      schNoteA: "اندروید ممکن است برای صرفه‌جویی باتری، اپ را در پس‌زمینه ببندد؛ آن وقت دانلود با باز کردن دوباره‌ی اپ ادامه پیدا می‌کند. زمان دقیق تضمین نمی‌شود.",
+      schNoteW: "در ویندوز دانلود زمان‌بندی‌شده وقتی اپ باز است انجام می‌شود؛ اگر بسته باشد، در اجرای بعدی ادامه پیدا می‌کند.",
+      schNoteT: "داخل تلگرام دانلود زمان‌بندی‌شده فقط وقتی مینی‌اپ باز است انجام می‌شود.",
+      days: ["یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه"],
+      follow: "دنبال کردن",
+      following: "دنبال می‌کنی",
+      folTitle: "خواننده‌های دنبال‌شده",
+      folNone: "هنوز کسی را دنبال نکرده‌ای",
+      folNoneSub: "در صفحه‌ی خواننده یا نتایج جستجو «دنبال کردن» را بزن",
+      folAlerts: "اعلان آهنگ‌های تازه",
+      folAlertsSub: "فقط آهنگ‌هایی که بعد از دنبال کردن منتشر می‌شوند",
+      folMute: "بی‌صدا",
+      folMuted: "اعلان‌های این خواننده بی‌صدا شد",
+      folUnmuted: "اعلان‌های این خواننده روشن شد",
+      folNew: "تازه‌ها",
+      folNewN: (n, a) => n > 1 ? `${n} آهنگ تازه از ${a}` : `آهنگ تازه از ${a}`,
+      folChecked: (w) => `آخرین بررسی: ${w}`,
+      folNever: "هنوز بررسی نشده",
+      folCheck: "بررسی الان",
+      folReleased: (d) => `منتشرشده ${d}`,
+      folFollowed: (a) => `${a} را دنبال می‌کنی`,
+      folUnfollowed: (a) => `${a} دیگر دنبال نمی‌شود`,
+      folNoNew: "آهنگ تازه‌ای نیامده",
+      folUnfollow: "لغو دنبال کردن",
+      folNoteA: "هر ۶ ساعت در پس‌زمینه بررسی می‌شود (وقتی اینترنت هست)؛ اندروید ممکن است زمانش را کمی جابه‌جا کند.",
+      folNoteW: "در ویندوز وقتی اپ باز است هر ۶ ساعت بررسی می‌شود؛ وگرنه در اجرای بعدی.",
+      folNoteT: "داخل تلگرام وقتی مینی‌اپ را باز می‌کنی بررسی می‌شود.",
+      recVidNoAudio: "این ویدیو صدا ندارد",
+      recVidBad: "این فایل قابل تشخیص نیست",
+      recVidBadSub: "ویدیو باید MP4 یا MOV باشد و صدایش AAC یا MP3",
+      recVidNone: "این آهنگ پیدا نشد",
+      recVidNoneSub: "اگر اسمش را می‌دانی، با نام جستجو کن",
+      recVidFound: "🎬 این آهنگ",
+      recSearchName: "جستجو با نام",
+      recVidBig: "فایل خیلی بزرگ است (حداکثر ۲۰۰ مگابایت)"
     },
     en: {
       home: "Home",
@@ -624,7 +795,178 @@
       eqVocal: "Vocal",
       eqTreble: "Treble",
       eqCustom: "Custom",
-      eqNote: "Changes are applied to the audio that's playing."
+      eqNote: "Changes are applied to the audio that's playing.",
+      // ── v1.5 ──
+      today: "Today",
+      tomorrow: "Tomorrow",
+      partyLbl: "Together",
+      partyStart: "Start a listening session",
+      partyTitle: "Listen together",
+      partySub: "Friends with your invite link or code hear the same song at the same time. There is no public list — only people with the link can join.",
+      partyInvite: "Send invite link",
+      partyInviteText: "🎧 Let's listen together! Tap the link to join my session:",
+      partyCode: "Session code",
+      partyJoin: "Join with a code",
+      partyJoinPh: "10-character session code",
+      partyJoinBtn: "Join",
+      partyHost: "You're hosting this session",
+      partyGuestOf: (n) => `In ${n}'s session`,
+      partyGuestOf0: "In a listening session",
+      partyGuests: (n) => n ? `${n} listening with you` : "Nobody has joined yet",
+      partyEnd: "End session",
+      partyLeave: "Leave session",
+      partyEndQ: "End the session for everyone?",
+      partyEndedHost: "The host ended the session",
+      partyEnded: "The session ended",
+      partyExpired: "The session ended after 30 minutes of inactivity",
+      partyLeft: "You left the session",
+      partyOffline: "You need to be online for a listening session",
+      partyNotFound: "This session doesn't exist or has ended",
+      partyFull: "This session is full",
+      partyHostOnly: "In a listening session only the host changes or seeks the song",
+      partyNoTrack: "Play a song first",
+      partyJoined: "You joined the listening session",
+      partyNote: "Re-syncs with the host every 3 seconds (no live connection)",
+      partyPausedLocal: "Paused just for you — press play to catch up with the host",
+      vsTitle: "Voice search",
+      vsListen: "Say what you want to hear…",
+      vsHint: "You can edit the text before searching",
+      vsGo: "Search",
+      vsAgain: "Try again",
+      vsNA: "Voice search isn't available on this device",
+      vsNAfa: "Persian speech recognition isn't installed on this device",
+      vsNoMatch: "Didn't catch that — try again",
+      vsPerm: "Voice search needs microphone permission",
+      vsErr: "Speech recognition failed",
+      vsEnOnly: "Persian isn't available — listening in English",
+      vsNet: "Voice search needs internet here",
+      offBadge: "Offline",
+      offResults: "In downloads on this device",
+      offSearchMode: "You're offline — searching only the downloads on this device",
+      notFound: "Not found",
+      recentS: "Recent searches",
+      recentClear: "Clear",
+      recentCleared: "Recent searches cleared",
+      stoTitle: "Storage",
+      stoTotal: "Downloads size",
+      stoFree: "Free space (approx.)",
+      stoLimit: "Offline storage limit",
+      stoByArtist: "By artist",
+      stoByPl: "By playlist",
+      stoByTrack: "By song",
+      stoOther: "Not in a playlist",
+      stoPlNote: "A song in several playlists is counted in each",
+      stoPlOffline: "Playlist contents are from the last time you were online",
+      stoSuggest: "Cleanup suggestions",
+      stoSuggestSub: "Songs not played for 90 days or never played",
+      stoNoSuggest: "No suggestions — all downloads were played recently",
+      stoNever: "Never played",
+      stoDays: (n) => `Played ${n} days ago`,
+      stoSelAll: "Select all",
+      stoSel: (n, mb) => `${n} songs · ${mb}`,
+      stoDelSel: "Delete selected",
+      stoDelQ: (n, mb) => `Delete ${n} songs (${mb}) from this device? Their saved lyrics are removed too.`,
+      stoDeleted: (n, mb) => `${n} songs deleted · ${mb} freed`,
+      stoFav: "Favorite",
+      stoEmpty: "You haven't downloaded any songs yet",
+      stoAuto: "Auto-cleanup",
+      stoAutoSub: "Off by default — you choose the rule",
+      stoAutoRule: "Cleanup rule",
+      stoRule90: "Not played for 90 days",
+      stoRule180: "Not played for 180 days",
+      stoRuleNever: "Never played and downloaded more than 30 days ago",
+      stoAutoList: (n) => `With this rule these ${n} songs would be deleted right now:`,
+      stoAutoNone: "Nothing would be deleted with this rule right now",
+      stoAutoOn: "Turn on with this rule",
+      stoAutoFav: "Favorites are never deleted without your OK",
+      stoAutoRan: (n, mb) => `Auto-cleanup: ${n} songs deleted (${mb})`,
+      stoAutoFavAsk: (n) => `${n} favorite songs also match the cleanup rule. Delete them?`,
+      travel: "Travel mode",
+      travelSub: "Downloads all favorites in low quality",
+      travelQ: (n, mb) => `Download ${n} favorites in low quality (about ${mb})?`,
+      travelNone: "All favorites are already on this device",
+      travelWifi: "Travel mode only downloads on Wi-Fi",
+      travelNoFav: "You don't have favorites yet",
+      bkTitle: "Backup & transfer",
+      bkSub: "Playlists, favorites, followed artists, settings and the list of offline songs in one file.",
+      bkNoAudio: "Audio files are not included — only their list is saved.",
+      bkExport: "Create backup file",
+      bkSave: "Save file",
+      bkShare: "Share file (e.g. to Telegram Saved Messages)",
+      bkSendBot: "Send file to the bot chat",
+      bkSent: "Backup file sent to the bot chat",
+      bkSaved: "Backup file saved",
+      bkImport: "Restore from backup file",
+      bkBad: "This backup file is invalid or damaged — nothing was changed",
+      bkVer: (v) => `This backup version (${v}) isn't supported — nothing was changed`,
+      bkSummary: (p, f, a, o) => `${p} playlists · ${f} favorites · ${a} artists · ${o} offline songs`,
+      bkMerge: "Merge with current data",
+      bkMergeSub: "Nothing is deleted and nothing is added twice",
+      bkReplace: "Replace everything",
+      bkReplaceSub: "Current playlists, favorites, followed artists and settings are replaced by the file",
+      bkReplaceQ: "Delete all your current playlists and favorites and replace them with the backup? This can't be undone.",
+      bkWorking: "Restoring…",
+      bkDone: (p, t) => `Restored: ${p} playlists and ${t} songs`,
+      bkMissing: (n) => `${n} songs are no longer on SoundCloud`,
+      bkOffline: (n) => `${n} songs were offline on the previous device. Download them again?`,
+      bkOnline: "You need to be online for this",
+      bkFailed: "Restore didn't finish — please try again",
+      schTitle: "Download schedule",
+      schSub: "Downloads only start inside the chosen time window",
+      schOn: "Schedule on",
+      schFrom: "From",
+      schTo: "Until",
+      schDays: "Days",
+      schWifi: "Wi-Fi only",
+      schCharge: "Only while charging",
+      schSave: "Save",
+      schNext: (w) => `Next run: ${w}`,
+      schNow: "Download now",
+      schInWin: "Inside the scheduled window",
+      schWaitWifi: "Waiting for Wi-Fi",
+      schWaitCharge: "Waiting for charging",
+      schChargeUnknown: "This device can't report charging",
+      schWifiUnknown: "This device can't report the connection type",
+      schQueued: (n, w) => `${n} songs queued for the schedule · ${w}`,
+      schQLbl: "Scheduled",
+      schPaused: "Outside the window — restarts in the next window",
+      schOff: "Off",
+      schNoDays: "Pick at least one day",
+      schNoteA: "Android may close the app in the background to save battery; downloads then continue when you open the app again. Exact times aren't guaranteed.",
+      schNoteW: "On Windows scheduled downloads run while the app is open; if it's closed they continue on the next launch.",
+      schNoteT: "Inside Telegram scheduled downloads only run while the Mini App is open.",
+      days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      follow: "Follow",
+      following: "Following",
+      folTitle: "Followed artists",
+      folNone: "You don't follow anyone yet",
+      folNoneSub: "Tap “Follow” on an artist page or in search results",
+      folAlerts: "New release alerts",
+      folAlertsSub: "Only songs released after you follow",
+      folMute: "Mute",
+      folMuted: "Alerts muted for this artist",
+      folUnmuted: "Alerts on for this artist",
+      folNew: "New",
+      folNewN: (n, a) => n > 1 ? `${n} new songs from ${a}` : `New song from ${a}`,
+      folChecked: (w) => `Last checked: ${w}`,
+      folNever: "Not checked yet",
+      folCheck: "Check now",
+      folReleased: (d) => `Released ${d}`,
+      folFollowed: (a) => `Following ${a}`,
+      folUnfollowed: (a) => `Unfollowed ${a}`,
+      folNoNew: "No new songs yet",
+      folUnfollow: "Unfollow",
+      folNoteA: "Checked every 6 hours in the background (when online); Android may shift the exact time.",
+      folNoteW: "On Windows it's checked every 6 hours while the app is open, otherwise on the next launch.",
+      folNoteT: "Inside Telegram it's checked when you open the Mini App.",
+      recVidNoAudio: "This video has no sound",
+      recVidBad: "This file can't be recognized",
+      recVidBadSub: "The video must be MP4 or MOV with AAC or MP3 audio",
+      recVidNone: "This song wasn't found",
+      recVidNoneSub: "If you know its name, search by name",
+      recVidFound: "🎬 This song",
+      recSearchName: "Search by name",
+      recVidBig: "File too large (max 200 MB)"
     }
   };
   let lang = NATIVE ? localStorage.getItem("sc_lang") || "fa" : (((_c = (_b = tg == null ? void 0 : tg.initDataUnsafe) == null ? void 0 : _b.user) == null ? void 0 : _c.language_code) || "fa").startsWith("fa") ? "fa" : "en";
@@ -769,6 +1111,7 @@
   };
   const view = () => S.stack[S.stack.length - 1];
   function go(v) {
+    vsStop(true);
     if (recLive()) closeSheet();
     S.stack.push(v);
     render();
@@ -785,6 +1128,7 @@
     }
   }
   function setTab(t) {
+    vsStop(true);
     if (recLive()) closeSheet();
     S.tab = t;
     S.stack = [{ type: t }];
@@ -802,7 +1146,7 @@
   function render() {
     const v = view();
     document.querySelectorAll(".nav button").forEach((b) => b.classList.toggle("on", b.dataset.tab === S.tab));
-    const r = { home: vHome, search: vSearch, library: vLibrary, settings: vSettings, playlist: vPlaylist, artist: vArtist, set: vSet, shared: vShared, offline: vOffline, downloads: vDownloads, stats: vStats, rechist: vRecHist }[v.type];
+    const r = { home: vHome, search: vSearch, library: vLibrary, settings: vSettings, playlist: vPlaylist, artist: vArtist, set: vSet, shared: vShared, offline: vOffline, downloads: vDownloads, stats: vStats, rechist: vRecHist, storage: vStorage, follows: vFollows }[v.type];
     r(v);
   }
   function trackRow(t, i, opts = {}) {
@@ -813,7 +1157,7 @@
     ${opts.num ? `<div class="num">${i + 1}</div>` : ""}
     <div class="art">${img(t.artwork_url, "t120x120")}${cur ? `<div class="eqi"><i></i><i></i><i></i></div>` : ""}</div>
     <div class="meta"><div class="t" dir="auto">${esc(t.title)}</div>
-      <div class="a" dir="auto">${dlBadge(t.id)}${OFF.ids.has(t.id) ? `<span class="offi" title="offline">${I("offline")}</span>` : ""}${lock ? `<span class="lock">${I("lock")}</span>` : ""}${esc(t.artist)} · ${fmtDur(t.duration_ms)}${t.playback_count ? ` · ▶ ${fmtNum(t.playback_count)}` : ""}</div></div>
+      <div class="a" dir="auto">${opts.off ? `<span class="badge offb">${L("offBadge")}</span>` : ""}${dlBadge(t.id)}${OFF.ids.has(t.id) ? `<span class="offi" title="offline">${I("offline")}</span>` : ""}${lock ? `<span class="lock">${I("lock")}</span>` : ""}${esc(t.artist)} · ${fmtDur(t.duration_ms)}${t.playback_count ? ` · ▶ ${fmtNum(t.playback_count)}` : ""}</div></div>
     ${opts.edit ? `<div class="edit-btns"><button data-act="mvup" data-id="${t.id}">${I("up")}</button><button data-act="mvdn" data-id="${t.id}">${I("down")}</button><button class="del" data-act="rmpl" data-id="${t.id}">${I("close")}</button></div>` : `<button class="more" data-act="menu" data-id="${t.id}" data-ctx="${opts.ctx || ""}">${I("more")}</button>`}
   </div>`;
   }
@@ -916,9 +1260,15 @@
     if ($(".sheet.show .rec")) recSet(recSheet("none"));
   }
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden) recOnHide();
+    if (document.hidden) {
+      recOnHide();
+      vsStop();
+    }
   });
-  window.addEventListener("pagehide", recOnHide);
+  window.addEventListener("pagehide", () => {
+    recOnHide();
+    vsStop();
+  });
   function recPcm(maxSec) {
     const n = Math.min(REC.len, Math.floor(maxSec * REC.rate)), out = new Float32Array(n);
     let o = n;
@@ -1018,16 +1368,19 @@
     recStop();
     const inp = document.createElement("input");
     inp.type = "file";
-    inp.accept = "audio/*,video/*,.mp3,.m4a,.ogg,.opus,.wav,.aac,.flac";
+    inp.accept = "audio/*,video/*,.mp3,.m4a,.ogg,.opus,.wav,.aac,.flac,.mp4,.mov,.m4v,.3gp,.webm,.mkv";
     inp.onchange = async () => {
       const f = inp.files && inp.files[0];
       if (!f) return;
+      const vid = isVideoName(f);
+      if (vid && f.size > 200 * 1048576) return recVidMsg("big");
       recSet(recSheet("file", esc(f.name)));
       const run = ++REC.run;
       REC.busy = true;
       try {
         const buf = await f.arrayBuffer();
         if (run !== REC.run) return;
+        if (vid) return await recVideoFile(f, buf, run);
         const AC = window.AudioContext || window.webkitAudioContext, ac = new AC();
         REC.fileCtx = ac;
         let ab;
@@ -1069,7 +1422,7 @@
     <button class="btn" data-act="m_queue" data-id="${t.id}">${I("queue")} ${L("recQueue")}</button>
     <button class="btn" data-act="m_addpl" data-id="${t.id}">${I("plus")} ${L("recPl")}</button>
     <button class="btn ic ${S.favs.has(t.id) ? "on" : ""}" data-act="m_fav" data-id="${t.id}" aria-label="${esc(L("fav"))}">${I(S.favs.has(t.id) ? "heart" : "heartO")}</button></div>`;
-  function recShow(r) {
+  function recShow(r, video) {
     const h = r.hit, all = r.tracks || [];
     const matched = Math.max(0, Math.min(all.length, Number(r.matched) || 0));
     const tracks = all.slice(0, matched);
@@ -1081,7 +1434,7 @@
     const links = [h.url && [`Shazam`, h.url], h.spotify && ["Spotify", h.spotify], h.apple && ["Apple Music", h.apple]].filter(Boolean);
     recSet(`<div class="rres">
     <div class="rcov">${h.cover ? `<img src="${esc(h.cover)}" alt="">` : I("music")}</div>
-    <div class="rmeta"><small>🎯 ${L("recTitle")}</small><h3 dir="auto">${esc(h.title)}</h3><p dir="auto">${esc(h.artist)}</p>
+    <div class="rmeta"><small>${video ? L("recVidFound") : `🎯 ${L("recTitle")}`}</small><h3 dir="auto">${esc(h.title)}</h3><p dir="auto">${esc(h.artist)}</p>
       <span>${[h.album, h.year, h.genre].filter(Boolean).map(esc).join(" · ")}</span>
       <div class="rlinks">${links.map(([n, u]) => `<button class="chip" data-act="recext" data-url="${esc(u)}">${n}</button>`).join("")}</div></div>
   </div>
@@ -1136,7 +1489,7 @@
   function vSearch() {
     const s = S.search;
     root().innerHTML = `<div class="view">
-    <div class="sbox"><div class="sinput">${I("search")}<input id="q" type="search" enterkeyhint="search" autocomplete="off" placeholder="${esc(L("searchPh"))}" value="${esc(s.q)}"><button class="mic" data-act="rec" aria-label="${esc(L("recTitle"))}">${I("mic")}</button></div>
+    <div class="sbox"><div class="sinput">${I("search")}<input id="q" type="search" enterkeyhint="search" autocomplete="off" placeholder="${esc(L("searchPh"))}" value="${esc(s.q)}"><button class="vsb" data-act="vs" aria-label="${esc(L("vsTitle"))}">${I("v_voice")}</button><button class="mic" data-act="rec" aria-label="${esc(L("recTitle"))}">${I("mic")}</button></div>
       <div class="seg">${["tracks", "users", "playlists"].map((k) => `<button class="chip ${s.type === k ? "on" : ""}" data-act="stype" data-k="${k}">${L(k === "users" ? "artists" : k === "playlists" ? "albums" : "tracks")}</button>`).join("")}</div></div>
     <div id="sres"></div><div id="smore"></div></div>`;
     const inp = $("#q");
@@ -1164,18 +1517,28 @@
       return;
     }
     if (!s.q) {
-      box.innerHTML = emptyBox("search", L("startSearch"), L("startSearchSub"));
+      box.innerHTML = recentHtml() || emptyBox("search", L("startSearch"), L("startSearchSub"));
+      $("#smore").innerHTML = "";
       return;
     }
+    if (s.offOnly) {
+      const ol = offSearch(s.q);
+      box.innerHTML = `<div class="offm">${I("offline")}<span>${L("offSearchMode")}</span></div>` + (ol.length ? trackList(ol, { ctx: setCtx("offs", ol), off: true }) : emptyBox("music", L("notFound"), ""));
+      $("#smore").innerHTML = "";
+      return;
+    }
+    const offTop = s.type === "tracks" ? offSearch(s.q).slice(0, 5) : [];
+    const offHtml = offTop.length ? `<div class="lyo">${I("offline", "ci")} ${L("offResults")}</div>${trackList(offTop, { ctx: setCtx("offs", offTop), off: true })}<div class="lyo">SoundCloud</div>` : "";
     if (!s.items.length && !((_b2 = (_a2 = s.lyr) == null ? void 0 : _a2.tracks) == null ? void 0 : _b2.length)) {
-      box.innerHTML = emptyBox("music", L("noRes"), L("tryElse"));
+      box.innerHTML = offHtml + emptyBox("music", L("noRes"), L("tryElse"));
       return;
     }
     if (s.type === "tracks" && ((_d2 = (_c2 = s.lyr) == null ? void 0 : _c2.tracks) == null ? void 0 : _d2.length)) {
       const all = s.lyr.tracks.concat(s.items), ctx = setCtx("search", all);
       box.innerHTML = `<div class="lyh">${I("mic")}<div><small>${L("lyFound")}</small><b dir="auto">${esc(s.lyr.title)}</b> — <span dir="auto">${esc(s.lyr.artist)}</span></div></div>` + trackList(s.lyr.tracks, { ctx }) + (s.items.length ? `<div class="lyo">${L("lyOther")}</div>` + trackList(s.items, { ctx, start: s.lyr.tracks.length }) : "");
     } else if (s.type === "tracks") box.innerHTML = trackList(s.items, { ctx: setCtx("search", s.items) });
-    else if (s.type === "users") box.innerHTML = `<div class="list">${s.items.map((u) => `<div class="tr ur" data-act="artist" data-id="${u.id}"><div class="art">${img(u.avatar_url, "t120x120")}</div><div class="meta"><div class="t">${esc(u.username)} ${u.verified ? "✅" : ""}</div><div class="a">👥 ${fmtNum(u.followers)} · 🎵 ${u.tracks}${u.city ? " · " + esc(u.city) : ""}</div></div></div>`).join("")}</div>`;
+    if (offHtml && s.type === "tracks") box.insertAdjacentHTML("afterbegin", offHtml);
+    else if (s.type === "users") box.innerHTML = `<div class="list">${s.items.map((u) => `<div class="tr ur" data-act="artist" data-id="${u.id}"><div class="art">${img(u.avatar_url, "t120x120")}</div><div class="meta"><div class="t">${esc(u.username)} ${u.verified ? "✅" : ""}</div><div class="a">👥 ${fmtNum(u.followers)} · 🎵 ${u.tracks}${u.city ? " · " + esc(u.city) : ""}</div></div>${folBtn(u, true)}</div>`).join("")}</div>`;
     else box.innerHTML = `<div class="list">${s.items.map((p) => `<div class="tr" data-act="set" data-id="${p.id}"><div class="art">${img(p.artwork_url, "t120x120")}</div><div class="meta"><div class="t">${esc(p.title)}</div><div class="a"><span class="badge">${p.is_album ? L("album") : L("playlist")}</span> ${esc(p.username)} · ${p.track_count} 🎵</div></div></div>`).join("")}</div>`;
     $("#smore").innerHTML = s.more ? `<div class="spin" id="sentinel"></div>` : "";
     if (searchObs) {
@@ -1205,7 +1568,17 @@
       s.more = false;
       s.lyr = null;
     }
-    if (!q) return drawSearch();
+    if (!q) {
+      s.offOnly = false;
+      return drawSearch();
+    }
+    if (force && !more) recentAdd(q);
+    if (!online()) {
+      s.loading = false;
+      s.offOnly = true;
+      return drawSearch();
+    }
+    s.offOnly = false;
     s.loading = true;
     drawSearch();
     try {
@@ -1224,7 +1597,10 @@
       s.offset += items.length;
       s.more = items.length >= 20 && s.offset < 200;
     } catch (e) {
-      if (seq === searchSeq) toast(L("err"));
+      if (seq === searchSeq) {
+        if (!e.status && !more) s.offOnly = true;
+        else toast(L("err"));
+      }
     }
     if (seq !== searchSeq) return;
     s.loading = false;
@@ -1255,7 +1631,8 @@
     root().innerHTML = `<div class="view"><div class="hdr"><div class="logo">📂 <b>${L("library")}</b></div></div><div id="pls"><div class="spin"></div></div></div>`;
     const xCards = `<button class="pc" data-act="stats"><div class="cv stv">${I("stats")}</div><div class="n">${L("stTitle")}</div><div class="c">${L("st7")}</div></button>
     ${OFF.ok ? `<button class="pc" data-act="dlopen"><div class="cv dlv">${I("download")}</div><div class="n">${L("dlTitle")}</div><div class="c">${dlBusy() ? L("dlProg", DLM.jobs.filter((j) => j.st === "done" || j.st === "skip").length, DLM.jobs.filter((j) => j.st !== "cancel").length) : "&nbsp;"}</div></button>` : ""}
-    <button class="pc" data-act="rechist"><div class="cv rhv">${I("history")}</div><div class="n">${L("recHist")}</div><div class="c">${recHist().length || "&nbsp;"}</div></button>`;
+    <button class="pc" data-act="rechist"><div class="cv rhv">${I("history")}</div><div class="n">${L("recHist")}</div><div class="c">${recHist().length || "&nbsp;"}</div></button>
+    <button class="pc" data-act="folopen"><div class="cv folv">${I("v_bell")}</div><div class="n">${L("folTitle")}</div><div class="c">${FOL.list.length || "&nbsp;"}</div></button>`;
     const ofCard0 = `<div class="grid">${OFF.ok ? `<button class="pc" data-act="offopen"><div class="cv off">${I("offline")}</div><div class="n">${L("ofTitle")}</div><div class="c">${L("ofCount", OFF.ids.size, fmtMB(offUsed()))}</div></button>` : ""}${xCards}</div>`;
     try {
       if (S.offline) throw new Error("offline");
@@ -1287,6 +1664,7 @@
     v.data = d;
     remember(d.tracks);
     const p = d.playlist, tr = d.tracks;
+    PLX.note(p.id, p.name, p.is_favorites, tr);
     const total = tr.reduce((a, x) => a + (x.duration_ms || 0), 0);
     const cover = (_a2 = tr.find((x) => x.artwork_url)) == null ? void 0 : _a2.artwork_url;
     const name = p.is_favorites ? L("favorites") : p.name;
@@ -1348,6 +1726,7 @@
       <div class="info"><div class="kind">${L("artist")} ${u.verified ? "✅" : ""}</div><h1>${esc(u.username)}</h1><div class="sub">👥 ${fmtNum(u.followers)} ${L("followers")} · 🎵 ${u.tracks}</div></div></div></div>
     <div class="acts"><button class="btn pri" data-act="ctxplay" data-ctx="artist">${I("play")} ${L("play")}</button>
       <button class="btn ic" data-act="ctxshuffle" data-ctx="artist">${I("shuffle")}</button>
+      ${folBtn(u)}
       <a class="btn ic" href="${esc(u.permalink_url)}" target="_blank">${I("link")}</a></div>
     <div class="seg" style="margin-bottom:8px"><button class="chip ${v.mode === "top" ? "on" : ""}" data-act="amode" data-m="top">🔥 ${L("topTracks")}</button><button class="chip ${v.mode === "new" ? "on" : ""}" data-act="amode" data-m="new">🆕 ${L("latest")}</button></div>
     ${list.length ? trackList(list, { ctx: setCtx("artist", list), num: true }) : emptyBox("music", L("noRes"))}</div>`;
@@ -1395,6 +1774,7 @@
       <button class="it" data-act="offopen"><div class="ico" style="background:#6366f1">${I("download")}</div><div class="l">${L("ofTitle")}</div><div class="v">${L("ofCount", OFF.ids.size, fmtMB(offUsed()))}</div></button>
       <button class="it" data-act="dlopen"><div class="ico" style="background:#0ea5e9">${I("download")}</div><div class="l">${L("dlTitle")}</div><div class="v">${dlBusy() ? `<span class="badge">${DLM.jobs.filter(dlActive).length}</span>` : ""}</div></button>
       <button class="it" data-act="offclear"><div class="ico" style="background:#ef4444">${I("trash2")}</div><div class="l">${L("ofClear")}</div><div class="v"></div></button></div>` : ""}
+    ${v15SettingsCard()}
     <div class="card"><button class="it" data-act="openbot"><div class="ico" style="background:#2aabee">${I("tg")}</div><div class="l">${L("openBot")}</div><div class="v">@${esc(((_e2 = S.bot) == null ? void 0 : _e2.username) || "")}</div></button>
       ${NATIVE ? "" : `<button class="it" data-act="getapp"><div class="ico" style="background:#22c55e">${I("download")}</div><div class="l">${L("getApp")}</div><div class="v">${I("android", "mini-ic")} ${I("windows", "mini-ic")}</div></button>`}</div>
     ${NATIVE ? `<div class="card">
@@ -1435,6 +1815,7 @@
   function closeSheet() {
     var _a2, _b2;
     sheetTok++;
+    vsStop(true);
     if (S._cf) {
       const f = S._cf;
       S._cf = null;
@@ -1513,6 +1894,7 @@
   document.addEventListener("touchend", unlockAudio, { once: true });
   document.addEventListener("click", unlockAudio, { once: true });
   function playList(list, i) {
+    if (partyGuard()) return;
     const clean = list.filter((t) => !(t.drm || t.snipped));
     const target = list[i];
     if (target && (target.drm || target.snipped)) {
@@ -1793,6 +2175,7 @@
     const m = OFF.meta.get(id);
     if (!m) return;
     m.last = Date.now();
+    m.played = m.last;
     clearTimeout(touchT);
     touchT = setTimeout(() => offTx("meta", "readwrite", (st) => st.put(m)).catch(() => {
     }), 1500);
@@ -2119,7 +2502,15 @@
         continue;
       }
       if (dlJob(t.id) || OFF.busy.has(t.id)) continue;
-      DLM.jobs.push({ t: Object.assign({}, t), st: "queued", pct: 0, preset: o.preset, q: o.q || (o.preset ? null : offQ()), auto: !!o.auto });
+      DLM.jobs.push({
+        t: Object.assign({}, t),
+        st: "queued",
+        pct: 0,
+        preset: o.preset,
+        q: o.q || (o.preset ? null : offQ()),
+        auto: !!o.auto,
+        sched: o.sched != null ? !!o.sched : SCH.on && !o.auto && !o.now
+      });
       n++;
     }
     dlRefresh();
@@ -2133,7 +2524,7 @@
     let okN = 0, failN = 0;
     try {
       for (; ; ) {
-        const j = DLM.jobs.find((x) => x.st === "queued");
+        const j = await dlNextJob();
         if (!j) break;
         if (j.auto && !await autoNetOk()) {
           for (const x of DLM.jobs) if (x.auto && x.st === "queued") x.st = "cancel";
@@ -2160,9 +2551,16 @@
         } catch (e) {
           console.warn("dl job", e);
         }
-        j.st = ok ? "done" : j.ctrl.signal.aborted ? "cancel" : "fail";
+        j.st = ok ? "done" : j.ctrl.signal.aborted ? j.pauseReq ? "queued" : "cancel" : "fail";
         j.err = ok ? null : o.err;
         if (ok) j.pct = 100;
+        if (j.pauseReq) {
+          j.pauseReq = false;
+          if (!ok) {
+            j.pct = 0;
+            j.err = null;
+          }
+        }
         j.ctrl = null;
         DLM.cur = null;
         dlRefresh();
@@ -2222,7 +2620,7 @@
   function dlBadge(id) {
     const j = [...DLM.jobs].reverse().find((x) => x.t.id === id);
     if (!j || OFF.ids.has(id) && j.st !== "run") return "";
-    if (j.st === "queued") return `<span class="dls q">${I("download")}${L("dlQueued")}</span>`;
+    if (j.st === "queued") return `<span class="dls q">${I(j.sched ? "v_clock" : "download")}${L(j.sched ? "schQLbl" : "dlQueued")}</span>`;
     if (j.st === "run") return `<span class="dls r">${I("download")}${j.pct}%</span>`;
     if (j.st === "fail") return `<span class="dls f">${I("close")}${L("dlFail")}</span>`;
     return "";
@@ -2233,6 +2631,7 @@
     dlRefT = setTimeout(() => {
       var _a2, _b2;
       dlRefT = null;
+      schPersist();
       if (((_a2 = view()) == null ? void 0 : _a2.type) === "downloads") drawDownloads();
       document.querySelectorAll("#view .tr[data-id]:not(.dlj), .sheet .tr[data-id]:not(.dlj)").forEach((el) => {
         const id = Number(el.dataset.id), a = el.querySelector(".a");
@@ -2314,7 +2713,7 @@
     }
     closeSheet();
     S.dlOpts = null;
-    if (dlEnqueue([d.t], { preset: o.preset })) toast(L("dlStarted", 1));
+    dlToast(dlEnqueue([d.t], { preset: o.preset }));
   }
   function dlBatchSheet(list) {
     const todo = list.filter((x) => x && !OFF.ids.has(x.id) && !x.drm && !x.snipped && !dlJob(x.id));
@@ -2336,7 +2735,7 @@
     if (why) return toastLong(why);
     const n = dlEnqueue(all, { q });
     if (n) {
-      toast(L("dlStarted", n));
+      dlToast(n);
       hapticOk();
     }
   }
@@ -2357,14 +2756,14 @@
     if (!box) return;
     const jobs = DLM.jobs;
     if (!jobs.length) {
-      box.innerHTML = emptyBox("download", L("dlNone"), L("dlNoneSub"));
+      box.innerHTML = schCard() + emptyBox("download", L("dlNone"), L("dlNoneSub"));
       return;
     }
     const tot = jobs.filter((j) => j.st !== "cancel").length, fin = jobs.filter((j) => j.st === "done" || j.st === "skip").length;
     const pct = tot ? Math.round((fin + (DLM.cur ? DLM.cur.pct / 100 : 0)) / tot * 100) : 0;
     const fails = jobs.filter((j) => j.st === "fail").length, busy = dlBusy();
-    const stTxt = (j) => j.st === "run" ? `${j.pct}%` : j.st === "queued" ? L("dlQueued") : j.st === "done" ? L("dlDone") : j.st === "skip" ? L("dlSkip") : j.st === "cancel" ? L("dlCanceled") : `${L("dlFail")}${j.err === "drm" ? " · " + L("dlErrDrm") : j.err === "big" ? " · " + L("dlErrBig") : j.err === "q" ? " · " + L("dlErrQ") : ""}`;
-    box.innerHTML = `<div class="card dlsum"><div class="dlrow"><b>${L("dlProg", fin, tot)}</b><span>${pct}%</span></div><div class="upd-bar"><i style="width:${pct}%"></i></div>
+    const stTxt = (j) => j.st === "run" ? `${j.pct}%` : j.st === "queued" ? L(j.sched ? "schQLbl" : "dlQueued") : j.st === "done" ? L("dlDone") : j.st === "skip" ? L("dlSkip") : j.st === "cancel" ? L("dlCanceled") : `${L("dlFail")}${j.err === "drm" ? " · " + L("dlErrDrm") : j.err === "big" ? " · " + L("dlErrBig") : j.err === "q" ? " · " + L("dlErrQ") : ""}`;
+    box.innerHTML = schCard() + `<div class="card dlsum"><div class="dlrow"><b>${L("dlProg", fin, tot)}</b><span>${pct}%</span></div><div class="upd-bar"><i style="width:${pct}%"></i></div>
       <div class="row2">${busy ? `<button class="btn" data-act="dlcancelall">${I("close")} ${L("dlCancelAll")}</button>` : ""}${fails ? `<button class="btn pri" data-act="dlretry">${I("retry")} ${L("dlRetry")}</button>` : ""}${!busy ? `<button class="btn" data-act="dlclear">${I("trash2")} ${L("dlClearDone")}</button>` : ""}</div></div>
     <div class="list">${jobs.map((j) => `<div class="tr dlj ${j.st}" data-id="${j.t.id}"><div class="art">${img(j.t.artwork_url, "t120x120")}</div>
       <div class="meta"><div class="t" dir="auto">${esc(j.t.title)}</div><div class="a"><span class="dlst">${stTxt(j)}</span> · <span dir="auto">${esc(j.t.artist || "")}</span></div>
@@ -2687,6 +3086,10 @@
   }
   function next(auto = false) {
     if (!S.queue.length) return;
+    if (PARTY.role === "guest" && !PARTY.applying) {
+      if (!auto) toast(L("partyHostOnly"));
+      return;
+    }
     if (auto && S.repeat === "one") {
       plEnd();
       plStart(S.queue[S.qi]);
@@ -2704,6 +3107,7 @@
     loadCurrent();
   }
   function prev() {
+    if (partyGuard()) return;
     if (audio.currentTime > 4) {
       audio.currentTime = 0;
       return;
@@ -3471,7 +3875,7 @@
         prev();
         break;
       case "seek":
-        if (isFinite(arg)) audio.currentTime = Number(arg) / 1e3;
+        if (isFinite(arg) && !partyGuard()) audio.currentTime = Number(arg) / 1e3;
         break;
       case "stop":
         audio.pause();
@@ -3548,7 +3952,8 @@
     <div class="tools"><button data-act="lyopen" id="tly">${I("lyrics")}<span>${L("lyLbl")}</span></button>
       <button data-act="slopen" id="tsl">${I("timer")}<span id="tslv">${L("timerLbl")}</span></button>
       <button data-act="spopen" id="tsp">${I("speed")}<span id="tspv">${L("spLbl")}</span></button>
-      <button data-act="eqopen" id="teq">${I("eq")}<span>${L("eqLbl")}</span></button></div>
+      <button data-act="eqopen" id="teq">${I("eq")}<span>${L("eqLbl")}</span></button>
+      <button data-act="party" id="tpa">${I("v_group")}<span id="tpav">${L("partyLbl")}</span></button></div>
     <div class="bar"><button data-act="fpsend">${I("send")}<span>${L("sendChat").split(" ").slice(0, 2).join(" ")}</span></button>
       <button data-act="fpaddpl">${I("plus")}<span>${L("addPl").split(" ")[0]}</span></button>
       <button data-act="showqueue">${I("queue")}<span>${L("queue")}</span></button>
@@ -3566,6 +3971,11 @@
     });
     seek.addEventListener("change", () => {
       var _a2, _b2;
+      if (partyGuard()) {
+        dragging = false;
+        updateProgress();
+        return;
+      }
       if (S.needLoad) {
         const d = (((_a2 = S.queue[S.qi]) == null ? void 0 : _a2.duration_ms) || 0) / 1e3;
         S.pendingSeek = seek.value / 1e3 * d;
@@ -3863,6 +4273,7 @@
       case "play": {
         const ctx = el.dataset.ctx, list = CTX[ctx] || [S.tracks.get(Number(id))];
         if (ctx === "rec" && el.closest(".sheet")) closeSheet();
+        if (ctx === "search" || ctx === "offs") recentAdd(S.search.q);
         haptic();
         return playList(list, Number((_a2 = el.dataset.i) != null ? _a2 : 0));
       }
@@ -4537,6 +4948,1624 @@
         applyLang();
         rebuildChrome();
         return showLogin();
+      default:
+        return v15Click(a, el, e);
+    }
+  }
+  Object.assign(P, {
+    v_group: "M16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6m0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13m8 0c-.29 0-.62.02-.97.05A4.2 4.2 0 0 1 17 16.5V19h6v-2.5c0-2.33-4.67-3.5-7-3.5",
+    v_fol: "M15 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8m-9-2V7H4v3H1v2h3v3h2v-3h3v-2zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4",
+    v_folok: "M9 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8m0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4m7.6-4.2 4.6-4.6 1.4 1.4-6 6-3.4-3.4 1.4-1.4z",
+    v_voice: "M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3m5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11zM1 9h2v4H1zm20 0h2v4h-2z",
+    v_clock: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16m-1 3v6l5 3 1-1.6-4-2.4V7z",
+    v_backup: "M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A6 6 0 0 0 6 20h13a5 5 0 0 0 .35-9.96M14 13v4h-4v-4H7l5-5 5 5z",
+    v_plane: "M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z",
+    v_bell: "M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2m6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4a1.5 1.5 0 0 0-3 0v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1z",
+    v_belloff: "M20 18.69 7.84 6.14 5.27 3.49 4 4.76l2.8 2.8c-.52.99-.8 2.16-.8 3.42v5l-2 2v1h13.73l2 2L21 19.72zM12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2m6-7.32V11c0-3.08-1.64-5.64-4.5-6.32V4a1.5 1.5 0 0 0-3 0v.68c-.6.14-1.15.36-1.66.64L18 14.68z",
+    v_check: "M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z",
+    v_video: "M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11z"
+  });
+  const LS = {
+    get(k, d) {
+      try {
+        const v = localStorage.getItem(k);
+        return v == null ? d : JSON.parse(v);
+      } catch (e) {
+        return d;
+      }
+    },
+    set(k, v) {
+      try {
+        localStorage.setItem(k, JSON.stringify(v));
+      } catch (e) {
+      }
+    },
+    del(k) {
+      try {
+        localStorage.removeItem(k);
+      } catch (e) {
+      }
+    }
+  };
+  const online = () => !S.offline && navigator.onLine !== false;
+  const plat = () => NATIVE ? NATIVE.platform === "android" ? "android" : "windows" : "tg";
+  const tms = (x) => typeof x === "number" ? x : Date.parse(x || "") || 0;
+  const dayKey = (d = /* @__PURE__ */ new Date()) => `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+  const locale = () => lang === "fa" ? "fa-IR" : "en-GB";
+  function fmtWhen(ts) {
+    const d = new Date(ts);
+    if (!ts || isNaN(d)) return "";
+    const now = /* @__PURE__ */ new Date(), t = d.toLocaleTimeString(locale(), { hour: "2-digit", minute: "2-digit" });
+    const dd = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 864e5);
+    if (dd === 0) return `${L("today")} ${t}`;
+    if (dd === 1) return `${L("tomorrow")} ${t}`;
+    return `${d.toLocaleDateString(locale(), { weekday: "short", day: "numeric", month: "short" })} ${t}`;
+  }
+  const fmtDate = (ts) => {
+    const d = new Date(ts);
+    return !ts || isNaN(d) ? "" : d.toLocaleDateString(locale(), { year: "numeric", month: "short", day: "numeric" });
+  };
+  const normQ = (s) => String(s || "").toLowerCase().replace(/[يى]/g, "ی").replace(/ك/g, "ک").replace(/[ۀة]/g, "ه").replace(/[أإٱ]/g, "ا").replace(/ؤ/g, "و").replace(/[\u064B-\u065F\u0670\u0640\u200c\u200d\u200e\u200f]/g, "").replace(/[\u06F0-\u06F9]/g, (c) => String(c.charCodeAt(0) - 1776)).replace(/[\u0660-\u0669]/g, (c) => String(c.charCodeAt(0) - 1632)).replace(/\s+/g, " ").trim();
+  const miniT = (t) => t && {
+    id: Number(t.id),
+    title: String(t.title || ""),
+    artist: String(t.artist || t.username || ""),
+    username: t.username || null,
+    user_id: t.user_id || null,
+    duration_ms: Number(t.duration_ms) || 0,
+    genre: t.genre || null,
+    artwork_url: /^https:\/\//.test(t.artwork_url || "") ? t.artwork_url : null,
+    permalink_url: /^https:\/\//.test(t.permalink_url || "") ? t.permalink_url : null
+  };
+  const callNative = async (fn, ...a) => {
+    if (!NATIVE || typeof NATIVE[fn] !== "function") return void 0;
+    let x = NATIVE[fn](...a);
+    if (x && x.then) x = await x;
+    return x;
+  };
+  const swH = (on) => `<span class="sw ${on ? "on" : ""}"><i></i></span>`;
+  const PLX = {
+    get: () => LS.get("sc_plx", {}),
+    note(id, name, fav, tracks) {
+      if (!id || !Array.isArray(tracks)) return;
+      const x = PLX.get();
+      x[id] = { name: fav ? "" : String(name || ""), fav: !!fav, ids: tracks.map((t) => t.id) };
+      LS.set("sc_plx", x);
+    },
+    async refresh() {
+      if (!online()) return PLX.get();
+      try {
+        await loadPlaylists();
+        const old = PLX.get(), out = {};
+        for (const p of S.playlists.slice(0, 30)) {
+          try {
+            const d = await api(`/playlists/${p.id}`);
+            out[p.id] = { name: p.is_favorites ? "" : p.name, fav: !!p.is_favorites, ids: (d.tracks || []).map((t) => t.id) };
+          } catch (e) {
+            if (old[p.id]) out[p.id] = old[p.id];
+          }
+        }
+        LS.set("sc_plx", out);
+        return out;
+      } catch (e) {
+        return PLX.get();
+      }
+    }
+  };
+  const plxName = (p) => p.fav ? L("favorites") : p.name;
+  const PARTY = {
+    code: null,
+    role: null,
+    last: null,
+    recv: 0,
+    timer: null,
+    pushT: null,
+    beat: 0,
+    progAt: 0,
+    applying: false,
+    guestPaused: false,
+    pendingSync: false,
+    rtt: 0,
+    busy: false,
+    failN: 0,
+    resyncs: 0,
+    guests: 0,
+    host: ""
+  };
+  const PARTY_RE = /^[2-9a-hjkmnp-z]{10}$/;
+  const partyLink = (code) => {
+    var _a2;
+    return NATIVE ? `${APP_LINK}/j/${code}` : `https://t.me/${(_a2 = S.bot) == null ? void 0 : _a2.username}?start=j_${code}`;
+  };
+  const partySnap = () => {
+    const t = S.queue[S.qi];
+    return { track: miniT(t), position_ms: Math.round((audio.currentTime || S.pendingSeek || 0) * 1e3), playing: !!t && !audio.paused && !S.needLoad };
+  };
+  async function partyCall(path, body) {
+    const t0 = Date.now();
+    const r = await api(`/party${path}`, body !== void 0 ? { method: "POST", body } : {});
+    PARTY.rtt = Math.min(4e3, Date.now() - t0);
+    return r;
+  }
+  function partyGuard() {
+    if (PARTY.role === "guest" && !PARTY.applying) {
+      toast(L("partyHostOnly"));
+      return true;
+    }
+    return false;
+  }
+  async function partyStart() {
+    if (!online()) return toast(L("partyOffline"));
+    if (!S.queue[S.qi]) return toast(L("partyNoTrack"));
+    if (PARTY.code) return partySheet();
+    try {
+      const r = await partyCall("/start", partySnap());
+      partyBegin(r.code, "host", r);
+      partySheet();
+      hapticOk();
+    } catch (e) {
+      toast(e.status ? L("err") : L("partyOffline"));
+    }
+  }
+  async function partyJoin(code) {
+    code = String(code || "").trim().toLowerCase();
+    if (!PARTY_RE.test(code)) return toast(L("partyNotFound"));
+    if (!online()) return toast(L("partyOffline"));
+    if (PARTY.code === code) return partySheet();
+    if (PARTY.code) await partyLeave(true);
+    try {
+      const r = await partyCall(`/${code}/join`, {});
+      if (r.ended) return toast(L("partyNotFound"));
+      partyBegin(code, r.role === "host" ? "host" : "guest", r);
+      toast(L("partyJoined"));
+      hapticOk();
+      if (PARTY.role === "guest") {
+        PARTY.pendingSync = true;
+        partyGot(r, Date.now());
+        await partyApply();
+      }
+      closeSheet();
+      openPlayer();
+    } catch (e) {
+      toast(e.message === "full" ? L("partyFull") : e.status === 404 || e.status === 410 || e.status === 403 ? L("partyNotFound") : e.status ? L("err") : L("partyOffline"));
+    }
+  }
+  function partyBegin(code, role, r) {
+    clearInterval(PARTY.timer);
+    clearTimeout(PARTY.pushT);
+    Object.assign(PARTY, { code, role, last: r, recv: Date.now(), guestPaused: false, failN: 0, guests: r.guests || 0, host: r.host_name || "", beat: Date.now() });
+    LS.set("sc_party", { code, role, at: Date.now() });
+    PARTY.timer = setInterval(partyTick, role === "host" ? 5e3 : 2500);
+    partyUI();
+  }
+  function partyGot(r, recv) {
+    if (!r || !PARTY.code) return;
+    PARTY.last = r;
+    PARTY.recv = recv || Date.now();
+    PARTY.guests = r.guests || 0;
+    PARTY.host = r.host_name || PARTY.host;
+    LS.set("sc_party", { code: PARTY.code, role: PARTY.role, at: Date.now() });
+    if (r.ended) return partyFinish(r.ended_reason || "ended");
+    partyUI();
+  }
+  async function partyTick() {
+    if (!PARTY.code || PARTY.busy) return;
+    if (document.hidden && PARTY.role === "host" && audio.paused) return;
+    PARTY.busy = true;
+    try {
+      if (PARTY.role === "host") {
+        if (!audio.paused && Date.now() - PARTY.beat > 6e4) await partyPush();
+        else {
+          const t0 = Date.now();
+          partyGot(await partyCall(`/${PARTY.code}`), t0);
+        }
+      } else {
+        const t0 = Date.now(), r = await partyCall(`/${PARTY.code}`);
+        partyGot(r, t0 + PARTY.rtt / 2);
+        if (PARTY.code) await partyApply();
+      }
+      PARTY.failN = 0;
+    } catch (e) {
+      partyErr(e);
+    } finally {
+      PARTY.busy = false;
+    }
+  }
+  function partyErr(e) {
+    if (!PARTY.code) return;
+    if (e && (e.status === 410 || e.status === 404 || e.status === 403)) return partyFinish(e.status === 410 ? "ended" : "gone");
+    PARTY.failN++;
+    if (PARTY.failN === 1 && !online()) toast(L("partyOffline"));
+  }
+  function partyQueuePush() {
+    if (PARTY.role !== "host" || !PARTY.code) return;
+    clearTimeout(PARTY.pushT);
+    PARTY.pushT = setTimeout(() => partyPush().catch(partyErr), 350);
+  }
+  async function partyPush() {
+    if (PARTY.role !== "host" || !PARTY.code) return;
+    const s = partySnap();
+    if (!s.track) return;
+    PARTY.beat = Date.now();
+    const t0 = Date.now();
+    partyGot(await partyCall(`/${PARTY.code}/state`, s), t0);
+  }
+  function partyWant() {
+    const r = PARTY.last;
+    if (!r) return 0;
+    const base = Number(r.position_ms) || 0;
+    if (!r.playing) return base;
+    return base + Math.max(0, tms(r.server_time) - tms(r.updated_at)) + (Date.now() - PARTY.recv);
+  }
+  async function partyApply() {
+    const r = PARTY.last;
+    if (PARTY.role !== "guest" || !r || r.ended || !r.track || !r.track.id) return;
+    const cur = S.queue[S.qi];
+    if (!cur || cur.id !== r.track.id) {
+      PARTY.applying = true;
+      PARTY.progAt = Date.now();
+      PARTY.pendingSync = true;
+      try {
+        const t = Object.assign({}, S.tracks.get(r.track.id) || {}, r.track);
+        remember([t]);
+        playList([t], 0);
+      } finally {
+        PARTY.applying = false;
+      }
+      if (!r.playing) setTimeout(() => {
+        var _a2;
+        if (PARTY.role === "guest" && !((_a2 = PARTY.last) == null ? void 0 : _a2.playing)) {
+          PARTY.progAt = Date.now();
+          audio.pause();
+        }
+      }, 600);
+      return;
+    }
+    if (S.needLoad) {
+      if (r.playing && !PARTY.guestPaused) {
+        PARTY.progAt = Date.now();
+        PARTY.pendingSync = true;
+        playNow();
+      }
+      return;
+    }
+    if (!r.playing) {
+      if (!audio.paused) {
+        PARTY.progAt = Date.now();
+        audio.pause();
+      }
+    } else if (!PARTY.guestPaused && audio.paused && audio.readyState >= 1 && !audio.ended) {
+      PARTY.progAt = Date.now();
+      audio.play().catch(() => {
+      });
+    }
+    if (audio.readyState >= 1 && isFinite(audio.duration) && audio.duration > 0) {
+      const want = Math.max(0, Math.min(partyWant() / 1e3, audio.duration - 0.5));
+      if (PARTY.pendingSync || Math.abs(audio.currentTime - want) > 3) {
+        PARTY.progAt = Date.now();
+        audio.currentTime = want;
+        PARTY.pendingSync = false;
+        PARTY.resyncs++;
+      }
+    }
+  }
+  async function partyLeave(quiet) {
+    const code = PARTY.code, role = PARTY.role;
+    if (!code) return;
+    partyFinish(role === "host" ? "self_end" : "left", quiet);
+    try {
+      await partyCall(`/${code}/${role === "host" ? "end" : "leave"}`, {});
+    } catch (e) {
+    }
+  }
+  function partyFinish(reason, quiet) {
+    const role = PARTY.role;
+    clearInterval(PARTY.timer);
+    clearTimeout(PARTY.pushT);
+    Object.assign(PARTY, { code: null, role: null, last: null, timer: null, guestPaused: false, pendingSync: false, guests: 0 });
+    LS.del("sc_party");
+    if (!quiet) toast(reason === "expired" ? L("partyExpired") : reason === "left" ? L("partyLeft") : reason === "self_end" ? L("partyEnded") : reason === "gone" ? L("partyNotFound") : role === "guest" ? L("partyEndedHost") : L("partyEnded"));
+    partyUI();
+  }
+  async function partyResume() {
+    const p = LS.get("sc_party", null);
+    if (!p || !PARTY_RE.test(p.code || "") || Date.now() - (p.at || 0) > 30 * 6e4 || !online()) {
+      if (p) LS.del("sc_party");
+      return;
+    }
+    try {
+      const t0 = Date.now(), r = await partyCall(`/${p.code}`);
+      if (r.ended) {
+        LS.del("sc_party");
+        return;
+      }
+      partyBegin(p.code, r.role === "host" ? "host" : "guest", r);
+      partyGot(r, t0);
+      if (PARTY.role === "guest") {
+        PARTY.pendingSync = true;
+        partyApply();
+      }
+    } catch (e) {
+      LS.del("sc_party");
+    }
+  }
+  function partyUI() {
+    document.body.classList.toggle("party-guest", PARTY.role === "guest");
+    const b = $("#tpa");
+    if (b) {
+      b.classList.toggle("on", !!PARTY.code);
+      $("#tpav").textContent = PARTY.code ? PARTY.role === "host" ? `${L("partyLbl")} · ${PARTY.guests}` : L("partyLbl") : L("partyLbl");
+    }
+    if ($(".sheet.show .party")) partySheet(true);
+  }
+  function partySheet(refresh) {
+    var _a2;
+    const P0 = PARTY, note = `<div class="lyo">${L("partyNote")}</div>`;
+    let html;
+    if (!P0.code) {
+      html = `<div class="party"><div class="pyico">${I("v_group")}</div><h3>${L("partyTitle")}</h3><p>${L("partySub")}</p>
+      <button class="btn pri wide" data-act="partystart">${I("v_group")} ${L("partyStart")}</button>
+      <div class="lyo">${L("partyJoin")}</div>
+      <div class="pyjoin"><input class="field" id="pycode" dir="ltr" maxlength="10" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${esc(L("partyJoinPh"))}"><button class="btn" data-act="partyjoin">${L("partyJoinBtn")}</button></div>${note}</div>`;
+    } else if (P0.role === "host") {
+      html = `<div class="party"><div class="pyico on">${I("v_group")}</div><h3>${L("partyHost")}</h3><p>${L("partyGuests", P0.guests)}</p>
+      <div class="pycode" dir="ltr" data-act="partycopy">${esc(P0.code)}</div><div class="lyo" style="text-align:center">${L("partyCode")}</div>
+      <button class="btn pri wide" data-act="partyinvite">${I("share")} ${L("partyInvite")}</button>
+      <button class="btn wide red" data-act="partyend">${I("close")} ${L("partyEnd")}</button>${note}</div>`;
+    } else {
+      html = `<div class="party"><div class="pyico on">${I("v_group")}</div><h3>${P0.host ? L("partyGuestOf", esc(P0.host)) : L("partyGuestOf0")}</h3><p>${L("partyGuests", Math.max(0, P0.guests - 1))}</p>
+      <div class="pycode" dir="ltr">${esc(P0.code)}</div>
+      <button class="btn wide red" data-act="partyleave">${I("close")} ${L("partyLeave")}</button>${note}</div>`;
+    }
+    if (refresh) {
+      const sh = $(".sheet.show");
+      if (sh && sh.querySelector(".party")) {
+        const v = (_a2 = $("#pycode")) == null ? void 0 : _a2.value;
+        sh.innerHTML = `<div class="grab"></div>${html}`;
+        if (v && $("#pycode")) $("#pycode").value = v;
+      }
+      return;
+    }
+    openSheet(html);
+  }
+  function partyInvite() {
+    if (!PARTY.code) return;
+    const link = partyLink(PARTY.code), text = L("partyInviteText");
+    if (NATIVE) return nativeShare(link, text);
+    return shareLink(link, text);
+  }
+  ["play", "pause", "seeked", "loadedmetadata"].forEach((ev) => audio.addEventListener(ev, () => {
+    if (PARTY.role === "host") return partyQueuePush();
+    if (PARTY.role !== "guest") return;
+    if (ev === "loadedmetadata") {
+      if (PARTY.pendingSync) setTimeout(partyApply, 50);
+      return;
+    }
+    if (Date.now() - PARTY.progAt < 1500 || audio.ended || S.loadingTrack || isUnlockSrc(audio.src)) return;
+    if (ev === "pause") {
+      PARTY.guestPaused = true;
+      toast(L("partyPausedLocal"));
+    }
+    if (ev === "play" && PARTY.guestPaused) {
+      PARTY.guestPaused = false;
+      PARTY.pendingSync = true;
+      setTimeout(partyApply, 50);
+    }
+  }));
+  const VS = { on: false, run: 0, text: "", mode: null, rec: null, edited: false };
+  const vsAvail = () => NATIVE ? typeof NATIVE.speechStart === "function" : !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  function vsOpen() {
+    if (!vsAvail()) return toastLong(L("vsNA"));
+    VS.text = "";
+    VS.edited = false;
+    openSheet(`<div class="vs listen" id="vsbox"><h3>${L("vsTitle")}</h3>
+    <div class="recorb on" id="vsorb"><span></span><span></span><span></span><button data-act="vsstop" aria-label="${esc(L("vsTitle"))}">${I("v_voice")}</button></div>
+    <div class="vsmsg" id="vsmsg">${L("vsListen")}</div>
+    <textarea class="field vstext" id="vstext" rows="2" dir="auto" placeholder="${esc(L("vsListen"))}"></textarea>
+    <div class="lyo">${L("vsHint")}</div>
+    <div class="row2"><button class="btn" data-act="vsagain">${I("v_voice")} ${L("vsAgain")}</button><button class="btn pri" data-act="vsgo">${I("search")} ${L("vsGo")}</button></div></div>`);
+    const ta = $("#vstext");
+    ta.addEventListener("input", () => {
+      VS.edited = true;
+      VS.text = ta.value;
+      if (VS.on) {
+        vsStop(true);
+        vsUI("done");
+      }
+    });
+    ta.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        vsGo();
+      }
+    });
+    vsStart();
+  }
+  function vsStart() {
+    vsStop(true);
+    const run = ++VS.run;
+    VS.on = true;
+    VS.edited = false;
+    const lg = lang === "fa" ? "fa-IR" : "en-US";
+    vsUI("listen");
+    if (NATIVE) {
+      VS.mode = "native";
+      try {
+        NATIVE.speechStart(lg);
+      } catch (e) {
+        vsEvent({ type: "error", code: "na" });
+      }
+      return;
+    }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return vsEvent({ type: "error", code: "na" });
+    if (!online()) return vsEvent({ type: "error", code: "net" });
+    const r = new SR();
+    VS.rec = r;
+    VS.mode = "web";
+    r.lang = lg;
+    r.interimResults = true;
+    r.continuous = false;
+    r.maxAlternatives = 1;
+    r.onresult = (e) => {
+      if (run !== VS.run) return;
+      let t = "", fin = false;
+      for (let i = 0; i < e.results.length; i++) {
+        t += e.results[i][0].transcript;
+        if (e.results[i].isFinal) fin = true;
+      }
+      vsEvent({ type: fin ? "final" : "partial", text: t });
+    };
+    r.onerror = (e) => run === VS.run && vsEvent({ type: "error", code: { "not-allowed": "perm", "service-not-allowed": "perm", "no-speech": "nomatch", network: "net", "language-not-supported": "nalang", aborted: "aborted" }[e.error] || "err" });
+    r.onend = () => run === VS.run && vsEvent({ type: "end" });
+    try {
+      r.start();
+    } catch (e) {
+      vsEvent({ type: "error", code: "err" });
+    }
+  }
+  function vsStop(silent) {
+    if (!VS.on && !VS.rec && !VS.mode) return;
+    VS.on = false;
+    VS.run++;
+    if (VS.mode === "native") {
+      try {
+        NATIVE.speechStop && NATIVE.speechStop();
+      } catch (e) {
+      }
+    }
+    if (VS.rec) {
+      try {
+        VS.rec.onresult = VS.rec.onerror = VS.rec.onend = null;
+        VS.rec.abort();
+      } catch (e) {
+      }
+      VS.rec = null;
+    }
+    VS.mode = null;
+    if (!silent) vsUI("done");
+  }
+  function vsEvent(d) {
+    if (!VS.on) return;
+    if (!$("#vsbox")) return vsStop(true);
+    if (d.type === "partial" || d.type === "final") {
+      if (!VS.edited) {
+        VS.text = String(d.text || "").trim();
+        const ta = $("#vstext");
+        if (ta) ta.value = VS.text;
+      }
+      if (d.type === "final") {
+        vsStop(true);
+        vsUI("done");
+      }
+      return;
+    }
+    if (d.type === "lang") {
+      const m = $("#vsmsg");
+      if (m) m.textContent = L("vsEnOnly");
+      return;
+    }
+    if (d.type === "ready") return;
+    if (d.type === "error") {
+      vsStop(true);
+      if (d.code === "aborted") return vsUI("done");
+      return vsUI("err", { na: L("vsNA"), nalang: L("vsNAfa"), perm: L("vsPerm"), nomatch: L("vsNoMatch"), net: L("vsNet") }[d.code] || L("vsErr"));
+    }
+    if (d.type === "end") {
+      vsStop(true);
+      vsUI(VS.text ? "done" : "err", VS.text ? "" : L("vsNoMatch"));
+    }
+  }
+  function vsUI(st, msg) {
+    const box = $("#vsbox");
+    if (!box) return;
+    box.className = `vs ${st}`;
+    const orb = $("#vsorb");
+    if (orb) {
+      orb.classList.toggle("on", st === "listen");
+      orb.querySelector("button").dataset.act = st === "listen" ? "vsstop" : "vsagain";
+    }
+    const m = $("#vsmsg");
+    if (m) m.textContent = msg != null && msg !== "" ? msg : st === "listen" ? L("vsListen") : "";
+  }
+  function vsGo() {
+    var _a2, _b2;
+    const q = (((_a2 = $("#vstext")) == null ? void 0 : _a2.value) || "").trim();
+    if (!q) return;
+    vsStop(true);
+    closeSheet();
+    S.search.type = "tracks";
+    if (((_b2 = view()) == null ? void 0 : _b2.type) !== "search") setTab("search");
+    const inp = $("#q");
+    if (inp) inp.value = q;
+    doSearch(q, true);
+  }
+  function offSearch(q) {
+    const words = normQ(q).split(" ").filter(Boolean);
+    if (!words.length || !OFF.ok) return [];
+    const pl = {};
+    for (const p of Object.values(PLX.get())) for (const id of p.ids || []) (pl[id] = pl[id] || []).push(plxName(p));
+    const hit = /* @__PURE__ */ new Set();
+    for (const m of OFF.meta.values()) {
+      const hay = normQ([m.title, m.artist, m.username, m.genre, ...pl[m.id] || []].join(" "));
+      if (words.every((w) => hay.includes(w))) hit.add(m.id);
+    }
+    const list = offTracks().filter((t) => hit.has(t.id));
+    remember(list);
+    return list;
+  }
+  const recentGet = () => LS.get("sc_recent", []);
+  function recentAdd(q) {
+    q = String(q || "").trim();
+    if (q.length < 2 || q.length > 120) return;
+    const n = normQ(q), arr = recentGet().filter((x) => normQ(x) !== n);
+    arr.unshift(q);
+    LS.set("sc_recent", arr.slice(0, 10));
+  }
+  function recentHtml() {
+    const arr = recentGet();
+    if (!arr.length) return "";
+    return `<div class="rcnt"><div class="rcnth"><b>${L("recentS")}</b><button class="chip" data-act="recentclr">${I("trash2", "ci")} ${L("recentClear")}</button></div>
+    <div class="list">${arr.map((q) => `<div class="tr rq" data-act="recentgo" data-q="${esc(q)}"><div class="art rqi">${I("history")}</div><div class="meta"><div class="t" dir="auto">${esc(q)}</div></div></div>`).join("")}</div></div>`;
+  }
+  const CLN = Object.assign({ on: false, rule: "90" }, LS.get("sc_clean", {}));
+  const DAY = 864e5;
+  const lastPlayed = (m) => m.played || (m.pinned ? (m.last || 0) > (m.saved || 0) + 5e3 ? m.last : 0 : m.saved || 0);
+  function stoStale(m, rule, now = Date.now()) {
+    const lp = lastPlayed(m), age = now - (m.saved || now);
+    if (rule === "never") return !lp && age > 30 * DAY;
+    const days = rule === "180" ? 180 : 90;
+    return lp ? now - lp > days * DAY : age > days * DAY;
+  }
+  const stoSuggest = () => [...OFF.meta.values()].filter((m) => {
+    const lp = lastPlayed(m);
+    return !lp || Date.now() - lp > 90 * DAY;
+  }).sort((a, b) => (b.size || 0) - (a.size || 0));
+  async function stoFree() {
+    try {
+      const n = await callNative("storageInfo");
+      const x = typeof n === "string" ? JSON.parse(n) : n;
+      if (x && x.free >= 0) return x.free;
+    } catch (e) {
+    }
+    try {
+      const e = await navigator.storage.estimate();
+      if (e && e.quota) return Math.max(0, e.quota - (e.usage || 0));
+    } catch (e) {
+    }
+    return null;
+  }
+  async function vStorage() {
+    var _a2, _b2;
+    root().innerHTML = `<div class="view"><div class="hdr"><div class="logo">💾 <b>${L("stoTitle")}</b></div></div><div id="stobox"><div class="spin"></div></div></div>`;
+    const plx = online() ? await PLX.refresh() : PLX.get();
+    if (((_a2 = view()) == null ? void 0 : _a2.type) !== "storage") return;
+    const free = await stoFree();
+    if (((_b2 = view()) == null ? void 0 : _b2.type) !== "storage") return;
+    drawStorage(plx, free);
+  }
+  function drawStorage(plx, free) {
+    var _a2, _b2, _c2;
+    const box = $("#stobox");
+    if (!box) return;
+    S.stoSel = S.stoSel || /* @__PURE__ */ new Set();
+    const metas = [...OFF.meta.values()], total = metas.reduce((a, m) => a + (m.size || 0), 0), favs = S.favs;
+    const lim = OFF.limitMB ? OFF.limitMB * 1048576 : 0, pct = lim ? Math.min(100, Math.round(total / lim * 100)) : 0;
+    const bar = (v, max) => `<div class="stbar"><i style="width:${max ? Math.max(2, Math.round(v / max * 100)) : 0}%"></i></div>`;
+    const head = `<div class="card stoh"><div class="stog">
+      <div><small>${L("stoTotal")}</small><b id="stotal" data-bytes="${total}">${fmtMB(total)}</b><span>${L("tracksN", metas.length)}</span></div>
+      <div><small>${L("stoFree")}</small><b>${free == null ? "—" : fmtMB(free)}</b><span>&nbsp;</span></div>
+      <button data-act="offlimit"><small>${L("stoLimit")}</small><b>${OFF.limitMB ? fmtLimit(OFF.limitMB) : L("ofUnlimited")}</b><span>${lim ? `${pct}%` : "&nbsp;"}</span></button></div>
+      ${lim ? `<div class="upd-bar"><i style="width:${pct}%"></i></div>` : ""}</div>`;
+    if (!metas.length) {
+      box.innerHTML = head + stoToolsCard() + emptyBox("offline", L("stoEmpty"));
+      return;
+    }
+    const sug = stoSuggest();
+    for (const id of [...S.stoSel]) if (!OFF.ids.has(id)) S.stoSel.delete(id);
+    const selB = [...S.stoSel].reduce((a, id) => {
+      var _a3;
+      return a + (((_a3 = OFF.meta.get(id)) == null ? void 0 : _a3.size) || 0);
+    }, 0);
+    const sugHtml = `<div class="card"><div class="ch">${L("stoSuggest")}</div><div class="stsub">${L("stoSuggestSub")}</div>
+    ${sug.length ? `<div class="stsel"><button class="chip" data-act="stoselall">${L("stoSelAll")}</button><span id="stoseln">${L("stoSel", S.stoSel.size, fmtMB(selB))}</span>
+        <button class="btn red sm" data-act="stodel" ${S.stoSel.size ? "" : "disabled"}>${I("trash2")} ${L("stoDelSel")}</button></div>
+      <div class="list">${sug.map((m) => {
+      const lp = lastPlayed(m);
+      return `<div class="tr stot" data-act="stosel" data-id="${m.id}">
+        <span class="ck ${S.stoSel.has(m.id) ? "on" : ""}">${I("v_check")}</span><div class="art">${img(offArt(m), "t120x120")}</div>
+        <div class="meta"><div class="t" dir="auto">${esc(m.title)}</div><div class="a"><span dir="auto">${esc(m.artist || "")}</span> · ${lp ? L("stoDays", Math.floor((Date.now() - lp) / DAY)) : L("stoNever")}${favs.has(m.id) ? ` · <span class="badge">${L("stoFav")}</span>` : ""}</div></div>
+        <span class="stsz">${fmtMB(m.size)}</span></div>`;
+    }).join("")}</div>` : `<div class="stsub">${L("stoNoSuggest")}</div>`}</div>`;
+    const byA = /* @__PURE__ */ new Map();
+    for (const m of metas) {
+      const k = m.artist || m.username || "—";
+      const x = byA.get(k) || { n: 0, b: 0 };
+      x.n++;
+      x.b += m.size || 0;
+      byA.set(k, x);
+    }
+    const arts = [...byA.entries()].sort((a, b) => b[1].b - a[1].b), maxA = ((_a2 = arts[0]) == null ? void 0 : _a2[1].b) || 1;
+    const pls = [], inPl = /* @__PURE__ */ new Set();
+    for (const p of Object.values(plx || {})) {
+      let n = 0, b = 0;
+      for (const id of p.ids || []) {
+        const m = OFF.meta.get(id);
+        if (m) {
+          n++;
+          b += m.size || 0;
+          inPl.add(id);
+        }
+      }
+      if (n) pls.push({ name: plxName(p), n, b });
+    }
+    let on = 0, ob = 0;
+    for (const m of metas) if (!inPl.has(m.id)) {
+      on++;
+      ob += m.size || 0;
+    }
+    if (on) pls.push({ name: L("stoOther"), n: on, b: ob, other: true });
+    pls.sort((a, b) => b.b - a.b);
+    const maxP = ((_b2 = pls[0]) == null ? void 0 : _b2.b) || 1;
+    const tracks = metas.slice().sort((a, b) => (b.size || 0) - (a.size || 0)), maxT = ((_c2 = tracks[0]) == null ? void 0 : _c2.size) || 1;
+    const tl = tracks.map((m) => ({ id: m.id, title: m.title, artist: m.artist, artwork_url: offArt(m), duration_ms: m.duration_ms, user_id: m.user_id, username: m.username, permalink_url: m.permalink_url }));
+    remember(tl);
+    const ctx = setCtx("sto", tl);
+    const grp = (title, rows, sub = "") => `<div class="card"><div class="ch">${title}</div>${sub ? `<div class="stsub">${sub}</div>` : ""}<div class="strows">${rows}</div></div>`;
+    box.innerHTML = head + sugHtml + stoToolsCard() + grp(L("stoByArtist"), arts.map(([k, x]) => `<div class="str"><div class="stn" dir="auto">${esc(k)}<small>${L("tracksN", x.n)}</small></div><span class="stsz">${fmtMB(x.b)}</span>${bar(x.b, maxA)}</div>`).join("")) + grp(
+      L("stoByPl"),
+      pls.map((x) => `<div class="str ${x.other ? "oth" : ""}"><div class="stn" dir="auto">${esc(x.name)}<small>${L("tracksN", x.n)}</small></div><span class="stsz">${fmtMB(x.b)}</span>${bar(x.b, maxP)}</div>`).join(""),
+      `${L("stoPlNote")}${online() ? "" : ` · ${L("stoPlOffline")}`}`
+    ) + grp(L("stoByTrack"), tracks.map((m, i) => `<div class="str stt" data-act="play" data-id="${m.id}" data-ctx="${ctx}" data-i="${i}"><div class="stn" dir="auto">${esc(m.title)}<small dir="auto">${esc(m.artist || "")}</small></div><span class="stsz">${fmtMB(m.size)}</span>${bar(m.size, maxT)}</div>`).join(""));
+  }
+  function stoToolsCard() {
+    return `<div class="card">
+    <button class="it" data-act="cleanopen"><div class="ico" style="background:#ef4444">${I("trash2")}</div><div class="l">${L("stoAuto")}<small>${CLN.on ? `${L("stoAutoRule")}: ${L(CLN.rule === "180" ? "stoRule180" : CLN.rule === "never" ? "stoRuleNever" : "stoRule90")}` : L("stoAutoSub")}</small></div><div class="v">${swH(CLN.on)}</div></button>
+    <button class="it" data-act="travel"><div class="ico" style="background:#0ea5e9">${I("v_plane")}</div><div class="l">${L("travel")}<small>${L("travelSub")} · ${L("travelWifi")}</small></div><div class="v"></div></button></div>`;
+  }
+  async function stoDelete(ids) {
+    var _a2;
+    const list = ids.filter((id) => OFF.ids.has(id));
+    if (!list.length) return;
+    const bytes = list.reduce((a, id) => {
+      var _a3;
+      return a + (((_a3 = OFF.meta.get(id)) == null ? void 0 : _a3.size) || 0);
+    }, 0);
+    if (!await confirmAsk(L("stoDelQ", list.length, fmtMB(bytes)), L("del"))) return;
+    for (const id of list) await offDel(id);
+    S.stoSel = /* @__PURE__ */ new Set();
+    refreshOfflineUI();
+    toast(L("stoDeleted", list.length, fmtMB(bytes)));
+    hapticOk();
+    if (((_a2 = view()) == null ? void 0 : _a2.type) === "storage") vStorage();
+  }
+  function cleanSheet(rule) {
+    rule = rule || CLN.rule || "90";
+    const list = [...OFF.meta.values()].filter((m) => stoStale(m, rule));
+    const fav = list.filter((m) => S.favs.has(m.id)), norm = list.filter((m) => !S.favs.has(m.id));
+    S.cleanRule = rule;
+    openSheet(`<div class="clns"><h3>${L("stoAuto")}</h3><div class="lyo">${L("stoAutoSub")}</div>
+    ${CLN.on ? `<button class="mi" data-act="cleanoff">${swH(true)} ${L("stoAuto")}</button>` : ""}
+    <div class="lyo">${L("stoAutoRule")}</div>
+    <div class="seg wrap">${["90", "180", "never"].map((k) => `<button class="chip ${rule === k ? "on" : ""}" data-act="cleanrule" data-k="${k}">${L(k === "180" ? "stoRule180" : k === "never" ? "stoRuleNever" : "stoRule90")}</button>`).join("")}</div>
+    <div class="lyo">${norm.length ? L("stoAutoList", norm.length) : L("stoAutoNone")}</div>
+    ${norm.length ? `<div class="list clnl">${norm.map((m) => `<div class="tr"><div class="art">${img(offArt(m), "t120x120")}</div><div class="meta"><div class="t" dir="auto">${esc(m.title)}</div><div class="a">${fmtMB(m.size)}</div></div></div>`).join("")}</div>` : ""}
+    <div class="lyo">❤ ${L("stoAutoFav")}${fav.length ? ` (${fav.length})` : ""}</div>
+    <div class="row2"><button class="btn" data-act="closesheet">${L("cancel")}</button><button class="btn pri" data-act="cleanon">${L("stoAutoOn")}</button></div></div>`);
+  }
+  let cleanBusy = false;
+  async function cleanRun() {
+    var _a2;
+    if (!CLN.on || !OFF.ok || cleanBusy || !S.favList) return;
+    cleanBusy = true;
+    try {
+      const cur = (_a2 = S.queue[S.qi]) == null ? void 0 : _a2.id;
+      const all = [...OFF.meta.values()].filter((m) => m.id !== cur && stoStale(m, CLN.rule) && !OFF.busy.has(m.id));
+      const norm = all.filter((m) => !S.favs.has(m.id)), fav = all.filter((m) => S.favs.has(m.id));
+      let n = 0, b = 0;
+      for (const m of norm) {
+        await offDel(m.id);
+        n++;
+        b += m.size || 0;
+      }
+      if (n) {
+        refreshOfflineUI();
+        toastLong(L("stoAutoRan", n, fmtMB(b)));
+      }
+      if (fav.length && !$(".sheet.show") && CLN.favAskDay !== dayKey()) {
+        CLN.favAskDay = dayKey();
+        LS.set("sc_clean", CLN);
+        if (await confirmAsk(L("stoAutoFavAsk", fav.length), L("del"))) {
+          for (const m of fav) await offDel(m.id);
+          refreshOfflineUI();
+          toast(L("stoDeleted", fav.length, fmtMB(fav.reduce((a, m) => a + (m.size || 0), 0))));
+        }
+      }
+    } finally {
+      cleanBusy = false;
+    }
+  }
+  async function travelMode() {
+    if (!online()) return toast(L("bkOnline"));
+    if (!S.favList) await loadFavs();
+    const favs = (S.favList || []).filter((t) => t && S.favs.has(t.id));
+    if (!favs.length) return toast(L("travelNoFav"));
+    const todo = favs.filter((t) => !OFF.ids.has(t.id) && !t.drm && !t.snipped && !dlJob(t.id));
+    if (!todo.length) return toast(L("travelNone"));
+    netCache = null;
+    const n = await netInfo();
+    if (n.known && !n.ok) return toastLong(L("travelWifi"));
+    const bytes = todo.reduce((a, t) => a + offEstimate(t, "low"), 0);
+    const why = await roomCheck(bytes);
+    if (why) return toastLong(why);
+    if (!await confirmAsk(L("travelQ", todo.length, fmtMB(bytes)) + (n.known ? "" : `
+${L("schWifiUnknown")}`), L("download"))) return;
+    if (!n.known) S.favAsk = "yes";
+    const k = dlEnqueue(todo, { auto: true, q: "low", now: true });
+    if (k) {
+      toast(L("dlStarted", k));
+      go({ type: "downloads" });
+    }
+  }
+  const SCH = Object.assign({ on: false, from: "01:00", to: "07:00", days: [0, 1, 2, 3, 4, 5, 6], wifi: true, charge: false }, LS.get("sc_sched", {}));
+  const hm = (s) => {
+    const [h, m] = String(s || "0:0").split(":").map(Number);
+    return (h || 0) % 24 * 60 + (m || 0) % 60;
+  };
+  function schInWindow(d = /* @__PURE__ */ new Date()) {
+    const f = hm(SCH.from), t = hm(SCH.to), now = d.getHours() * 60 + d.getMinutes(), day = d.getDay();
+    if (f === t) return SCH.days.includes(day);
+    if (f < t) return now >= f && now < t && SCH.days.includes(day);
+    if (now >= f) return SCH.days.includes(day);
+    if (now < t) return SCH.days.includes((day + 6) % 7);
+    return false;
+  }
+  function schNextStart(from = /* @__PURE__ */ new Date()) {
+    if (!SCH.days.length) return null;
+    if (schInWindow(from)) return from;
+    const f = hm(SCH.from);
+    for (let i = 0; i < 8; i++) {
+      const d = new Date(from.getFullYear(), from.getMonth(), from.getDate() + i, Math.floor(f / 60), f % 60);
+      if (d > from && SCH.days.includes(d.getDay())) return d;
+    }
+    return null;
+  }
+  async function chargeInfo() {
+    try {
+      const x0 = await callNative("netInfo");
+      const x = typeof x0 === "string" ? JSON.parse(x0) : x0;
+      if (x && typeof x.charging === "boolean") return x.charging;
+    } catch (e) {
+    }
+    try {
+      if (navigator.getBattery) {
+        const b = await navigator.getBattery();
+        if (b && typeof b.charging === "boolean") return b.charging;
+      }
+    } catch (e) {
+    }
+    return null;
+  }
+  async function schCond() {
+    if (!SCH.on) return { ok: true };
+    if (!SCH.days.length || !schInWindow()) return { ok: false, why: "win" };
+    if (navigator.onLine === false) return { ok: false, why: "net" };
+    if (SCH.wifi) {
+      netCache = null;
+      const n = await netInfo();
+      if (!n.known) return { ok: false, why: "wifiU" };
+      if (!n.ok) return { ok: false, why: "wifi" };
+    }
+    if (SCH.charge) {
+      const c = await chargeInfo();
+      if (c === null) return { ok: false, why: "chargeU" };
+      if (!c) return { ok: false, why: "charge" };
+    }
+    return { ok: true };
+  }
+  async function dlNextJob() {
+    const plain = DLM.jobs.find((x) => x.st === "queued" && !x.sched);
+    if (plain) return plain;
+    const s = DLM.jobs.find((x) => x.st === "queued" && x.sched);
+    if (!s) return null;
+    const c = await schCond();
+    SCH.last = c;
+    return c.ok ? s : null;
+  }
+  function schWhen() {
+    if (!SCH.on) return L("schOff");
+    const c = SCH.last;
+    if (schInWindow()) return c && !c.ok ? { wifi: L("schWaitWifi"), wifiU: L("schWifiUnknown"), charge: L("schWaitCharge"), chargeU: L("schChargeUnknown"), net: L("ofMode") }[c.why] || L("schInWin") : L("schInWin");
+    const d = schNextStart();
+    return d ? L("schNext", fmtWhen(d)) : L("schNoDays");
+  }
+  function dlToast(n) {
+    if (!n) return;
+    if (SCH.on && DLM.jobs.some((j) => j.sched && j.st === "queued")) toastLong(L("schQueued", n, schWhen()));
+    else toast(L("dlStarted", n));
+  }
+  let schRestored = false;
+  function schPersist() {
+    if (!schRestored) return;
+    const q = DLM.jobs.filter((j) => j.sched && j.st === "queued");
+    LS.set("sc_schq", q.map((j) => ({ t: miniT(j.t), q: j.q || null, preset: j.preset || null })));
+    if (q.length !== schPersist.n) {
+      schPersist.n = q.length;
+      schSyncNative();
+    }
+  }
+  function schRestore() {
+    if (schRestored) return;
+    const arr = LS.get("sc_schq", []);
+    schRestored = true;
+    for (const x of Array.isArray(arr) ? arr : []) if (x && x.t && x.t.id) dlEnqueue([x.t], { sched: true, q: x.q || void 0, preset: x.preset || void 0 });
+    schPersist();
+  }
+  async function schTick() {
+    var _a2;
+    const has = DLM.jobs.some((j) => j.sched && dlActive(j));
+    if (!has) return;
+    const c = await schCond();
+    SCH.last = c;
+    if (c.ok) {
+      if (!DLM.running) dlRun();
+    } else if (DLM.cur && DLM.cur.sched && DLM.cur.ctrl && !DLM.cur.pauseReq) {
+      DLM.cur.pauseReq = true;
+      DLM.cur.ctrl.abort();
+      toast(L("schPaused"));
+    }
+    if (((_a2 = view()) == null ? void 0 : _a2.type) === "downloads") drawDownloads();
+  }
+  setInterval(schTick, 3e4);
+  function schNow() {
+    let n = 0;
+    for (const j of DLM.jobs) if (j.sched && j.st === "queued") {
+      j.sched = false;
+      n++;
+    }
+    if (n) {
+      dlRefresh();
+      dlRun();
+      toast(L("dlStarted", n));
+    }
+  }
+  function schSyncNative() {
+    var _a2;
+    try {
+      (_a2 = NATIVE == null ? void 0 : NATIVE.schedSet) == null ? void 0 : _a2.call(NATIVE, JSON.stringify({ on: SCH.on, from: SCH.from, to: SCH.to, days: SCH.days, wifi: SCH.wifi, charge: SCH.charge, pending: DLM.jobs.filter((j) => j.sched && j.st === "queued").length }));
+    } catch (e) {
+    }
+  }
+  function schCard() {
+    const q = DLM.jobs.filter((j) => j.sched && j.st === "queued").length;
+    const daysTxt = SCH.days.length === 7 ? "" : ` · ${dayOrder().filter((d) => SCH.days.includes(d)).map((d) => L("days")[d]).join("، ")}`;
+    return `<div class="card schc"><button class="it" data-act="schopen"><div class="ico" style="background:#0ea5e9">${I("v_clock")}</div>
+      <div class="l">${L("schTitle")}<small dir="auto">${SCH.on ? `${SCH.from}–${SCH.to}${daysTxt}` : L("schSub")}</small></div><div class="v">${SCH.on ? `<span class="badge">${esc(schWhen())}</span>` : L("schOff")}</div></button>
+    ${q ? `<div class="schq"><span>${L("schQueued", q, schWhen())}</span><button class="btn pri sm" data-act="schnow">${I("download")} ${L("schNow")}</button></div>` : ""}</div>`;
+  }
+  const dayOrder = () => lang === "fa" ? [6, 0, 1, 2, 3, 4, 5] : [0, 1, 2, 3, 4, 5, 6];
+  function schSheet() {
+    const d = S.schDraft = S.schDraft || JSON.parse(JSON.stringify({ on: SCH.on, from: SCH.from, to: SCH.to, days: SCH.days, wifi: SCH.wifi, charge: SCH.charge }));
+    const note = plat() === "android" ? L("schNoteA") : plat() === "windows" ? L("schNoteW") : L("schNoteT");
+    openSheet(`<div class="schs"><h3>${L("schTitle")}</h3>
+    <button class="mi" data-act="schd" data-k="on">${swH(d.on)} <span>${L("schOn")}<small>${L("schSub")}</small></span></button>
+    <div class="schtm"><label>${L("schFrom")}<input type="time" class="field" id="schfrom" value="${esc(d.from)}" dir="ltr"></label><label>${L("schTo")}<input type="time" class="field" id="schto" value="${esc(d.to)}" dir="ltr"></label></div>
+    <div class="lyo">${L("schDays")}</div><div class="seg wrap">${dayOrder().map((k) => `<button class="chip ${d.days.includes(k) ? "on" : ""}" data-act="schday" data-d="${k}">${L("days")[k]}</button>`).join("")}</div>
+    <button class="mi" data-act="schd" data-k="wifi">${swH(d.wifi)} <span>${L("schWifi")}</span></button>
+    <button class="mi" data-act="schd" data-k="charge">${swH(d.charge)} <span>${L("schCharge")}</span></button>
+    <div class="lyo schnote">${note}</div>
+    <div class="row2"><button class="btn" data-act="closesheet">${L("cancel")}</button><button class="btn pri" data-act="schsave">${L("schSave")}</button></div></div>`);
+  }
+  function schReadDraft() {
+    var _a2, _b2;
+    const d = S.schDraft;
+    if (!d) return null;
+    const f = (_a2 = $("#schfrom")) == null ? void 0 : _a2.value, t = (_b2 = $("#schto")) == null ? void 0 : _b2.value;
+    if (/^\d\d:\d\d$/.test(f || "")) d.from = f;
+    if (/^\d\d:\d\d$/.test(t || "")) d.to = t;
+    return d;
+  }
+  const BK_FORMAT = "soundcloud-player-backup", BK_VER = 1;
+  const BK_KEYS = ["sc_theme", "sc_rate", "sc_off_auto", "sc_off_limit", "sc_off_q", "sc_off_favauto", "sc_eq_g", "sc_eq_p", "sc_lang", "sc_sched", "sc_clean", "sc_fol_on"];
+  async function bkBuild() {
+    await loadPlaylists();
+    const pls = [];
+    for (const p of S.playlists) {
+      const d = await api(`/playlists/${p.id}`);
+      pls.push({ name: p.is_favorites ? "" : p.name, favorites: !!p.is_favorites, public: !!p.is_public, tracks: (d.tracks || []).map(miniT) });
+    }
+    const settings = {};
+    for (const k of BK_KEYS) {
+      const v = localStorage.getItem(k);
+      if (v != null) settings[k] = v;
+    }
+    return {
+      format: BK_FORMAT,
+      version: BK_VER,
+      created_at: (/* @__PURE__ */ new Date()).toISOString(),
+      contains_audio: false,
+      app: { platform: plat(), version: NATIVE ? String(NATIVE.version || "") : "miniapp" },
+      playlists: pls.filter((p) => !p.favorites).map(({ favorites, ...p }) => p),
+      favorites: (pls.find((p) => p.favorites) || { tracks: [] }).tracks,
+      follows: FOL.list.map((f) => ({ id: f.id, username: f.username, avatar_url: /^https:/.test(f.avatar_url || "") ? f.avatar_url : null, muted: !!f.muted })),
+      settings,
+      offline: offTracks().map((t) => {
+        var _a2;
+        return miniT(Object.assign({}, t, { artwork_url: (_a2 = OFF.meta.get(t.id)) == null ? void 0 : _a2.artwork_url }));
+      })
+    };
+  }
+  function bkParse(text) {
+    let j;
+    try {
+      j = JSON.parse(String(text || "").replace(/^\uFEFF/, ""));
+    } catch (e) {
+      return { err: L("bkBad") };
+    }
+    if (!j || typeof j !== "object" || Array.isArray(j) || j.format !== BK_FORMAT) return { err: L("bkBad") };
+    if (!Number.isInteger(j.version) || j.version < 1) return { err: L("bkBad") };
+    if (j.version > BK_VER) return { err: L("bkVer", j.version) };
+    const okT = (t) => t && typeof t === "object" && Number.isInteger(Number(t.id)) && Number(t.id) > 0;
+    const arr = (x) => x === void 0 ? [] : Array.isArray(x) ? x : null;
+    const pls = arr(j.playlists), favs = arr(j.favorites), fol = arr(j.follows), off = arr(j.offline);
+    if (!pls || !favs || !fol || !off) return { err: L("bkBad") };
+    if (pls.length > 500 || favs.length > 5e3 || fol.length > 500 || off.length > 5e3) return { err: L("bkBad") };
+    for (const p of pls) if (!p || typeof p.name !== "string" || !p.name.trim() || p.name.length > 120 || !Array.isArray(p.tracks) || p.tracks.length > 5e3 || !p.tracks.every(okT)) return { err: L("bkBad") };
+    if (!favs.every(okT) || !off.every(okT)) return { err: L("bkBad") };
+    if (!fol.every((f) => f && Number.isInteger(Number(f.id)) && Number(f.id) > 0 && typeof f.username === "string")) return { err: L("bkBad") };
+    if (j.settings !== void 0 && (typeof j.settings !== "object" || Array.isArray(j.settings) || j.settings === null)) return { err: L("bkBad") };
+    const clean = (t) => miniT(t);
+    return { data: {
+      playlists: pls.map((p) => ({ name: p.name.trim().slice(0, 64), public: !!p.public, tracks: p.tracks.map(clean) })),
+      favorites: favs.map(clean),
+      follows: fol.map((f) => ({ id: Number(f.id), username: String(f.username).slice(0, 100), avatar_url: /^https:/.test(f.avatar_url || "") ? f.avatar_url : null, muted: !!f.muted })),
+      settings: Object.fromEntries(Object.entries(j.settings || {}).filter(([k, v]) => BK_KEYS.includes(k) && typeof v === "string" && v.length < 4e3)),
+      offline: off.map(clean)
+    } };
+  }
+  const bkName = () => `soundcloud-backup-${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.json`;
+  function bkSheet() {
+    const p = plat();
+    openSheet(`<div class="bks"><div class="pyico">${I("v_backup")}</div><h3>${L("bkTitle")}</h3><p>${L("bkSub")}</p><div class="bkno">ℹ️ ${L("bkNoAudio")}</div>
+    ${p === "android" && typeof (NATIVE == null ? void 0 : NATIVE.shareFile) === "function" ? `<button class="mi" data-act="bkexp" data-m="share">${I("share")} ${L("bkShare")}</button>` : ""}
+    ${p === "windows" && typeof (NATIVE == null ? void 0 : NATIVE.saveFile) === "function" ? `<button class="mi" data-act="bkexp" data-m="save">${I("download")} ${L("bkSave")}</button>` : ""}
+    <button class="mi" data-act="bkexp" data-m="bot">${I("tg")} ${L("bkSendBot")}</button>
+    <button class="mi" data-act="bkimp">${I("import")} ${L("bkImport")}</button></div>`);
+  }
+  async function bkExport(mode) {
+    if (!online()) return toast(L("bkOnline"));
+    toast(L("bkWorking").replace("…", "") + "…");
+    let data;
+    try {
+      data = await bkBuild();
+    } catch (e) {
+      return toast(L("err"));
+    }
+    const text = JSON.stringify(data, null, 1);
+    try {
+      if (mode === "share" && (NATIVE == null ? void 0 : NATIVE.shareFile)) {
+        await callNative("shareFile", bkName(), "application/json", text);
+        closeSheet();
+        return;
+      }
+      if (mode === "save" && (NATIVE == null ? void 0 : NATIVE.saveFile)) {
+        const r = await callNative("saveFile", bkName(), text);
+        closeSheet();
+        if (r === true || r === "ok") toast(L("bkSaved"));
+        return;
+      }
+      await api("/backup/send", { method: "POST", body: { data: text, name: bkName() } });
+      closeSheet();
+      toast(L("bkSent"));
+      hapticOk();
+    } catch (e) {
+      toast(e.status === 413 ? L("bkBad") : L("err"));
+    }
+  }
+  function bkPick() {
+    const inp = document.createElement("input");
+    inp.type = "file";
+    inp.accept = ".json,application/json,text/plain";
+    inp.onchange = async () => {
+      const f = inp.files && inp.files[0];
+      if (!f) return;
+      if (f.size > 8 * 1048576) return toastLong(L("bkBad"));
+      let text = "";
+      try {
+        text = await f.text();
+      } catch (e) {
+        return toastLong(L("bkBad"));
+      }
+      bkPreview(text);
+    };
+    inp.click();
+  }
+  function bkPreview(text) {
+    const r = bkParse(text);
+    if (r.err) {
+      closeSheet();
+      return toastLong(r.err);
+    }
+    S.bkData = r.data;
+    const d = r.data;
+    openSheet(`<div class="bks"><h3>${L("bkImport")}</h3><p>${L("bkSummary", d.playlists.length, d.favorites.length, d.follows.length, d.offline.length)}</p><div class="bkno">ℹ️ ${L("bkNoAudio")}</div>
+    <button class="mi dlopt" data-act="bkapply" data-m="merge">${I("plus")}<span class="dlol"><b>${L("bkMerge")}</b><small>${L("bkMergeSub")}</small></span></button>
+    <button class="mi dlopt" data-act="bkapply" data-m="replace">${I("retry")}<span class="dlol"><b>${L("bkReplace")}</b><small>${L("bkReplaceSub")}</small></span></button></div>`);
+  }
+  async function bkAddTracks(plId, tracks) {
+    let added = 0, missing = 0;
+    for (let i = 0; i < tracks.length; i += 500) {
+      const r = await api(`/playlists/${plId}/tracks`, { method: "POST", body: { track_ids: tracks.slice(i, i + 500).map((t) => t.id) } });
+      added += r.added || 0;
+      missing += (r.missing || []).length || 0;
+    }
+    return { added, missing };
+  }
+  async function bkApply(mode) {
+    var _a2, _b2;
+    const d = S.bkData;
+    if (!d) return;
+    if (!online()) return toast(L("bkOnline"));
+    if (mode === "replace" && !await confirmAsk(L("bkReplaceQ"), L("bkReplace"))) return;
+    S.bkData = null;
+    openSheet(`<div class="bks"><h3>${L("bkWorking")}</h3><div class="spin"></div></div>`);
+    let plN = 0, trN = 0, miss = 0;
+    try {
+      await loadPlaylists();
+      if (!S.favId) throw new Error("no favorites playlist");
+      if (mode === "replace") {
+        for (const p of S.playlists.filter((x) => !x.is_favorites)) await api(`/playlists/${p.id}`, { method: "DELETE" });
+        const cur = await api(`/playlists/${S.favId}`), keep = new Set(d.favorites.map((t) => t.id));
+        for (const t of cur.tracks || []) if (!keep.has(t.id)) await api(`/playlists/${S.favId}/tracks/${t.id}`, { method: "DELETE" });
+        await loadPlaylists();
+      }
+      if (d.favorites.length) {
+        const r = await bkAddTracks(S.favId, d.favorites);
+        trN += r.added;
+        miss += r.missing;
+      }
+      for (const p of d.playlists) {
+        let pl = S.playlists.find((x) => !x.is_favorites && x.name === p.name);
+        if (!pl) {
+          const r = await api("/playlists", { method: "POST", body: { name: p.name } });
+          pl = r.playlist || r;
+          if (p.public && (pl == null ? void 0 : pl.id)) {
+            try {
+              await api(`/playlists/${pl.id}`, { method: "PATCH", body: { is_public: true } });
+            } catch (e) {
+            }
+          }
+        }
+        if (!pl || !pl.id) continue;
+        plN++;
+        if (p.tracks.length) {
+          const r = await bkAddTracks(pl.id, p.tracks);
+          trN += r.added;
+          miss += r.missing;
+        }
+      }
+      if (mode === "replace") FOL.list = [];
+      for (const f of d.follows) if (!FOL.list.some((x) => x.id === f.id)) FOL.list.push({ id: f.id, username: f.username, avatar_url: f.avatar_url, followed_at: Date.now(), seen: [], muted: f.muted, alert_day: "" });
+      folSave();
+      if (mode === "replace") {
+        for (const [k, v] of Object.entries(d.settings)) {
+          try {
+            localStorage.setItem(k, v);
+          } catch (e) {
+          }
+        }
+        Object.assign(SCH, LS.get("sc_sched", {}));
+        Object.assign(CLN, LS.get("sc_clean", {}));
+        FOL.on = LS.get("sc_fol_on", true);
+        OFF.auto = localStorage.getItem("sc_off_auto") !== "0";
+        OFF.limitMB = Number((_a2 = localStorage.getItem("sc_off_limit")) != null ? _a2 : OFF.limitMB);
+        S.theme = localStorage.getItem("sc_theme") || S.theme;
+        applyTheme();
+        schSyncNative();
+      }
+      await loadPlaylists();
+      await loadFavs();
+      closeSheet();
+      toastLong(L("bkDone", plN, trN) + (miss ? ` · ${L("bkMissing", miss)}` : ""));
+      hapticOk();
+      const re = d.offline.filter((t) => !OFF.ids.has(t.id));
+      if (re.length && OFF.ok) {
+        setTimeout(async () => {
+          if (!await confirmAsk(L("bkOffline", re.length), L("download"))) return;
+          const why = await roomCheck(re.reduce((a, t) => a + offEstimate(t, offQ()), 0));
+          if (why) return toastLong(why);
+          dlToast(dlEnqueue(re, { q: offQ() }));
+        }, 2600);
+      }
+      if (["library", "settings"].includes((_b2 = view()) == null ? void 0 : _b2.type)) render();
+    } catch (e) {
+      console.warn("restore", e);
+      closeSheet();
+      toastLong(L("bkFailed"));
+    }
+  }
+  const FOL = { list: LS.get("sc_follows", []), on: LS.get("sc_fol_on", true), news: LS.get("sc_fol_news", []), checkedAt: LS.get("sc_fol_checked", 0), busy: false };
+  if (!Array.isArray(FOL.list)) FOL.list = [];
+  const isFol = (id) => FOL.list.some((f) => f.id === Number(id));
+  function folSave() {
+    LS.set("sc_follows", FOL.list);
+    LS.set("sc_fol_on", FOL.on);
+    LS.set("sc_fol_news", FOL.news.slice(0, 40));
+    LS.set("sc_fol_checked", FOL.checkedAt);
+    folSyncNative();
+  }
+  function folSyncNative() {
+    var _a2;
+    try {
+      (_a2 = NATIVE == null ? void 0 : NATIVE.bgSync) == null ? void 0 : _a2.call(NATIVE, JSON.stringify({
+        api: API,
+        token: appToken || "",
+        lang,
+        enabled: FOL.on && FOL.list.some((f) => !f.muted),
+        list: FOL.list.map((f) => ({ id: f.id, username: f.username, followed_at: f.followed_at, seen: (f.seen || []).slice(0, 60), muted: !!f.muted, alert_day: f.alert_day || "" }))
+      }));
+    } catch (e) {
+    }
+  }
+  function folMergeNative() {
+    var _a2;
+    try {
+      let x = (_a2 = NATIVE == null ? void 0 : NATIVE.bgSeen) == null ? void 0 : _a2.call(NATIVE);
+      if (!x) return;
+      if (typeof x === "string") x = JSON.parse(x);
+      let ch = false;
+      for (const f of FOL.list) {
+        const n = x[f.id];
+        if (!n) continue;
+        const seen = new Set(f.seen || []);
+        for (const t of n.news || []) if (t && t.id && !seen.has(t.id)) {
+          seen.add(t.id);
+          FOL.news.unshift({ t: miniT(t), a: f.id, an: f.username, at: tms(t.created_at), rd: t.release_date || null });
+          ch = true;
+        }
+        for (const id of n.seen || []) if (!seen.has(id)) {
+          seen.add(id);
+          ch = true;
+        }
+        f.seen = [...seen].slice(-60);
+        if (n.alert_day && n.alert_day !== f.alert_day) {
+          f.alert_day = n.alert_day;
+          ch = true;
+        }
+      }
+      if (ch) {
+        folDedupe();
+        folSave();
+      }
+    } catch (e) {
+    }
+  }
+  function folDedupe() {
+    const seen = /* @__PURE__ */ new Set();
+    FOL.news = FOL.news.filter((n) => n && n.t && !seen.has(n.t.id) && seen.add(n.t.id) && isFol(n.a)).sort((a, b) => b.at - a.at).slice(0, 40);
+  }
+  function folToggle(u) {
+    var _a2;
+    const id = Number(u.id);
+    if (!id) return;
+    const i = FOL.list.findIndex((f) => f.id === id);
+    if (i >= 0) {
+      const name = u.username || FOL.list[i].username || "";
+      FOL.list.splice(i, 1);
+      FOL.news = FOL.news.filter((n) => n.a !== id);
+      toast(L("folUnfollowed", name));
+    } else {
+      FOL.list.push({ id, username: String(u.username || ""), avatar_url: /^https:/.test(u.avatar_url || "") ? u.avatar_url : null, followed_at: Date.now(), seen: [], muted: false, alert_day: "" });
+      toast(L("folFollowed", u.username || ""));
+      hapticOk();
+    }
+    folSave();
+    document.querySelectorAll(`[data-act="follow"][data-id="${id}"]`).forEach((b) => {
+      const on = isFol(id);
+      b.classList.toggle("on", on);
+      b.innerHTML = b.classList.contains("folb") ? I(on ? "v_folok" : "v_fol") : `${I(on ? "v_folok" : "v_fol")} ${L(on ? "following" : "follow")}`;
+    });
+    if (((_a2 = view()) == null ? void 0 : _a2.type) === "follows") vFollows();
+  }
+  async function folCheck(manual) {
+    var _a2;
+    if (!FOL.list.length) {
+      if (manual) toast(L("folNoNew"));
+      return 0;
+    }
+    if (!online()) {
+      if (manual) toast(L("bkOnline"));
+      return 0;
+    }
+    if (FOL.busy) return 0;
+    FOL.busy = true;
+    let total = 0;
+    try {
+      const ids = FOL.list.map((f) => f.id);
+      for (let i = 0; i < ids.length; i += 60) {
+        const r = await api(`/releases?ids=${ids.slice(i, i + 60).join(",")}`);
+        for (const f of FOL.list) {
+          const arr = r.releases && r.releases[f.id];
+          if (!Array.isArray(arr)) continue;
+          const seen = new Set(f.seen || []);
+          const fresh = arr.filter((t) => t && t.id && tms(t.created_at) > (f.followed_at || 0) && !seen.has(t.id));
+          if (!fresh.length) continue;
+          f.seen = [...fresh.map((t) => t.id), ...f.seen || []].slice(0, 60);
+          remember(fresh);
+          for (const t of fresh) FOL.news.unshift({ t: miniT(t), a: f.id, an: f.username, at: tms(t.created_at), rd: t.release_date || null });
+          total += fresh.length;
+          if (FOL.on && !f.muted && f.alert_day !== dayKey()) {
+            f.alert_day = dayKey();
+            folNotify(f, fresh);
+          }
+        }
+      }
+      FOL.checkedAt = Date.now();
+      folDedupe();
+      folSave();
+    } catch (e) {
+      if (manual) toast(L("err"));
+    } finally {
+      FOL.busy = false;
+    }
+    if (manual) toast(total ? `${L("folNew")} · ${total}` : L("folNoNew"));
+    if (((_a2 = view()) == null ? void 0 : _a2.type) === "follows") vFollows();
+    return total;
+  }
+  function folNotify(f, fresh) {
+    const title = L("folNewN", fresh.length, f.username), body = fresh.slice(0, 3).map((x) => x.title).join(" · ");
+    const link = fresh.length === 1 ? `t_${fresh[0].id}` : `a_${f.id}`;
+    try {
+      if (NATIVE && NATIVE.notify) {
+        NATIVE.notify(JSON.stringify({ id: 3e3 + Number(f.id) % 9e4, title, body, link }));
+        return;
+      }
+    } catch (e) {
+    }
+    toastLong(`🔔 ${title}`);
+  }
+  function vFollows() {
+    folDedupe();
+    const note = plat() === "android" ? L("folNoteA") : plat() === "windows" ? L("folNoteW") : L("folNoteT");
+    const news = FOL.news.filter((n) => {
+      const f = FOL.list.find((x) => x.id === n.a);
+      return f;
+    }).slice(0, 20);
+    const nl = news.map((n) => Object.assign({}, S.tracks.get(n.t.id) || {}, n.t));
+    remember(nl);
+    const ctx = setCtx("fol", nl);
+    root().innerHTML = `<div class="view"><div class="hdr"><div class="logo">🔔 <b>${L("folTitle")}</b></div></div>
+    <div class="card"><button class="it" data-act="folon"><div class="ico" style="background:#ff8a00">${I("v_bell")}</div><div class="l">${L("folAlerts")}<small>${L("folAlertsSub")}</small></div><div class="v">${swH(FOL.on)}</div></button>
+      <button class="it" data-act="folcheck"><div class="ico" style="background:#0ea5e9">${I("retry")}</div><div class="l">${L("folCheck")}<small>${FOL.checkedAt ? L("folChecked", fmtWhen(FOL.checkedAt)) : L("folNever")}</small></div><div class="v">${FOL.busy ? `<span class="mini-spin"></span>` : ""}</div></button></div>
+    <div class="lyo">${note}</div>
+    ${news.length ? `<div class="lyo">${L("folNew")}</div><div class="list">${news.map((n, i) => `<div class="tr" data-act="play" data-id="${n.t.id}" data-ctx="${ctx}" data-i="${i}"><div class="art">${img(n.t.artwork_url, "t120x120")}</div>
+        <div class="meta"><div class="t" dir="auto">${esc(n.t.title)}</div><div class="a"><span dir="auto">${esc(n.an || n.t.artist)}</span> · ${L("folReleased", fmtDate(n.rd || n.at))}</div></div></div>`).join("")}</div>` : ""}
+    <div class="lyo">${L("folTitle")} (${FOL.list.length})</div>
+    ${FOL.list.length ? `<div class="list">${FOL.list.map((f) => `<div class="tr ur" data-act="artist" data-id="${f.id}"><div class="art">${img(f.avatar_url, "t120x120")}</div>
+        <div class="meta"><div class="t" dir="auto">${esc(f.username)}</div><div class="a">${f.muted ? `${I("v_belloff", "ci")} ${L("folMute")}` : `${I("v_bell", "ci")} ${L("folAlerts")}`}</div></div>
+        <button class="more ${f.muted ? "" : "on"}" data-act="folmute" data-id="${f.id}" aria-label="${esc(L("folMute"))}">${I(f.muted ? "v_belloff" : "v_bell")}</button>
+        <button class="more" data-act="folun" data-id="${f.id}" aria-label="${esc(L("folUnfollow"))}">${I("close")}</button></div>`).join("")}</div>` : emptyBox("user", L("folNone"), L("folNoneSub"))}</div>`;
+  }
+  const folBtn = (u, small) => {
+    const on = isFol(u.id);
+    return small ? `<button class="more folb ${on ? "on" : ""}" data-act="follow" data-id="${u.id}" data-name="${esc(u.username || "")}" data-av="${esc(u.avatar_url || "")}" aria-label="${esc(L("follow"))}">${I(on ? "v_folok" : "v_fol")}</button>` : `<button class="btn folb2 ${on ? "on" : ""}" data-act="follow" data-id="${u.id}" data-name="${esc(u.username || "")}" data-av="${esc(u.avatar_url || "")}">${I(on ? "v_folok" : "v_fol")} ${L(on ? "following" : "follow")}</button>`;
+  };
+  setInterval(() => {
+    if (Date.now() - FOL.checkedAt > 6 * 36e5) folCheck();
+  }, 15 * 6e4);
+  const isMp4Name = (f) => /\.(mp4|m4v|mov|3gp|3g2|m4a)$/i.test(f.name || "") || /^video\/(mp4|quicktime|3gpp|3gpp2|x-m4v)$/i.test(f.type || "") || /^audio\/(mp4|x-m4a|m4a)$/i.test(f.type || "");
+  const isVideoName = (f) => /^video\//i.test(f.type || "") || /\.(mp4|m4v|mov|3gp|3g2|webm|mkv)$/i.test(f.name || "");
+  const decodeAB = (ac, buf) => new Promise((res, rej) => {
+    const p = ac.decodeAudioData(buf, res, rej);
+    if (p && p.then) p.then(res, rej);
+  });
+  function sigFromAB(ab, from = 0, to = ab.duration) {
+    const rate = ab.sampleRate, a = Math.max(0, Math.floor(from * rate)), b = Math.min(ab.length, Math.floor(to * rate));
+    if (b - a < rate * window.SCSig.MIN_SEC) return null;
+    const mono = new Float32Array(b - a);
+    for (let c = 0; c < ab.numberOfChannels; c++) {
+      const d = ab.getChannelData(c);
+      for (let i = 0; i < mono.length; i++) mono[i] += d[a + i] / ab.numberOfChannels;
+    }
+    const pcm = window.SCSig.toSig16k(mono, rate);
+    let s = 0;
+    for (let i = 0; i < pcm.length; i++) s += pcm[i] * pcm[i];
+    if (Math.sqrt(s / Math.max(1, pcm.length)) < window.SCSig.SILENT_RMS) return null;
+    const sig = window.SCSig.makeSignature(pcm);
+    return { uri: sig.uri, samplems: sig.samplems };
+  }
+  function recVidMsg(kind) {
+    REC.busy = false;
+    const orb = `<div class="recorb"><span></span><span></span><span></span><button data-act="recagain">${I(kind === "none" ? "music" : "v_video")}</button></div>`;
+    if (kind === "none") return recSet(`<div class="rec">${orb}<h3>${L("recVidNone")}</h3><p>${L("recVidNoneSub")}</p><div class="row2"><button class="btn pri" data-act="recname">${I("search")} ${L("recSearchName")}</button><button class="btn" data-act="recfile">${I("afile")} ${L("recFile")}</button></div></div>`);
+    const h = kind === "noaudio" ? L("recVidNoAudio") : kind === "big" ? L("recVidBig") : L("recVidBad");
+    return recSet(`<div class="rec">${orb}<h3>${h}</h3><p>${kind === "bad" ? L("recVidBadSub") : ""}</p><div class="row2"><button class="btn pri" data-act="recfile">${I("afile")} ${L("recFile")}</button><button class="btn" data-act="recagain">${I("mic")} ${L("recAgain")}</button></div></div>`);
+  }
+  function b64Bytes(u8) {
+    let s = "";
+    for (let i = 0; i < u8.length; i += 32768) s += String.fromCharCode.apply(null, u8.subarray(i, i + 32768));
+    return btoa(s);
+  }
+  async function recVideoFile(f, buf, run) {
+    const X = window.SCSig, u8 = new Uint8Array(buf);
+    let a = null, code = null;
+    if (isMp4Name(f) || u8[4] === 102 && u8[5] === 116 && u8[6] === 121 && u8[7] === 112) {
+      try {
+        a = X.parseMp4(u8);
+      } catch (e) {
+        code = e && e.code || "corrupt";
+      }
+    }
+    if (code === "no_audio") return recVidMsg("noaudio");
+    const AC = window.AudioContext || window.webkitAudioContext, ac = new AC();
+    REC.fileCtx = ac;
+    const sigs = [], clips = [];
+    let decoded = 0;
+    try {
+      if (a) {
+        if (!(a.duration >= X.MIN_SEC)) return recVidMsg("bad");
+        for (const w of X.videoWindows(a.duration).slice(0, 4)) {
+          if (run !== REC.run) return;
+          let bytes;
+          try {
+            bytes = X.windowBytes(u8, a, w.from, w.to);
+          } catch (e) {
+            continue;
+          }
+          if (!bytes || !bytes.length) continue;
+          let ab;
+          try {
+            ab = await decodeAB(ac, bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength));
+          } catch (e) {
+            if (bytes.length <= 88e4) clips.push({ codec: a.codec === "aac" ? "aac" : "mp3", bytes });
+            continue;
+          }
+          decoded++;
+          const s = sigFromAB(ab);
+          if (s) sigs.push(s);
+        }
+      } else {
+        if (buf.byteLength > 60 * 1048576) return recVidMsg("bad");
+        let ab;
+        try {
+          ab = await decodeAB(ac, buf.slice(0));
+        } catch (e) {
+          return recVidMsg("bad");
+        }
+        decoded++;
+        for (const w of X.videoWindows(ab.duration).slice(0, 4)) {
+          const s = sigFromAB(ab, w.from, w.to);
+          if (s) sigs.push(s);
+        }
+      }
+    } finally {
+      try {
+        ac.state !== "closed" && ac.close();
+      } catch (e) {
+      }
+      if (REC.fileCtx === ac) REC.fileCtx = null;
+    }
+    if (run !== REC.run) return;
+    let body;
+    if (sigs.length) body = { sigs };
+    else if (!decoded && clips.length) body = { clips: clips.map((c) => ({ codec: c.codec, b64: b64Bytes(c.bytes) })) };
+    else return recVidMsg(decoded ? "noaudio" : "bad");
+    clips.length = 0;
+    const r = await api("/recognize", { method: "POST", body });
+    if (run !== REC.run) return;
+    REC.busy = false;
+    if (r.hit) return recShow(r, true);
+    if (r.reason === "silent") return recVidMsg("noaudio");
+    if (r.reason === "corrupt") return recVidMsg("bad");
+    return recVidMsg("none");
+  }
+  function v15Start(sp) {
+    schRestore();
+    schSyncNative();
+    folMergeNative();
+    folSyncNative();
+    if (!String(sp || "").startsWith("j_")) partyResume();
+    setTimeout(() => {
+      if (Date.now() - FOL.checkedAt > 6 * 36e5) folCheck();
+    }, 8e3);
+    setTimeout(cleanRun, 15e3);
+  }
+  function v15SettingsCard() {
+    return `<div class="card"><div class="ch">v1.5</div>
+    ${OFF.ok ? `<button class="it" data-act="stoopen"><div class="ico" style="background:#f59e0b">${I("storage")}</div><div class="l">${L("stoTitle")}</div><div class="v">${fmtMB(offUsed())}</div></button>
+    <button class="it" data-act="schopen"><div class="ico" style="background:#0ea5e9">${I("v_clock")}</div><div class="l">${L("schTitle")}</div><div class="v">${SCH.on ? `${SCH.from}–${SCH.to}` : L("schOff")}</div></button>` : ""}
+    <button class="it" data-act="folopen"><div class="ico" style="background:#ff8a00">${I("v_bell")}</div><div class="l">${L("folTitle")}</div><div class="v">${FOL.list.length || ""}</div></button>
+    <button class="it" data-act="bkopen"><div class="ico" style="background:#6366f1">${I("v_backup")}</div><div class="l">${L("bkTitle")}</div><div class="v"></div></button></div>`;
+  }
+  async function v15Click(a, el, e) {
+    var _a2, _b2, _c2, _d2, _e2;
+    const id = el.dataset.id;
+    switch (a) {
+      // party
+      case "party":
+        return partySheet();
+      case "partystart":
+        return partyStart();
+      case "partyjoin": {
+        unlockAudio();
+        return partyJoin((_a2 = $("#pycode")) == null ? void 0 : _a2.value);
+      }
+      case "partyinvite":
+        return partyInvite();
+      case "partycopy":
+        return PARTY.code && copyText(PARTY.code);
+      case "partyend": {
+        if (await confirmAsk(L("partyEndQ"), L("partyEnd"))) {
+          await partyLeave();
+        }
+        return;
+      }
+      case "partyleave":
+        closeSheet();
+        return partyLeave();
+      // voice + recent search
+      case "vs":
+        return vsOpen();
+      case "vsstop":
+        vsStop(true);
+        return vsUI(VS.text ? "done" : "err", VS.text ? "" : L("vsNoMatch"));
+      case "vsagain":
+        return vsStart();
+      case "vsgo":
+        return vsGo();
+      case "recentgo": {
+        const q = el.dataset.q || "";
+        const inp = $("#q");
+        if (inp) inp.value = q;
+        recentAdd(q);
+        return doSearch(q, true);
+      }
+      case "recentclr":
+        LS.del("sc_recent");
+        toast(L("recentCleared"));
+        return drawSearch();
+      // storage
+      case "stoopen":
+        closeSheet();
+        return go({ type: "storage" });
+      case "stosel": {
+        const n = Number(id);
+        S.stoSel = S.stoSel || /* @__PURE__ */ new Set();
+        S.stoSel.has(n) ? S.stoSel.delete(n) : S.stoSel.add(n);
+        haptic("soft");
+        return drawStorage(PLX.get(), null);
+      }
+      case "stoselall": {
+        const all = stoSuggest().map((m) => m.id);
+        S.stoSel = S.stoSel && S.stoSel.size === all.length ? /* @__PURE__ */ new Set() : new Set(all);
+        return drawStorage(PLX.get(), null);
+      }
+      case "stodel":
+        return stoDelete([...S.stoSel || []]);
+      case "cleanopen":
+        return cleanSheet();
+      case "cleanrule":
+        return cleanSheet(el.dataset.k);
+      case "cleanon": {
+        CLN.on = true;
+        CLN.rule = S.cleanRule || "90";
+        LS.set("sc_clean", CLN);
+        closeSheet();
+        cleanRun();
+        if (((_b2 = view()) == null ? void 0 : _b2.type) === "storage") vStorage();
+        return;
+      }
+      case "cleanoff": {
+        CLN.on = false;
+        LS.set("sc_clean", CLN);
+        closeSheet();
+        if (((_c2 = view()) == null ? void 0 : _c2.type) === "storage") vStorage();
+        return;
+      }
+      case "travel":
+        return travelMode();
+      // schedule
+      case "schopen":
+        S.schDraft = null;
+        return schSheet();
+      case "schd": {
+        const d = schReadDraft();
+        if (!d) return;
+        d[el.dataset.k] = !d[el.dataset.k];
+        return schSheet();
+      }
+      case "schday": {
+        const d = schReadDraft();
+        if (!d) return;
+        const k = Number(el.dataset.d);
+        d.days = d.days.includes(k) ? d.days.filter((x) => x !== k) : d.days.concat(k).sort();
+        return schSheet();
+      }
+      case "schsave": {
+        const d = schReadDraft();
+        if (!d) return;
+        if (d.on && !d.days.length) return toast(L("schNoDays"));
+        Object.assign(SCH, d);
+        LS.set("sc_sched", { on: SCH.on, from: SCH.from, to: SCH.to, days: SCH.days, wifi: SCH.wifi, charge: SCH.charge });
+        S.schDraft = null;
+        closeSheet();
+        schSyncNative();
+        schTick();
+        if (((_d2 = view()) == null ? void 0 : _d2.type) === "downloads") drawDownloads();
+        else if (((_e2 = view()) == null ? void 0 : _e2.type) === "settings") render();
+        return toast(SCH.on ? schWhen() : L("schOff"));
+      }
+      case "schnow":
+        return schNow();
+      // backup
+      case "bkopen":
+        return bkSheet();
+      case "bkexp":
+        return bkExport(el.dataset.m);
+      case "bkimp":
+        return bkPick();
+      case "bkapply":
+        return bkApply(el.dataset.m);
+      // follows
+      case "follow":
+        e && e.stopPropagation();
+        return folToggle({ id, username: el.dataset.name, avatar_url: el.dataset.av });
+      case "folopen":
+        closeSheet();
+        return go({ type: "follows" });
+      case "folon":
+        FOL.on = !FOL.on;
+        folSave();
+        return vFollows();
+      case "folcheck":
+        folCheck(true);
+        return vFollows();
+      case "folmute": {
+        e && e.stopPropagation();
+        const f = FOL.list.find((x) => x.id === Number(id));
+        if (!f) return;
+        f.muted = !f.muted;
+        folSave();
+        toast(L(f.muted ? "folMuted" : "folUnmuted"));
+        return vFollows();
+      }
+      case "folun": {
+        e && e.stopPropagation();
+        const f = FOL.list.find((x) => x.id === Number(id));
+        if (f) folToggle(f);
+        return;
+      }
+      // video recognition: "search by name"
+      case "recname": {
+        closeSheet();
+        S.search.type = "tracks";
+        setTab("search");
+        setTimeout(() => {
+          var _a3;
+          return (_a3 = $("#q")) == null ? void 0 : _a3.focus();
+        }, 300);
+        return;
+      }
     }
   }
   function applyLang() {
@@ -4794,7 +6823,10 @@
     if (d.__sc === "net") {
       netCache = null;
       favAutoRun("net");
+      schTick();
     }
+    if (d.__sc === "speech") vsEvent(d);
+    if (d.__sc === "sched") schTick();
   }
   if (NATIVE == null ? void 0 : NATIVE.onEvent) {
     try {
@@ -4841,6 +6873,17 @@
         toast(L("err"));
       }
       return;
+    }
+    if (sp.startsWith("j_")) {
+      if (!initial) closeSheet();
+      return partyJoin(sp.slice(2));
+    }
+    if (sp.startsWith("a_") && /^a_\d+$/.test(sp)) {
+      if (!initial) {
+        closeSheet();
+        $(".fp.show") && closePlayer();
+      }
+      return go({ type: "artist", id: Number(sp.slice(2)) });
     }
     if (sp.startsWith("s_")) {
       S.search.q = "";
@@ -4891,13 +6934,20 @@
       return;
     }
     if (NATIVE) setTimeout(() => checkUpdate(false), 4e3);
-    const sp = ((_a2 = tg == null ? void 0 : tg.initDataUnsafe) == null ? void 0 : _a2.start_param) || takeNativeLink();
+    let qsp = "";
+    try {
+      qsp = new URLSearchParams(location.search).get("sp") || "";
+      if (qsp) history.replaceState(null, "", location.pathname + location.hash);
+    } catch (e) {
+    }
+    const sp = ((_a2 = tg == null ? void 0 : tg.initDataUnsafe) == null ? void 0 : _a2.start_param) || qsp || takeNativeLink();
     S.stack = [{ type: "home" }];
     render();
     syncBack();
     restorePlayer();
     openDeep(sp, true);
     loadFavs();
+    v15Start(sp);
     setTimeout(() => {
       rsFlush();
       rsCheck(true);
@@ -4961,7 +7011,40 @@
       persistPlayer,
       savedPlayer: () => readSavedPlayer(),
       audio,
-      playList
+      playList,
+      PARTY,
+      partyStart,
+      partyJoin,
+      partyLeave,
+      partyApply,
+      partyTick,
+      VS,
+      vsEvent,
+      vsStop,
+      offSearch,
+      normQ,
+      recentGet,
+      FOL,
+      folCheck,
+      folToggle,
+      SCH,
+      schInWindow,
+      schNextStart,
+      schCond,
+      schTick,
+      CLN,
+      cleanRun,
+      stoStale,
+      lastPlayed,
+      bkBuild,
+      bkParse,
+      bkPreview,
+      bkApply,
+      PLX,
+      recVideoFile,
+      L,
+      fmtMB,
+      offDel
     };
   }
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", boot) : boot();

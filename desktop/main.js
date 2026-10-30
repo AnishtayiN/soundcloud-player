@@ -57,6 +57,7 @@ function routeOf(argv) {
       if (u.protocol === "scplayer:" && u.hostname) seg.unshift(u.hostname);
       if (seg[0] === "t" && /^\d{1,15}$/.test(seg[1] || "")) return "t_" + seg[1];
       if (seg[0] === "p" && /^[\w-]{3,64}$/.test(seg[1] || "")) return "pl_" + seg[1];
+      if (seg[0] === "j" && /^[2-9a-hjkmnp-z]{10}$/.test(seg[1] || "")) return "j_" + seg[1]; // listen-together invite
     } catch (_) { /* ignore */ }
   }
   return "";

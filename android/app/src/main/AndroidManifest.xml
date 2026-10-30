@@ -54,6 +54,7 @@
                 <data android:host="soundclouddl-player.netlify.app" />
                 <data android:pathPrefix="/t/" />
                 <data android:pathPrefix="/p/" />
+                <data android:pathPrefix="/j/" />
             </intent-filter>
             <!-- custom scheme used by the landing page's "Open in app" button: scplayer://t/<id>, scplayer://p/<code> -->
             <intent-filter>
