@@ -3747,8 +3747,10 @@
     const move = (ev) => {
       lastY = ev.clientY;
     };
-    const up = () => {
+    const up = (ev) => {
       cancelAnimationFrame(raf);
+      if (ev && isFinite(ev.clientY) && ev.type === "pointerup") lastY = ev.clientY;
+      layout();
       h.removeEventListener("pointermove", move);
       h.removeEventListener("pointerup", up);
       h.removeEventListener("pointercancel", up);
