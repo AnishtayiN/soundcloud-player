@@ -174,7 +174,7 @@ public class MainActivity extends Activity {
         main.postDelayed(() -> { try { postToWeb(new JSONObject().put("__sc", "net")); } catch (Exception ignored) { } }, 1200);
     }
 
-    /** https://soundclouddl-player.netlify.app/t/123 | scplayer://t/123  →  "t_123";  …/p/<code> → "pl_<code>" */
+    /** https://soundclouddl-player.netlify.app/t/123 | scplayer://t/123  →  "t_123";  …/p/<code> → "pl_<code>";  …/j/<code> → "j_<code>" */
     static String routeOf(Intent intent) {
         if (intent == null || !Intent.ACTION_VIEW.equals(intent.getAction()) || intent.getData() == null) return "";
         Uri u = intent.getData();
@@ -184,6 +184,7 @@ public class MainActivity extends Activity {
         String kind = seg.get(0), val = seg.get(1);
         if ("t".equals(kind) && val.matches("\\d{1,15}")) return "t_" + val;
         if ("p".equals(kind) && val.matches("[\\w-]{3,64}")) return "pl_" + val;
+        if ("j".equals(kind) && val.matches("[2-9a-hjkmnp-z]{10}")) return "j_" + val; // listen-together invite
         return "";
     }
 

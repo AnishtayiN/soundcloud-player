@@ -5947,8 +5947,8 @@ ${L("schWifiUnknown")}`), L("download"))) return;
   function bkSheet() {
     const p = plat();
     openSheet(`<div class="bks"><div class="pyico">${I("v_backup")}</div><h3>${L("bkTitle")}</h3><p>${L("bkSub")}</p><div class="bkno">ℹ️ ${L("bkNoAudio")}</div>
-    ${p === "android" ? `<button class="mi" data-act="bkexp" data-m="share">${I("share")} ${L("bkShare")}</button>` : ""}
-    ${p === "windows" ? `<button class="mi" data-act="bkexp" data-m="save">${I("download")} ${L("bkSave")}</button>` : ""}
+    ${p === "android" && typeof (NATIVE == null ? void 0 : NATIVE.shareFile) === "function" ? `<button class="mi" data-act="bkexp" data-m="share">${I("share")} ${L("bkShare")}</button>` : ""}
+    ${p === "windows" && typeof (NATIVE == null ? void 0 : NATIVE.saveFile) === "function" ? `<button class="mi" data-act="bkexp" data-m="save">${I("download")} ${L("bkSave")}</button>` : ""}
     <button class="mi" data-act="bkexp" data-m="bot">${I("tg")} ${L("bkSendBot")}</button>
     <button class="mi" data-act="bkimp">${I("import")} ${L("bkImport")}</button></div>`);
   }

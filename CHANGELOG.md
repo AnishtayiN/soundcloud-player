@@ -1,5 +1,84 @@
 # Changelog
 
+## v1.5.0 — گوش دادن هم‌زمان، جستجوی صوتی و آفلاین، حافظه، پشتیبان، زمان‌بندی دانلود، آهنگ‌های تازه، تشخیص از ویدیو
+
+Nothing here changes the UI design (dark/orange), the app name, the package (`com.soundclouddl.player`) or the architecture: shared `web/app.js`, Android WebView, Windows Electron 22, the existing Supabase function `scbot`, bot @SoundClouddl_RoBot.
+- The UI stays Persian-first (`fa`, `dir="rtl"`). `STR.fa` was only extended (465 = 465 keys in fa and en).
+- The v1.3.1 P0/P1 fixes and every v1.4.0 feature are untouched. No existing feature was removed.
+- No new keys or secrets in the clients: everything uses `x-init-data` / `x-app-token` and the existing function.
+- No fake data: every state below comes from the real backend, IndexedDB or the device, and is asserted by `tests/v15.spec.mjs` (27 tests + 7 Persian screenshot checks). Full suite: 85/85.
+
+**Backend** (Supabase Edge Function `scbot`, deployed separately; live since this release, loader v16):
+- Migration `20261031000000_party.sql`: tables `party_sessions` / `party_members` (RLS on), RPC `party_op`.
+- `src/api.ts`: `/party/*`, `/releases?ids=`, `/backup/send`, `POST /playlists/:id/tracks` accepts `track_ids[]`, `/recognize` accepts `{sigs:[…]}` and `{clips:[…]}`.
+- `src/bot.ts`, `src/i18n.ts`: video / video note / MP4 document recognition, `j_` invite start parameter, `reply_parameters`.
+- New `src/mp4parse.ts`, `src/mp4audio.ts`, `src/sigweb.ts`; `src/shazam.ts` (`recognizeVideo`, `recognizeClips`); `src/soundcloud.ts` (`getUserReleases`).
+
+### 1. Listen together — گوش دادن هم‌زمان
+- «شروع نشست هم‌زمان» in the player creates a 10-character code and an invite link (shared with the existing share). There are no accounts and no public list.
+- State (track, position, playing, updated_at) lives in the backend; only participants can read it, only the host can change it.
+- Guests poll every 2.5 s and re-sync when more than 3 s off. A late joiner starts at the host's position. The host's play/pause/seek/song change are followed; a guest can't change the song.
+- **No realtime channel:** synchronization is polling (host pushes changes, guests poll). Accuracy is about ±3 s, by design.
+- Leave, end by the host, and expiry after 30 minutes without host activity. Offline: «برای نشست هم‌زمان باید آنلاین باشی».
+- Invite links: Mini App → `t.me/<bot>?start=j_<code>`; Android / Windows → `https://soundclouddl-player.netlify.app/j/<code>` (also `scplayer://j/<code>`). Joining by typing the code works everywhere.
+
+**Files:** `web/app.js`, `web/app.css`, `android/app/src/main/AndroidManifest.xml`, `android/app/src/main/java/com/soundclouddl/player/MainActivity.java`, `desktop/main.js`, `tests/v15.spec.mjs`
+
+### 2. Voice search + offline search — جستجوی صوتی و جستجوی آفلاین
+- A microphone button in search uses the platform's speech recognizer (`fa-IR`). The recognized text is editable before searching.
+- Closing the sheet, navigating, hiding the app or typing always stops the microphone; results that arrive after a stop are ignored.
+- When no recognizer is available, the app says so in Persian and fills in nothing.
+- Without internet, search runs over the downloads on this device (title, artist, playlist name; Arabic ي/ك match Persian ی/ک) with an «آفلاین» badge. Online, matching downloads are listed first.
+- Recent searches are stored only on the device and can be cleared.
+
+**Files:** `web/app.js`, `web/app.css`, `tests/v15.spec.mjs`
+
+### 3. Smart storage — حافظه
+- «حافظه» page: total, free space, offline limit, per artist / per playlist / per song (largest first). The total equals the bytes actually stored in IndexedDB.
+- Clean-up suggestions (never played, or not played for 90 days). Nothing is deleted without a selection and a confirmation; saved lyrics are deleted with the song.
+- Auto-cleanup is OFF by default; the user picks the rule and sees the exact list first. Favorites are never removed without asking.
+- Travel mode downloads all favorites in the lowest real quality the backend offers, shows the approximate size first, and respects the limit and Wi-Fi.
+
+**Files:** `web/app.js`, `web/app.css`, `tests/v15.spec.mjs`
+
+### 4. Backup / transfer — پشتیبان و انتقال
+- Versioned JSON (`soundcloud-player-backup`, v1): playlists, favorites, followed artists, settings, offline song list. No audio, and the UI says so.
+- Import via the file picker, then merge (no duplicates) or replace (asks first). A damaged file, other format or newer version shows a Persian message and changes nothing.
+- Transfer: «ارسال فایل به چت ربات» sends the file to the bot chat (only when tapped; nothing is stored on the server). On Android, the system share (e.g. to Saved Messages) appears once the native share bridge is present.
+
+**Files:** `web/app.js`, `web/app.css`, `tests/v15.spec.mjs`
+
+### 6. Download scheduling — زمان‌بندی دانلود
+- Time window + weekdays (windows across midnight supported). Scheduled downloads start only inside the window, a download in progress is paused when the window ends (nothing partial is kept) and restarts in the next window.
+- Optional Wi-Fi only / charging only. The downloads page shows the next run, the scheduled queue, «الان دانلود کن» and per-song cancel. The queue survives a restart.
+- Honest limits are shown in the app: in this version the scheduler runs while the app is open (Android may close a background app to save battery; Windows runs it while open, otherwise at the next launch).
+
+**Files:** `web/app.js`, `web/app.css`, `tests/v15.spec.mjs`
+
+### 7. New-release alerts — آهنگ‌های تازه
+- Follow / unfollow on the artist page and in artist search results; the list is in Settings → «خواننده‌های دنبال‌شده».
+- Checked through the existing API (`/releases`). Only songs whose real SoundCloud date is after the follow are reported, each once, at most one alert per artist per day.
+- Per-artist mute and a global switch; unfollow stops checks for that artist.
+- In this version the check runs while the app is open (every 6 hours) and alerts in the app.
+
+**Files:** `web/app.js`, `web/app.css`, `tests/v15.spec.mjs`
+
+### 8. Song recognition from video — تشخیص آهنگ از ویدیو
+- The bot accepts video, video notes and MP4/MOV documents (GIFs are ignored). It extracts the audio itself (no third party, no new keys) and uses the same Shazam path as voice notes.
+- Up to the first 120 s are tried; if nothing matches and the video is longer, one window from the middle. Files over 20 MB are refused by Telegram's bot API and the bot says so.
+- No audio / silent / too short / damaged → «این ویدیو صدا ندارد» or «این فایل قابل تشخیص نیست». Not found → «این آهنگ پیدا نشد» + search by name. Nothing is kept after the request.
+- The app's recognition file picker accepts videos too and sends one request with up to 4 windows. If the WebView can't decode AAC, only the cut 12-second windows are sent and decoded on the server.
+
+**Files:** `web/app.js`, `web/shazamsig.js`, `tests/v15.spec.mjs`, `tests/media/*` (synthetic tones only)
+
+### Not in v1.5.0 (planned for v1.5.x)
+- **5. Android home-screen widget and Android Auto:** not included yet. Windows keeps media keys as before.
+- **Native Android pieces:** the speech-recognizer bridge (until then the voice button shows «جستجوی صوتی روی این دستگاه در دسترس نیست»), background release checks with system notifications, background scheduled downloads, file sharing for backups, and exact free space.
+- The invite page `https://soundclouddl-player.netlify.app/j/<code>` goes live with the next website deploy; it doesn't need an app update.
+
+### Fixes
+- Unfollowing an artist could show the next artist's name in the toast.
+
 ## v1.4.0 — صف پخش، ادامه روی دستگاه دیگر، آفلاین هوشمند، متن آهنگ، آمار من، تشخیص یک‌لمسی، تایمر/سرعت/اکولایزر
 
 Nothing here changes the UI design (dark/orange), the app name, the package (`com.soundclouddl.player`) or the architecture: shared `web/app.js`, Android WebView, Windows Electron 22, the existing Supabase function `scbot`, and the bot @SoundClouddl_RoBot.
