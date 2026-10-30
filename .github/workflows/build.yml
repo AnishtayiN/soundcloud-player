@@ -167,7 +167,10 @@ jobs:
 
   windows:
     needs: version
-    runs-on: windows-latest
+    # windows-latest (windows-2025-vs2026, images from 2026-10-07) crashes Chromium <= 120 at boot inside the sandbox
+    # (GPU + renderer 0xC0000005) - Electron 22 is required for Windows 7 support, so build + test on windows-2022.
+    # The non-blocking "windows-latest-probe" job below keeps watching the newest image.
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -221,6 +224,46 @@ jobs:
           name: windows-engine-check
           path: e2e-win/
           if-no-files-found: warn
+
+  windows-latest-probe:
+    # informational only (never blocks a release): does the packaged app boot on the newest Windows image?
+    needs: version
+    runs-on: windows-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Build unpacked app
+        shell: bash
+        run: |
+          mkdir -p desktop/web && cp -r web/* desktop/web/
+          cd desktop && npm install --no-audit --no-fund && npx electron-builder --win --dir --x64 --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+      - name: Boot + engine check (default, then --no-sandbox)
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force e2e-probe | Out-Null
+          (Get-CimInstance Win32_OperatingSystem | Select-Object Caption, Version, BuildNumber | Format-List | Out-String).Trim() | Write-Host
+          $exe = Get-ChildItem desktop/dist/win-unpacked -Filter *.exe | Where-Object { $_.Name -notmatch 'Uninstall' } | Select-Object -First 1
+          foreach ($try in @(@{ n = 'default'; extra = @() }, @{ n = 'no-sandbox'; extra = @('--no-sandbox') })) {
+            $argv = @('--remote-debugging-port=9222', '--enable-logging') + $try.extra
+            $p = Start-Process -FilePath $exe.FullName -ArgumentList $argv -PassThru -RedirectStandardError "e2e-probe/electron-$($try.n).log" -RedirectStandardOutput "e2e-probe/electron-$($try.n).out"
+            Start-Sleep -Seconds 10
+            node --experimental-websocket tests/native/cdp-check.mjs --port 9222 --out "e2e-probe/engine-$($try.n).json"
+            $c = $LASTEXITCODE
+            Get-Process | Where-Object { $_.Path -eq $exe.FullName } | Stop-Process -Force -ErrorAction SilentlyContinue
+            Start-Sleep -Seconds 2
+            Write-Host "══ PROBE $($try.n): exit $c"
+            Get-Content "e2e-probe/electron-$($try.n).log" -ErrorAction SilentlyContinue | Select-String -Pattern '\[sc\]|FATAL' | Select-Object -Last 6 | ForEach-Object { Write-Host $_ }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-latest-probe
+          path: e2e-probe/
 
   release:
     needs: [version, android, windows]
