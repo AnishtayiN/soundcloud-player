@@ -148,7 +148,7 @@ svg{width:22px;height:22px;fill:currentColor;flex:none}
 .mini .prog i{display:block;height:100%;width:0;background:var(--grad)}
 
 /* full player */
-.fp{position:fixed;inset:0;z-index:40;background:var(--bg);transform:translateY(100%);transition:transform .4s cubic-bezier(.2,.9,.25,1);display:flex;flex-direction:column;overflow:hidden}
+.fp{position:fixed;inset:0;z-index:40;background:var(--bg);transform:translateY(100%);transition:transform .4s cubic-bezier(.2,.9,.25,1);display:flex;flex-direction:column;overflow:hidden;overflow:clip}
 .fp.show{transform:none}
 .fp .bgimg{position:absolute;inset:-20%;background-size:cover;background-position:center;filter:blur(60px) saturate(1.6) brightness(.7);opacity:.7;transition:background-image .4s}
 .fp .bgimg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15),var(--bg) 92%)}
@@ -397,7 +397,7 @@ body.auth .rsm{display:none}
 .fp .tools button{display:flex;align-items:center;gap:5px;height:34px;padding:0 12px;border-radius:99px;background:rgba(255,255,255,.07);color:var(--hint);font-size:12px;font-weight:800;font-variant-numeric:tabular-nums}
 body.light .fp .tools button{background:rgba(0,0,0,.05)}
 .fp .tools svg{width:17px;height:17px}
-.fp .tools button.on{background:var(--grad);color:#fff;box-shadow:0 4px 14px rgba(255,85,0,.35)}
+.fp .tools button.on,body.light .fp .tools button.on{background:var(--grad);color:#fff;box-shadow:0 4px 14px rgba(255,85,0,.35)}
 .fp .lyp{display:none}
 .fp.ly .cover{display:none}
 .fp.ly .in{min-height:0}

@@ -16,6 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.JavascriptInterface;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.RenderProcessGoneDetail;
@@ -61,6 +64,8 @@ public class MainActivity extends Activity {
     private PermissionRequest pendingMic;           // 🎤 song recognition (getUserMedia)
     private ValueCallback<Uri[]> fileCallback;      // <input type="file">
     private static final int REQ_MIC = 8, REQ_FILE = 9;
+    private ConnectivityManager.NetworkCallback netCb; // tells the page when Wi-Fi ↔ mobile data changes (auto-download of favorites)
+    private volatile String netLast = "";
 
     /** Run JavaScript in the current UI (used by PlaybackService for notification buttons). */
     static boolean js(final String code) {
@@ -95,6 +100,7 @@ public class MainActivity extends Activity {
         });
 
         updater = new Updater(this, this::postToWeb);
+        watchNetwork();
         if (savedInstanceState == null) pendingLink = routeOf(getIntent());
 
         createWebView();
@@ -122,6 +128,50 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         if (updater != null) updater.onResume();
+    }
+
+    /**
+     * Current connection for "auto-download favorites only on Wi-Fi":
+     * {"known":true,"ok":true,"type":"wifi"} — ok only on an unmetered Wi-Fi/Ethernet network
+     * (a metered Wi-Fi such as a phone hotspot counts as mobile data → not ok).
+     */
+    String netInfoJson() {
+        try {
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+            if (cm == null) return "{\"known\":false}";
+            Network n = cm.getActiveNetwork();
+            NetworkCapabilities c = n == null ? null : cm.getNetworkCapabilities(n);
+            if (c == null) return "{\"known\":true,\"ok\":false,\"type\":\"none\"}";
+            String type = c.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ? "wifi"
+                    : c.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) ? "ethernet"
+                    : c.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ? "cellular"
+                    : c.hasTransport(NetworkCapabilities.TRANSPORT_VPN) ? "vpn" : "other";
+            boolean unmetered = !cm.isActiveNetworkMetered();
+            boolean ok = unmetered && ("wifi".equals(type) || "ethernet".equals(type) || ("vpn".equals(type) && !c.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)));
+            return new JSONObject().put("known", true).put("ok", ok).put("type", type).put("metered", !unmetered).toString();
+        } catch (Exception e) {
+            return "{\"known\":false}";
+        }
+    }
+
+    private void watchNetwork() {
+        try {
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+            if (cm == null) return;
+            netCb = new ConnectivityManager.NetworkCallback() {
+                @Override public void onAvailable(Network network) { netChanged(); }
+                @Override public void onLost(Network network) { netChanged(); }
+                @Override public void onCapabilitiesChanged(Network network, NetworkCapabilities caps) { netChanged(); }
+            };
+            cm.registerDefaultNetworkCallback(netCb); // API 24+ (= minSdk)
+        } catch (Exception ignored) { netCb = null; }
+    }
+
+    private void netChanged() {
+        String now = netInfoJson();
+        if (now.equals(netLast)) return; // capabilities change often (signal strength) → only real changes
+        netLast = now;
+        main.postDelayed(() -> { try { postToWeb(new JSONObject().put("__sc", "net")); } catch (Exception ignored) { } }, 1200);
     }
 
     /** https://soundclouddl-player.netlify.app/t/123 | scplayer://t/123  →  "t_123";  …/p/<code> → "pl_<code>" */
@@ -280,6 +330,8 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface public void openExternal(final String url) { main.post(() -> MainActivity.this.openExternal(url)); }
 
+        @JavascriptInterface public String netInfo() { return netInfoJson(); }
+
         @JavascriptInterface public String takeLink() { String l = pendingLink; pendingLink = ""; return l == null ? "" : l; }
 
         @JavascriptInterface public void share(final String text, final String url) {
@@ -348,6 +400,10 @@ public class MainActivity extends Activity {
             root.removeView(web);
             web.destroy();
             web = null;
+        }
+        if (netCb != null) {
+            try { ((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE)).unregisterNetworkCallback(netCb); } catch (Exception ignored) { }
+            netCb = null;
         }
         if (current.get() == this) current = new WeakReference<>(null);
         super.onDestroy();

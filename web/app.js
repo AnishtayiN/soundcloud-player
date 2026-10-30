@@ -2230,7 +2230,7 @@
       var _a2, _b2;
       dlRefT = null;
       if (((_a2 = view()) == null ? void 0 : _a2.type) === "downloads") drawDownloads();
-      document.querySelectorAll("#view .tr[data-id], .sheet .tr[data-id]").forEach((el) => {
+      document.querySelectorAll("#view .tr[data-id]:not(.dlj), .sheet .tr[data-id]:not(.dlj)").forEach((el) => {
         const id = Number(el.dataset.id), a = el.querySelector(".a");
         if (!a) return;
         const old = a.querySelector(".dls"), html = dlBadge(id);
@@ -4785,6 +4785,10 @@
     if (!d || typeof d !== "object" || typeof d.__sc !== "string") return;
     if (d.__sc === "upd") onUpdEvent(d);
     if (d.__sc === "link" && S.me) openDeep(takeNativeLink());
+    if (d.__sc === "net") {
+      netCache = null;
+      favAutoRun("net");
+    }
   }
   if (NATIVE == null ? void 0 : NATIVE.onEvent) {
     try {

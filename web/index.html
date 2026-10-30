@@ -22,7 +22,8 @@
         copy: function (t) { A.copy(String(t)); },
         downloadUpdate: function (url, v) { A.downloadUpdate(String(url), String(v)); },
         cancelUpdate: function () { A.cancelUpdate(); },
-        installUpdate: function () { A.installUpdate(); }
+        installUpdate: function () { A.installUpdate(); },
+        netInfo: function () { return A.netInfo ? A.netInfo() : "{\"known\":false}"; }
       };
     }
     if (window.SCNative) document.documentElement.classList.add("native", "native-" + window.SCNative.platform);

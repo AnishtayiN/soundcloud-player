@@ -229,6 +229,43 @@ on("copy", (_e, text) => clipboard.writeText(String(text || "")));
 on("upd-start", (_e, url, version) => startUpdate(url, version));
 on("upd-cancel", () => { if (upd && upd.item) upd.item.cancel(); else upd = null; });
 on("upd-install", () => installReady());
+// connection type for "auto-download favorites only on Wi-Fi" — Windows 8+ connection-cost API (WinRT) via PowerShell.
+// ok = an unrestricted (not metered), non-cellular, non-roaming connection. When Windows can't tell (Windows 7,
+// PowerShell blocked, timeout) the answer is {known:false} → the app says so and only downloads after the user agrees.
+let netMemo = null;
+function netInfo() {
+  if (process.platform !== "win32") return Promise.resolve({ known: false });
+  if (netMemo && Date.now() - netMemo.at < 20000) return netMemo.p;
+  const ps = "$ErrorActionPreference='Stop';[void][Windows.Networking.Connectivity.NetworkInformation,Windows.Networking.Connectivity,ContentType=WindowsRuntime];" +
+    "$p=[Windows.Networking.Connectivity.NetworkInformation]::GetInternetConnectionProfile();" +
+    "if(-not $p){'none'}else{$c=$p.GetConnectionCost();'{0}|{1}|{2}|{3}|{4}' -f $p.IsWlanConnectionProfile,$p.IsWwanConnectionProfile,$c.NetworkCostType,$c.Roaming,$c.OverDataLimit}";
+  const p = new Promise((resolve) => {
+    let out = "", done = false;
+    const end = (v) => { if (!done) { done = true; resolve(v); } };
+    let ch;
+    try {
+      ch = spawn(path.join(process.env.SystemRoot || "C:\\Windows", "System32", "WindowsPowerShell", "v1.0", "powershell.exe"),
+        ["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", ps], { windowsHide: true, stdio: ["ignore", "pipe", "ignore"] });
+    } catch (_) { return end({ known: false }); }
+    const timer = setTimeout(() => { try { ch.kill(); } catch (_) {} end({ known: false }); }, 6000);
+    ch.stdout.on("data", (d) => { out += d; });
+    ch.on("error", () => { clearTimeout(timer); end({ known: false }); });
+    ch.on("close", (code) => {
+      clearTimeout(timer);
+      const line = out.trim().split(/\r?\n/).pop() || "";
+      if (code !== 0 || !line) return end({ known: false });
+      if (line === "none") return end({ known: true, ok: false, type: "none" });
+      const [wlan, wwan, cost, roaming, over] = line.split("|").map((x) => x.trim());
+      if (!cost) return end({ known: false });
+      const type = wwan === "True" ? "cellular" : wlan === "True" ? "wifi" : "ethernet";
+      if (cost === "Unknown") return end({ known: false, type });
+      end({ known: true, ok: cost === "Unrestricted" && type !== "cellular" && roaming !== "True" && over !== "True", type, metered: cost !== "Unrestricted" });
+    });
+  });
+  netMemo = { at: Date.now(), p };
+  return p;
+}
+ipcMain.handle("net-info", (e) => (fromApp(e) ? netInfo() : null));
 on("set-theme", (_e, bg) => { if (win && /^#[0-9a-f]{6}$/i.test(bg)) win.setBackgroundColor(bg); });
 
 app.on("second-instance", (_e, argv) => {

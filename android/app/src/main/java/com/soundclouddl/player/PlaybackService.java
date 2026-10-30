@@ -183,6 +183,7 @@ public class PlaybackService extends Service {
         state = s;
         boolean playing = s.optBoolean("playing"), loading = s.optBoolean("loading");
         long pos = s.optLong("position", 0), dur = s.optLong("duration", 0);
+        float rate = (float) s.optDouble("rate", 1.0); if (!(rate >= 0.5f && rate <= 3f)) rate = 1f; // speed chosen in the app (0.75×…2×) → notification/lock-screen progress stays in step
 
         String url = s.optString("artwork", "").replace("-large.", "-t500x500.");
         if (!url.equals(artUrl)) { artUrl = url; art = null; loadArt(url); }
@@ -200,7 +201,7 @@ public class PlaybackService extends Service {
                 .setActions(PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_PAUSE | PlaybackStateCompat.ACTION_PLAY_PAUSE
                         | PlaybackStateCompat.ACTION_SKIP_TO_NEXT | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
                         | PlaybackStateCompat.ACTION_SEEK_TO | PlaybackStateCompat.ACTION_STOP)
-                .setState(st, pos, playing ? 1f : 0f)
+                .setState(st, pos, playing ? rate : 0f)
                 .build());
 
         if (playing || loading) acquireLocks(lockDuration(playing, pos, dur)); else releaseLocks();
