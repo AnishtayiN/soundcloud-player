@@ -203,8 +203,12 @@ function createWindow() {
     win.webContents.on("devtools-opened", () => { if (win && !win.isDestroyed()) win.webContents.closeDevTools(); });
   }
   // renderer crashed / was killed → reload; the UI restores queue / track / position and resumes (#recover=1)
+  const gone = [];
   win.webContents.on("render-process-gone", (_e, d) => {
+    console.error(`[sc] renderer gone: ${d.reason} (exit ${d.exitCode})`);
     if (!win || win.isDestroyed() || d.reason === "clean-exit") return;
+    const now = Date.now(); gone.push(now); while (gone.length && now - gone[0] > 60000) gone.shift();
+    if (gone.length > 3) { console.error("[sc] renderer keeps crashing - not reloading again"); return; } // no endless crash loop
     setTimeout(() => { if (win && !win.isDestroyed()) win.loadFile(INDEX, { hash: "recover=1" }); }, 300);
   });
   win.on("closed", () => { win = null; });
@@ -273,5 +277,6 @@ app.on("second-instance", (_e, argv) => {
   if (r) { pendingLink = r; toWeb({ __sc: "link" }); }
   if (win) { if (win.isMinimized()) win.restore(); win.show(); win.focus(); }
 });
+app.on("child-process-gone", (_e, d) => { if (d.reason !== "clean-exit") console.error(`[sc] ${d.type} process gone: ${d.reason} (exit ${d.exitCode})`); });
 app.whenReady().then(createWindow);
 app.on("window-all-closed", () => app.quit());

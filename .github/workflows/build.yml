@@ -197,12 +197,22 @@ jobs:
       - name: "Engine check on Windows: speed, EQ and sleep timer in the packaged app"
         shell: pwsh
         run: |
+          New-Item -ItemType Directory -Force e2e-win | Out-Null
           $exe = Get-ChildItem desktop/dist/win-unpacked -Filter *.exe | Where-Object { $_.Name -notmatch 'Uninstall' } | Select-Object -First 1
-          Start-Process -FilePath $exe.FullName -ArgumentList '--remote-debugging-port=9222'
-          Start-Sleep -Seconds 8
-          node --experimental-websocket tests/native/cdp-check.mjs --port 9222 --out e2e-win/engine.json --shot e2e-win/engine.png
-          $code = $LASTEXITCODE
-          Get-Process | Where-Object { $_.Path -eq $exe.FullName } | Stop-Process -Force -ErrorAction SilentlyContinue
+          $code = 1
+          foreach ($try in @(@{ n = 1; extra = @() }, @{ n = 2; extra = @('--disable-gpu') })) {
+            $argv = @('--remote-debugging-port=9222', '--enable-logging') + $try.extra
+            Write-Host "── attempt $($try.n): $($argv -join ' ')"
+            $p = Start-Process -FilePath $exe.FullName -ArgumentList $argv -PassThru -RedirectStandardError "e2e-win/electron-$($try.n).log" -RedirectStandardOutput "e2e-win/electron-$($try.n).out"
+            Start-Sleep -Seconds 10
+            node --experimental-websocket tests/native/cdp-check.mjs --port 9222 --out "e2e-win/engine-$($try.n).json" --shot "e2e-win/engine-$($try.n).png"
+            $code = $LASTEXITCODE
+            Get-Process | Where-Object { $_.Path -eq $exe.FullName } | Stop-Process -Force -ErrorAction SilentlyContinue
+            Start-Sleep -Seconds 2
+            Write-Host "── electron log (attempt $($try.n)):"
+            Get-Content "e2e-win/electron-$($try.n).log" -ErrorAction SilentlyContinue | Select-String -Pattern '\[sc\]|ERROR|FATAL|crash|GPU' | Select-Object -Last 25 | ForEach-Object { Write-Host $_ }
+            if ($code -eq 0) { Write-Host "✅ engine check passed on attempt $($try.n)"; break }
+          }
           exit $code
       - name: Upload Windows engine-check result
         if: always()

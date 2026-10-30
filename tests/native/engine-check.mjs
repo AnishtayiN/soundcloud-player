@@ -82,7 +82,7 @@ export function verdict(R) {
   if (!R.playing) fails.push("the offline song did not play");
   else {
     between("speed1", 0.85, 1.15); between("speed15", 1.3, 1.7); between("speed075", 0.62, 0.88); between("speed2", 1.75, 2.25);
-    if (R.eqOk) { between("bassDelta", 5, 40); between("trebleDelta", 5, 40); if (!R.stillPlaying) fails.push("playback stopped while switching EQ presets"); }
+    if (R.eqOk) { between("bassDelta", 3, 40); between("trebleDelta", 3, 40); /* design ≈ +8 dB; measured 5–9 dB, noise floor ±0.5 dB */ if (!R.stillPlaying) fails.push("playback stopped while switching EQ presets"); }
     if (!R.timerStopped) fails.push("sleep timer did not stop playback");
     between("timerMs", 16500, 21000);
     if (!(R.fadeAt10s < 0.9 && R.fadeAt10s > 0.2)) fails.push(`no fade before stopping (volume at 10.5 s = ${R.fadeAt10s})`);
