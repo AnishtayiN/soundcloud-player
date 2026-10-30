@@ -194,6 +194,23 @@ jobs:
           name: exe
           path: desktop/dist/SoundCloud-Player-Setup.exe
           if-no-files-found: error
+      - name: "Engine check on Windows: speed, EQ and sleep timer in the packaged app"
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem desktop/dist/win-unpacked -Filter *.exe | Where-Object { $_.Name -notmatch 'Uninstall' } | Select-Object -First 1
+          Start-Process -FilePath $exe.FullName -ArgumentList '--remote-debugging-port=9222'
+          Start-Sleep -Seconds 8
+          node --experimental-websocket tests/native/cdp-check.mjs --port 9222 --out e2e-win/engine.json --shot e2e-win/engine.png
+          $code = $LASTEXITCODE
+          Get-Process | Where-Object { $_.Path -eq $exe.FullName } | Stop-Process -Force -ErrorAction SilentlyContinue
+          exit $code
+      - name: Upload Windows engine-check result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-engine-check
+          path: e2e-win/
+          if-no-files-found: warn
 
   release:
     needs: [version, android, windows]

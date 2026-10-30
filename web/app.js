@@ -4953,7 +4953,9 @@
       render,
       go,
       persistPlayer,
-      savedPlayer: () => readSavedPlayer()
+      savedPlayer: () => readSavedPlayer(),
+      audio,
+      playList
     };
   }
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", boot) : boot();
