@@ -167,7 +167,10 @@ jobs:
 
   windows:
     needs: version
-    runs-on: windows-latest
+    # windows-latest (windows-2025-vs2026, images from 2026-10-07) crashes Chromium <= 120 at boot inside the sandbox
+    # (GPU + renderer 0xC0000005) - Electron 22 is required for Windows 7 support, so build + test on windows-2022.
+    # The non-blocking "windows-latest-probe" job below keeps watching the newest image.
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -194,6 +197,74 @@ jobs:
           name: exe
           path: desktop/dist/SoundCloud-Player-Setup.exe
           if-no-files-found: error
+      - name: "Engine check on Windows: speed, EQ and sleep timer in the packaged app"
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force e2e-win | Out-Null
+          $exe = Get-ChildItem desktop/dist/win-unpacked -Filter *.exe | Where-Object { $_.Name -notmatch 'Uninstall' } | Select-Object -First 1
+          $code = 1
+          foreach ($try in @(@{ n = 1; extra = @() }, @{ n = 2; extra = @('--disable-gpu') })) {
+            $argv = @('--remote-debugging-port=9222', '--enable-logging') + $try.extra
+            Write-Host "── attempt $($try.n): $($argv -join ' ')"
+            $p = Start-Process -FilePath $exe.FullName -ArgumentList $argv -PassThru -RedirectStandardError "e2e-win/electron-$($try.n).log" -RedirectStandardOutput "e2e-win/electron-$($try.n).out"
+            Start-Sleep -Seconds 10
+            node --experimental-websocket tests/native/cdp-check.mjs --port 9222 --out "e2e-win/engine-$($try.n).json" --shot "e2e-win/engine-$($try.n).png"
+            $code = $LASTEXITCODE
+            Get-Process | Where-Object { $_.Path -eq $exe.FullName } | Stop-Process -Force -ErrorAction SilentlyContinue
+            Start-Sleep -Seconds 2
+            Write-Host "── electron log (attempt $($try.n)):"
+            Get-Content "e2e-win/electron-$($try.n).log" -ErrorAction SilentlyContinue | Select-String -Pattern '\[sc\]|ERROR|FATAL|crash|GPU' | Select-Object -Last 25 | ForEach-Object { Write-Host $_ }
+            if ($code -eq 0) { Write-Host "✅ engine check passed on attempt $($try.n)"; break }
+          }
+          if ($code -eq 0 -and (Test-Path "$env:APPDATA/SoundCloud Player/sandbox-fallback.json")) { Write-Host "::error::the app fell back to --no-sandbox on windows-2022, where the sandbox works"; exit 1 }
+          exit $code
+      - name: Upload Windows engine-check result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-engine-check
+          path: e2e-win/
+          if-no-files-found: warn
+
+  windows-latest-probe:
+    # informational only (never blocks a release): does the packaged app boot on the newest Windows image?
+    needs: version
+    runs-on: windows-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Build unpacked app
+        shell: bash
+        run: |
+          mkdir -p desktop/web && cp -r web/* desktop/web/
+          cd desktop && npm install --no-audit --no-fund && npx electron-builder --win --dir --x64 --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+      - name: Boot + engine check on the newest image (self-healing sandbox fallback, then the remembered setting)
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force e2e-probe | Out-Null
+          (Get-CimInstance Win32_OperatingSystem | Select-Object Caption, Version, BuildNumber | Format-List | Out-String).Trim() | Write-Host
+          Remove-Item "$env:APPDATA/SoundCloud Player/sandbox-fallback.json" -ErrorAction SilentlyContinue
+          $exe = Get-ChildItem desktop/dist/win-unpacked -Filter *.exe | Where-Object { $_.Name -notmatch 'Uninstall' } | Select-Object -First 1
+          foreach ($n in @('first-launch', 'second-launch')) {
+            $p = Start-Process -FilePath $exe.FullName -ArgumentList @('--remote-debugging-port=9222', '--enable-logging') -PassThru -RedirectStandardError "e2e-probe/electron-$n.log" -RedirectStandardOutput "e2e-probe/electron-$n.out"
+            Start-Sleep -Seconds 25   # a crash-looping first launch restarts itself without the sandbox within seconds
+            node --experimental-websocket tests/native/cdp-check.mjs --port 9222 --out "e2e-probe/engine-$n.json"
+            $c = $LASTEXITCODE
+            Get-Process | Where-Object { $_.Path -eq $exe.FullName } | Stop-Process -Force -ErrorAction SilentlyContinue
+            Start-Sleep -Seconds 3
+            Write-Host "══ PROBE $n : exit $c ; fallback flag: $(Test-Path "$env:APPDATA/SoundCloud Player/sandbox-fallback.json")"
+            Get-Content "e2e-probe/electron-$n.log" -ErrorAction SilentlyContinue | Select-String -Pattern '\[sc\]|FATAL' | Select-Object -Last 8 | ForEach-Object { Write-Host $_ }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-latest-probe
+          path: e2e-probe/
 
   release:
     needs: [version, android, windows]

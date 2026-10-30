@@ -33,7 +33,8 @@ contextBridge.exposeInMainWorld("SCNative", {
   copy: (text) => ipcRenderer.send("copy", String(text)),
   downloadUpdate: (url, version) => ipcRenderer.send("upd-start", String(url), String(version)),
   cancelUpdate: () => ipcRenderer.send("upd-cancel"),
-  installUpdate: () => ipcRenderer.send("upd-install"), // explicit user tap → main re-verifies SHA-256, then runs the installer
+  installUpdate: () => ipcRenderer.send("upd-install"),
+  netInfo: () => ipcRenderer.invoke("net-info").then((r) => (r && typeof r === "object" ? { known: !!r.known, ok: !!r.ok, type: String(r.type || "") } : { known: false })).catch(() => ({ known: false })), // explicit user tap → main re-verifies SHA-256, then runs the installer
   onEvent: (fn) => {
     if (typeof fn !== "function" || listeners.length) return; // one subscriber (the app) only
     listeners.push(fn);
