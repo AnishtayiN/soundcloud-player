@@ -216,6 +216,7 @@ jobs:
             Get-Content "e2e-win/electron-$($try.n).log" -ErrorAction SilentlyContinue | Select-String -Pattern '\[sc\]|ERROR|FATAL|crash|GPU' | Select-Object -Last 25 | ForEach-Object { Write-Host $_ }
             if ($code -eq 0) { Write-Host "✅ engine check passed on attempt $($try.n)"; break }
           }
+          if ($code -eq 0 -and (Test-Path "$env:APPDATA/SoundCloud Player/sandbox-fallback.json")) { Write-Host "::error::the app fell back to --no-sandbox on windows-2022, where the sandbox works"; exit 1 }
           exit $code
       - name: Upload Windows engine-check result
         if: always()
@@ -242,22 +243,22 @@ jobs:
           cd desktop && npm install --no-audit --no-fund && npx electron-builder --win --dir --x64 --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
-      - name: Boot + engine check (default, then --no-sandbox)
+      - name: Boot + engine check on the newest image (self-healing sandbox fallback, then the remembered setting)
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force e2e-probe | Out-Null
           (Get-CimInstance Win32_OperatingSystem | Select-Object Caption, Version, BuildNumber | Format-List | Out-String).Trim() | Write-Host
+          Remove-Item "$env:APPDATA/SoundCloud Player/sandbox-fallback.json" -ErrorAction SilentlyContinue
           $exe = Get-ChildItem desktop/dist/win-unpacked -Filter *.exe | Where-Object { $_.Name -notmatch 'Uninstall' } | Select-Object -First 1
-          foreach ($try in @(@{ n = 'default'; extra = @() }, @{ n = 'no-sandbox'; extra = @('--no-sandbox') })) {
-            $argv = @('--remote-debugging-port=9222', '--enable-logging') + $try.extra
-            $p = Start-Process -FilePath $exe.FullName -ArgumentList $argv -PassThru -RedirectStandardError "e2e-probe/electron-$($try.n).log" -RedirectStandardOutput "e2e-probe/electron-$($try.n).out"
-            Start-Sleep -Seconds 10
-            node --experimental-websocket tests/native/cdp-check.mjs --port 9222 --out "e2e-probe/engine-$($try.n).json"
+          foreach ($n in @('first-launch', 'second-launch')) {
+            $p = Start-Process -FilePath $exe.FullName -ArgumentList @('--remote-debugging-port=9222', '--enable-logging') -PassThru -RedirectStandardError "e2e-probe/electron-$n.log" -RedirectStandardOutput "e2e-probe/electron-$n.out"
+            Start-Sleep -Seconds 25   # a crash-looping first launch restarts itself without the sandbox within seconds
+            node --experimental-websocket tests/native/cdp-check.mjs --port 9222 --out "e2e-probe/engine-$n.json"
             $c = $LASTEXITCODE
             Get-Process | Where-Object { $_.Path -eq $exe.FullName } | Stop-Process -Force -ErrorAction SilentlyContinue
-            Start-Sleep -Seconds 2
-            Write-Host "══ PROBE $($try.n): exit $c"
-            Get-Content "e2e-probe/electron-$($try.n).log" -ErrorAction SilentlyContinue | Select-String -Pattern '\[sc\]|FATAL' | Select-Object -Last 6 | ForEach-Object { Write-Host $_ }
+            Start-Sleep -Seconds 3
+            Write-Host "══ PROBE $n : exit $c ; fallback flag: $(Test-Path "$env:APPDATA/SoundCloud Player/sandbox-fallback.json")"
+            Get-Content "e2e-probe/electron-$n.log" -ErrorAction SilentlyContinue | Select-String -Pattern '\[sc\]|FATAL' | Select-Object -Last 8 | ForEach-Object { Write-Host $_ }
           }
       - uses: actions/upload-artifact@v4
         if: always()

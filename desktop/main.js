@@ -15,6 +15,32 @@ const SUMS_NAME = "SHA256SUMS";
 const INDEX = path.join(__dirname, "web", "index.html");
 const INDEX_URL = pathToFileURL(INDEX).href;
 
+// ── sandbox fallback ──
+// Electron 22 (needed for Windows 7) predates Windows 11 24H2-era builds: on some current Windows builds (seen on
+// Windows Server 2025 / build 26100 with the October 2026 updates) its sandboxed GPU + renderer processes crash at
+// startup (0xC0000005) and the window stays blank. If that happens right after launch, the app restarts itself once
+// without the Chromium sandbox and remembers it for 7 days, then tries the sandbox again. The page itself is only the
+// bundled UI (contextIsolation on, nodeIntegration off) - the sandbox is defence in depth, not the only barrier.
+const SBX_FLAG = path.join(app.getPath("userData"), "sandbox-fallback.json");
+let noSandbox = process.argv.includes("--no-sandbox");
+try {
+  const f = JSON.parse(fs.readFileSync(SBX_FLAG, "utf8"));
+  if (f && Date.now() - f.at < 7 * 86400000) {
+    // a runtime appendSwitch("no-sandbox") is too late for the child processes - re-exec with the real flag, before any window
+    if (!noSandbox) { app.relaunch({ args: process.argv.slice(1).concat(["--no-sandbox"]) }); app.exit(0); }
+  } else fs.unlinkSync(SBX_FLAG);
+} catch (_) { /* no flag */ }
+const BOOT_AT = Date.now();
+let gpuCrashes = 0, rendererCrashes = 0;
+function sandboxFallback(why) {
+  if (noSandbox || Date.now() - BOOT_AT > 90000) return false; // only for crashes right after launch
+  console.error(`[sc] sandbox fallback (${why}) - restarting without the Chromium sandbox`);
+  try { fs.mkdirSync(path.dirname(SBX_FLAG), { recursive: true }); fs.writeFileSync(SBX_FLAG, JSON.stringify({ at: Date.now(), why, os: os.release() })); } catch (_) { /* read-only profile */ }
+  app.relaunch({ args: process.argv.slice(1).concat(["--no-sandbox"]) });
+  app.exit(0);
+  return true;
+}
+
 app.setAppUserModelId("com.soundclouddl.player");
 if (!app.requestSingleInstanceLock()) { app.quit(); }
 
@@ -207,6 +233,7 @@ function createWindow() {
   win.webContents.on("render-process-gone", (_e, d) => {
     console.error(`[sc] renderer gone: ${d.reason} (exit ${d.exitCode})`);
     if (!win || win.isDestroyed() || d.reason === "clean-exit") return;
+    if (d.reason === "crashed" && ++rendererCrashes >= 2 && sandboxFallback("renderer")) return;
     const now = Date.now(); gone.push(now); while (gone.length && now - gone[0] > 60000) gone.shift();
     if (gone.length > 3) { console.error("[sc] renderer keeps crashing - not reloading again"); return; } // no endless crash loop
     setTimeout(() => { if (win && !win.isDestroyed()) win.loadFile(INDEX, { hash: "recover=1" }); }, 300);
@@ -277,6 +304,10 @@ app.on("second-instance", (_e, argv) => {
   if (r) { pendingLink = r; toWeb({ __sc: "link" }); }
   if (win) { if (win.isMinimized()) win.restore(); win.show(); win.focus(); }
 });
-app.on("child-process-gone", (_e, d) => { if (d.reason !== "clean-exit") console.error(`[sc] ${d.type} process gone: ${d.reason} (exit ${d.exitCode})`); });
+app.on("child-process-gone", (_e, d) => {
+  if (d.reason === "clean-exit") return;
+  console.error(`[sc] ${d.type} process gone: ${d.reason} (exit ${d.exitCode})`);
+  if (d.type === "GPU" && d.reason === "crashed" && ++gpuCrashes >= 3) sandboxFallback("gpu");
+});
 app.whenReady().then(createWindow);
 app.on("window-all-closed", () => app.quit());

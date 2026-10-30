@@ -22,6 +22,7 @@ Nothing here changes the UI design (dark/orange), the app name, the package (`co
 - The queue, original order, index, position, shuffle and repeat are persisted (`sc_player` v2). They survive closing the app and `onRenderProcessGone` / `render-process-gone`.
 - An unavailable song (404, DRM, broken file) is skipped with a Persian toast, never retried in a loop, even with repeat-one. If every song fails, playback stops with a message.
 - An expired direct CDN link is refreshed once and resumes at the same position.
+- Drag-to-reorder drops the song where the finger is lifted, even when the release comes before the next animation frame (it used to land one row short on slow devices).
 
 **Files:** `web/app.js`, `web/app.css`, `tests/features.spec.mjs`, `tests/harness.mjs`
 
@@ -119,7 +120,17 @@ Nothing here changes the UI design (dark/orange), the app name, the package (`co
   - in the packaged Windows app on a Windows runner (`build.yml` → artifact `windows-engine-check`);
   - in the Android WebView on an Android 13 emulator (`android-e2e.yml` → job `engine`, debuggable build);
   - locally in Electron 22: speed 1.49× / 0.77× / 1.97×, EQ bass +6.3 dB / treble +8.7 dB, timer faded and stopped at 18.0 s.
+  - Windows (packaged EXE, Windows Server 2022 runner): speed 1.49× / 0.77× / 1.97×, EQ bass +6.1 dB / treble +8.8 dB, timer faded and stopped at 18.1 s;
+  - Android 13 WebView: speed 1.47× / 0.80× / 1.92×, EQ bass +5.4 dB / treble +7.2 dB, timer stopped at 18.3 s.
+- `tests/telegram.spec.mjs` (new): the Mini App inside Telegram (no native bridge) — `initData` auth only, queue, real 1.5× speed, timer/EQ tools, and the honest «این دستگاه نوع اتصال رو گزارش نمی‌ده» note with favorites auto-download off.
 - `tests/screens.spec.mjs`: Persian/RTL screenshots of the queue, lyrics, «آمار من», downloads + quality sheet, resume banner, player tools, sleep timer, EQ and recognition result (CI artifact `screenshots`, copies in `docs/screenshots/v1.4/`).
+
+### Windows: sandbox fallback on new Windows builds
+- On the newest Windows builds (seen on Windows Server 2025 / build 26100, the Windows 11 24H2 kernel, with the October 2026 updates), Electron 22's sandboxed GPU and renderer processes crash at startup (0xC0000005) and the window stays blank. Electron 22 can't be upgraded: it's the last version that runs on Windows 7.
+- If the GPU or the page crashes repeatedly right after launch, the app now restarts itself once with Chromium's `--no-sandbox` and remembers this for 7 days, then tries the sandbox again. The page is only the bundled UI (contextIsolation on, nodeIntegration off). Where the sandbox works, nothing changes: CI fails if the fallback ever triggers on Windows Server 2022.
+- CI: the release EXE is built and engine-checked on `windows-2022`. A non-blocking `windows-latest-probe` job boots the app on the newest image and checks that it recovers on its own.
+
+**Files:** `desktop/main.js`, `.github/workflows/build.yml`
 
 ## v1.3.1 — امنیت و پایداری · hardening
 
