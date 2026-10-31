@@ -6,4 +6,25 @@
     <string name="next">Next</string>
     <string name="prev">Previous</string>
     <string name="close">Close</string>
+    <string name="widget_desc">Now playing: cover, title and play / pause / next / previous</string>
+    <string name="widget_empty">Nothing played yet</string>
+    <string name="widget_playing">Playing</string>
+    <string name="widget_paused">Paused</string>
+    <string name="widget_stopped">Stopped · tap to open the app</string>
+    <string name="widget_open">Open player</string>
+    <string name="auto_favorites">Favorites</string>
+    <string name="auto_playlists">Playlists</string>
+    <string name="auto_offline">Offline</string>
+    <string name="auto_recent">Recently played</string>
+    <string name="auto_open_app">Open the app on your phone, then play from here</string>
+    <string name="rel_new_one">New song from %1$s</string>
+    <string name="rel_new_n">%1$d new songs from %2$s</string>
+    <string name="dl_channel">Scheduled downloads</string>
+    <string name="dl_title">Downloading %1$d of %2$d</string>
+    <string name="dl_cancel">Cancel</string>
+    <string name="dl_done">%1$d songs downloaded in the background</string>
+    <string name="dl_done_sub">They are added to Offline the next time you open the app (no internet needed)</string>
+    <string name="dl_window_end">The download window ended; it continues in the next window</string>
+    <string name="dl_canceled">Scheduled downloads canceled</string>
+    <string name="share_backup">Share backup</string>
 </resources>
