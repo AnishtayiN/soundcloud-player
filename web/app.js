@@ -2212,6 +2212,7 @@
     OFF.meta.clear();
     OFF.ids.clear();
     OFF.arts.clear();
+    autoLibPush();
   }
   let touchT;
   function offTouch(id) {
@@ -3006,7 +3007,13 @@
     }
     return true;
   }
+  let noAutoSeq = -1;
+  function pauseReq() {
+    if (S.loadingTrack) noAutoSeq = loadSeq;
+    audio.pause();
+  }
   function playNow() {
+    noAutoSeq = -1;
     if (S.needLoad) {
       S.needLoad = false;
       return loadCurrent(true);
@@ -3058,7 +3065,7 @@
         }
         setAudioSrc(URL.createObjectURL(blob), true);
         offTouch(t.id);
-        if (autoplay) await audio.play().catch((e) => console.warn("play blocked", e));
+        if (autoplay && noAutoSeq !== seq) await audio.play().catch((e) => console.warn("play blocked", e));
         setMediaSession(t);
         pushNative();
         return;
@@ -3100,7 +3107,7 @@
       } else {
         setAudioSrc(s.url, false);
       }
-      if (autoplay) await audio.play().catch((e) => console.warn("play blocked", e));
+      if (autoplay && noAutoSeq !== seq) await audio.play().catch((e) => console.warn("play blocked", e));
       setMediaSession(t);
       pushNative();
     } catch (e) {
@@ -3124,7 +3131,8 @@
   }
   function toggle() {
     if (!S.queue.length) return;
-    S.needLoad || audio.paused ? playNow() : audio.pause();
+    if (S.loadingTrack && noAutoSeq !== loadSeq) pauseReq();
+    else S.needLoad || audio.paused ? playNow() : audio.pause();
     haptic();
   }
   function next(auto = false) {
@@ -3919,7 +3927,7 @@
         playNow();
         break;
       case "pause":
-        audio.pause();
+        pauseReq();
         break;
       case "toggle":
         toggle();
@@ -3934,7 +3942,7 @@
         if (isFinite(arg) && !partyGuard()) audio.currentTime = Number(arg) / 1e3;
         break;
       case "stop":
-        audio.pause();
+        pauseReq();
         break;
       case "qi": {
         const i = Number(arg);
@@ -4798,6 +4806,7 @@
         lang = lang === "fa" ? "en" : "fa";
         applyLang();
         if (NATIVE) localStorage.setItem("sc_lang", lang);
+        langNative();
         api("/settings", { method: "PATCH", body: { lang } }).catch(() => {
         });
         if (S.me) S.me.user.lang = lang;
@@ -5016,6 +5025,7 @@
         lang = lang === "fa" ? "en" : "fa";
         localStorage.setItem("sc_lang", lang);
         applyLang();
+        langNative();
         rebuildChrome();
         return showLogin();
       default:
@@ -6886,6 +6896,15 @@ ${L("schWifiUnknown")}`), L("download"))) return;
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "fa" ? "rtl" : "ltr";
   }
+  function langNative() {
+    try {
+      autoLibPush(true);
+      pushNative();
+      folSyncNative();
+      schSyncNative();
+    } catch (e) {
+    }
+  }
   function applyTheme() {
     var _a2, _b2, _c2, _d2;
     const scheme = S.theme === "auto" ? (tg == null ? void 0 : tg.colorScheme) || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark") : S.theme;
@@ -7234,6 +7253,7 @@ ${L("schWifiUnknown")}`), L("download"))) return;
       if (S.me.user.lang && S.me.user.lang !== lang) {
         lang = S.me.user.lang;
         applyLang();
+        langNative();
         rebuildChrome();
       }
       if (NATIVE) localStorage.setItem("sc_lang", lang);

@@ -231,6 +231,8 @@ try {
     check(id1 === TRENDING[1].id, "widget ⏭ = next track in the real queue", String(id1));
     const title1 = await find((n) => n.id === `${PKG}:id/w_title` && n.text === TRENDING[1].title, 8000);
     check(!!title1, "widget updates on track change");
+    // like every player, ⏮ restarts the song after 4 s — rewind first so it really jumps back a track
+    await ev("window.__scTest.audio.currentTime = 0; return 1;"); await sleep(300);
     await btn("w_prev"); await sleep(3500);
     check((await ev("return window.__scTest.S.queue[window.__scTest.S.qi].id;")) === TRENDING[0].id, "widget ⏮ = previous track");
     shot("widget-controls");
@@ -244,12 +246,22 @@ try {
     sh("input keyevent KEYCODE_HOME"); await sleep(2000);
     d = await dump();
     check(d && !d.np.playing && d.np.title, "after closing the app the widget keeps the last track, not playing", d && JSON.stringify(d.np));
-    const tAfter = await find((n) => n.id === `${PKG}:id/w_title`, 5000);
+    // the Pixel launcher sometimes relaunches itself while the app task is removed — give it time and look on the home pages
+    let tAfter = null;
+    for (let i = 0; i < 5 && !tAfter; i++) {
+      const [W, H] = ((sh("wm size").match(/(\d+)x(\d+)/) || [0, 1080, 1920]).slice(1, 3)).map(Number);
+      if (i === 2) sh(`input swipe ${W * 0.1 | 0} ${H * 0.45 | 0} ${W * 0.9 | 0} ${H * 0.45 | 0} 300`);
+      if (i === 3) sh(`input swipe ${W * 0.9 | 0} ${H * 0.45 | 0} ${W * 0.1 | 0} ${H * 0.45 | 0} 300`);
+      if (i !== 2 && i !== 3) sh("input keyevent KEYCODE_HOME");
+      await sleep(3000);
+      tAfter = await find((n) => n.id === `${PKG}:id/w_title`, 4000);
+    }
     const pAfter = await find((n) => n.id === `${PKG}:id/w_play`, 3000);
     check(tAfter && tAfter.text && pAfter && /پخش|play/i.test(pAfter.desc), "widget after close: last track + «play» (no fake playing)", `${tAfter && tAfter.text} / ${pAfter && pAfter.desc}`);
     shot("widget-app-closed");
     if (tAfter) { tap(tAfter); await sleep(4000); }
     check(/com\.soundclouddl\.player/.test(sh("dumpsys activity activities | grep -m1 -E 'topResumedActivity|mResumedActivity'")), "tap with the app closed opens the app");
+    if (!tAfter) startApp(); // keep the remaining sections running even if the launcher hid the widget
     await signedIn();
   }
 

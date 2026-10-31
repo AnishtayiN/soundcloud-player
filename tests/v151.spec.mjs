@@ -124,8 +124,14 @@ test.describe("widget + Android Auto", () => {
     await playing(page);
     await T(page, () => window.__scMedia("qi", 3));
     await expect.poll(() => nowId(page), { timeout: 10000 }).toBe(TRENDING[3].id);
+    // a pause from the car / widget while the item is still loading must stay a pause (no autoplay afterwards)
     await T(page, () => window.__scMedia("pause"));
     await expect.poll(async () => JSON.parse((await nCalls(page, "mediaState")).pop()[1]).playing).toBe(false);
+    await page.waitForTimeout(1500);
+    expect(await T(page, () => window.__scTest.audio.paused)).toBe(true);
+    expect(JSON.parse((await nCalls(page, "mediaState")).pop()[1]).playing).toBe(false);
+    await T(page, () => window.__scMedia("play"));
+    await playing(page);
   });
   test("widget item + battery card in settings, schedule and follows (Android, honest texts)", async ({ page }) => {
     await setup(page, {});
