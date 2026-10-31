@@ -23,8 +23,25 @@
         downloadUpdate: function (url, v) { A.downloadUpdate(String(url), String(v)); },
         cancelUpdate: function () { A.cancelUpdate(); },
         installUpdate: function () { A.installUpdate(); },
-        netInfo: function () { return A.netInfo ? A.netInfo() : "{\"known\":false}"; }
+        netInfo: function () { return A.netInfo ? A.netInfo() : "{\"known\":false}"; },
+        // v1.5.1 — each one exists only if this APK has it (older APKs keep the web fallbacks)
+        speechStart: A.speechStart ? function (lang) { A.speechStart(String(lang || "fa-IR")); } : undefined,
+        speechStop: A.speechStop ? function () { A.speechStop(); } : undefined,
+        shareFile: A.shareFile ? function (name, mime, text) { return A.shareFile(String(name), String(mime), String(text)); } : undefined,
+        notify: A.notify ? function (json) { return A.notify(String(json)); } : undefined,
+        bgSync: A.bgSync ? function (json) { A.bgSync(String(json)); } : undefined,
+        bgSeen: A.bgSeen ? function () { return A.bgSeen(); } : undefined,
+        schedSet: A.schedSet ? function (json) { A.schedSet(String(json)); } : undefined,
+        schedTake: A.schedTake ? function () { return A.schedTake(); } : undefined,
+        schedAck: A.schedAck ? function (id) { A.schedAck(String(id)); } : undefined,
+        storageInfo: A.storageInfo ? function () { return A.storageInfo(); } : undefined,
+        batteryInfo: A.batteryInfo ? function () { return A.batteryInfo(); } : undefined,
+        openBatterySettings: A.openBatterySettings ? function () { A.openBatterySettings(); } : undefined,
+        autoLib: A.autoLib ? function (json) { return A.autoLib(String(json)); } : undefined,
+        widgetInfo: A.widgetInfo ? function () { return A.widgetInfo(); } : undefined,
+        widgetPin: A.widgetPin ? function () { A.widgetPin(); } : undefined
       };
+      for (var k in window.SCNative) if (window.SCNative[k] === undefined) delete window.SCNative[k];
     }
     if (window.SCNative) document.documentElement.classList.add("native", "native-" + window.SCNative.platform);
   </script>

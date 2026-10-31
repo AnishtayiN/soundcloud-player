@@ -12,6 +12,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PowerManager;
+import android.os.StatFs;
+import android.provider.Settings;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
+import android.content.ClipData;
+import android.content.ComponentName;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -30,6 +39,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
+import androidx.core.content.FileProvider;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -39,7 +49,11 @@ import androidx.webkit.WebViewAssetLoader;
 
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.lang.ref.WeakReference;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 /**
  * Hosts the shared SoundCloud Player web UI (assets/www) inside a WebView and bridges it to
@@ -63,7 +77,12 @@ public class MainActivity extends Activity {
     private volatile String pendingLink = "";
     private PermissionRequest pendingMic;           // 🎤 song recognition (getUserMedia)
     private ValueCallback<Uri[]> fileCallback;      // <input type="file">
-    private static final int REQ_MIC = 8, REQ_FILE = 9;
+    private static final int REQ_MIC = 8, REQ_FILE = 9, REQ_SPEECH = 10;
+    private static volatile boolean resumed;
+    private volatile boolean ownPage;               // our own page (asset-loader origin) is loaded — checked by the bridge
+    private SpeechRecognizer recognizer;            // 🎙 voice search (native recognizer)
+    private int speechRun;                          // bumps on every start/stop → late results of an old session are ignored
+    private String pendingSpeech;                   // language waiting for the microphone permission
     private ConnectivityManager.NetworkCallback netCb; // tells the page when Wi-Fi ↔ mobile data changes (auto-download of favorites)
     private volatile String netLast = "";
 
@@ -73,6 +92,29 @@ public class MainActivity extends Activity {
         if (a == null || a.web == null) return false;
         a.main.post(() -> { if (a.web != null) a.web.evaluateJavascript(code, null); });
         return true;
+    }
+
+    /** the player UI exists (WebView alive) — background jobs leave the work to the open app */
+    static boolean alive() {
+        MainActivity a = current.get();
+        return a != null && a.web != null;
+    }
+
+    static boolean inForeground() { return resumed && alive(); }
+
+    /** closes the app like swiping it away from recents (used by the debug test receiver) */
+    static boolean closeTask() {
+        final MainActivity a = current.get();
+        if (a == null) return false;
+        a.main.post(a::finishAndRemoveTask);
+        return true;
+    }
+
+    /** tell the open web UI that something happened in the background ({__sc: type}) */
+    static void event(String type) {
+        MainActivity a = current.get();
+        if (a == null) return;
+        try { a.postToWeb(new JSONObject().put("__sc", type)); } catch (Exception ignored) { }
     }
 
     @Override
@@ -127,7 +169,20 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        resumed = true;
         if (updater != null) updater.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        resumed = false;
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        speechStop(); // the app went to the background → the microphone is never left open
+        super.onStop();
     }
 
     /**
@@ -176,6 +231,7 @@ public class MainActivity extends Activity {
 
     /** https://soundclouddl-player.netlify.app/t/123 | scplayer://t/123  →  "t_123";  …/p/<code> → "pl_<code>";  …/j/<code> → "j_<code>" */
     static String routeOf(Intent intent) {
+        if (intent != null && PlayerWidget.A_OPEN_PLAYER.equals(intent.getAction())) return "np"; // widget / media notification → the player
         if (intent == null || !Intent.ACTION_VIEW.equals(intent.getAction()) || intent.getData() == null) return "";
         Uri u = intent.getData();
         java.util.List<String> seg = new java.util.ArrayList<>(u.getPathSegments());
@@ -185,6 +241,7 @@ public class MainActivity extends Activity {
         if ("t".equals(kind) && val.matches("\\d{1,15}")) return "t_" + val;
         if ("p".equals(kind) && val.matches("[\\w-]{3,64}")) return "pl_" + val;
         if ("j".equals(kind) && val.matches("[2-9a-hjkmnp-z]{10}")) return "j_" + val; // listen-together invite
+        if ("a".equals(kind) && val.matches("\\d{1,15}")) return "a_" + val;           // artist (release notification)
         return "";
     }
 
@@ -213,6 +270,8 @@ public class MainActivity extends Activity {
         assets = new WebViewAssetLoader.Builder()
                 .setDomain(HOST)
                 .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this))
+                // songs downloaded by the background scheduler, read once by the app and moved into its offline library
+                .addPathHandler("/bgdl/", new WebViewAssetLoader.InternalStoragePathHandler(this, Bg.dlDir(this)))
                 .build();
 
         web = new WebView(this);
@@ -278,6 +337,12 @@ public class MainActivity extends Activity {
             }
 
             @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                ownPage = url != null && url.startsWith(ORIGIN + "/");
+                if (!ownPage) speechStop();
+            }
+
+            @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri u = request.getUrl();
                 if (HOST.equals(u.getHost())) return false;
@@ -315,6 +380,165 @@ public class MainActivity extends Activity {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/")).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 } catch (Exception ignored) { }
             }
+        }
+    }
+
+    // ───────────── 🎙 native voice search (SpeechRecognizer) ─────────────
+
+    /** debug builds only: a test recognizer / "no recognizer" switch set over adb (see src/debug) */
+    private String debugSpeech() {
+        if (!Bg.debuggable(this)) return "";
+        return getSharedPreferences("debug", MODE_PRIVATE).getString("speech", "");
+    }
+
+    private boolean recognizerAvailable() {
+        String d = debugSpeech();
+        if ("none".equals(d)) return false;
+        if (d.startsWith("fake")) return true;
+        return SpeechRecognizer.isRecognitionAvailable(this);
+    }
+
+    private void speechEvent(String type, String text, String code) {
+        try {
+            JSONObject o = new JSONObject().put("__sc", "speech").put("type", type);
+            if (text != null) o.put("text", text);
+            if (code != null) o.put("code", code);
+            postToWeb(o);
+        } catch (Exception ignored) { }
+    }
+
+    /** main thread */
+    private void speechStart(String lang) {
+        if (!ownPage || web == null) return; // only our own page may open the microphone
+        speechStop();
+        final String l = "en-US".equals(lang) ? "en-US" : "fa-IR";
+        if (!recognizerAvailable()) { speechEvent("error", null, "na"); return; }
+        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            pendingSpeech = l; // same permission flow as song recognition
+            requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, REQ_SPEECH);
+            return;
+        }
+        speechBegin(l);
+    }
+
+    private void speechBegin(final String lang) {
+        final int run = ++speechRun;
+        try {
+            String d = debugSpeech();
+            recognizer = d.startsWith("fake")
+                    ? SpeechRecognizer.createSpeechRecognizer(this, new ComponentName(getPackageName(), getPackageName() + ".DebugRecognitionService"))
+                    : SpeechRecognizer.createSpeechRecognizer(this);
+        } catch (Exception e) { speechEvent("error", null, "na"); return; }
+        recognizer.setRecognitionListener(new RecognitionListener() {
+            private boolean live() { return run == speechRun; }
+            private String first(Bundle b) {
+                ArrayList<String> r = b == null ? null : b.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                return r == null || r.isEmpty() || r.get(0) == null ? "" : r.get(0).trim();
+            }
+            @Override public void onReadyForSpeech(Bundle params) { if (live()) speechEvent("ready", null, null); }
+            @Override public void onBeginningOfSpeech() { }
+            @Override public void onRmsChanged(float rmsdB) { }
+            @Override public void onBufferReceived(byte[] buffer) { }
+            @Override public void onEndOfSpeech() { }
+            @Override public void onPartialResults(Bundle b) { if (!live()) return; String t = first(b); if (!t.isEmpty()) speechEvent("partial", t, null); }
+            @Override public void onEvent(int eventType, Bundle params) { }
+            @Override public void onResults(Bundle b) {
+                if (!live()) return; // late result of a stopped session → ignored
+                String t = first(b);
+                if (t.isEmpty()) speechEvent("error", null, "nomatch"); else speechEvent("final", t, null);
+                speechStop();
+            }
+            @Override public void onError(int error) {
+                if (!live()) return;
+                String code;
+                switch (error) {
+                    case SpeechRecognizer.ERROR_NO_MATCH: case SpeechRecognizer.ERROR_SPEECH_TIMEOUT: code = "nomatch"; break;
+                    case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS: code = "perm"; break;
+                    case SpeechRecognizer.ERROR_NETWORK: case SpeechRecognizer.ERROR_NETWORK_TIMEOUT: case SpeechRecognizer.ERROR_SERVER: case 11: code = "net"; break;
+                    case 12: case 13: code = "nalang"; break; // ERROR_LANGUAGE_NOT_SUPPORTED / ERROR_LANGUAGE_UNAVAILABLE (API 31+)
+                    default: code = "err";
+                }
+                speechEvent("error", null, code);
+                speechStop();
+            }
+        });
+        Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                .putExtra(RecognizerIntent.EXTRA_LANGUAGE, lang)
+                .putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, lang)
+                .putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, true)
+                .putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+                .putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+                .putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
+        try { recognizer.startListening(i); } catch (Exception e) { speechEvent("error", null, "err"); speechStop(); }
+    }
+
+    /** closes the microphone; any result that still arrives from this session is ignored */
+    void speechStop() {
+        speechRun++;
+        pendingSpeech = null;
+        SpeechRecognizer r = recognizer;
+        recognizer = null;
+        if (r != null) {
+            try { r.cancel(); } catch (Exception ignored) { }
+            try { r.destroy(); } catch (Exception ignored) { }
+        }
+    }
+
+    // ───────────── backup share (ACTION_SEND + FileProvider) ─────────────
+
+    /** @return "ok" | "secret" (refused: contains a login token) | "err" */
+    String shareFile(String name, String mime, String text) {
+        if (!ownPage || name == null || text == null || !name.matches("[\\w.-]{1,80}\\.json") || text.length() > 8 * 1048576) return "err";
+        if (!"application/json".equals(mime)) return "err";
+        String token = Bg.json(this, "rel").optString("token", "");
+        if (text.contains("\"sc_token\"") || text.contains("x-app-token") || text.contains("x-init-data") || (token.length() >= 16 && text.contains(token))) return "secret";
+        try {
+            File dir = new File(getCacheDir(), "share");
+            Bg.deleteTree(dir); // only the newest backup is ever shareable
+            if (!dir.mkdirs()) return "err";
+            File f = new File(dir, name);
+            try (FileOutputStream out = new FileOutputStream(f)) { out.write(text.getBytes(StandardCharsets.UTF_8)); }
+            final Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".files", f); // content://, never file://
+            final Intent send = new Intent(Intent.ACTION_SEND).setType("application/json")
+                    .putExtra(Intent.EXTRA_STREAM, uri)
+                    .putExtra(Intent.EXTRA_SUBJECT, name)
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // temporary, read-only
+            send.setClipData(ClipData.newUri(getContentResolver(), name, uri));
+            final String title = NowPlaying.localized(this, NowPlaying.appLang(this)).getString(R.string.share_backup);
+            main.post(() -> {
+                try {
+                    Intent chooser = Intent.createChooser(send, title);
+                    chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivity(chooser);
+                } catch (Exception ignored) { }
+            });
+            return "ok";
+        } catch (Exception e) { return "err"; }
+    }
+
+    String storageInfoJson() {
+        try {
+            // the volume that holds the WebView's IndexedDB (offline songs) = the app's internal data volume
+            StatFs st = new StatFs(getFilesDir().getPath());
+            return new JSONObject().put("free", st.getAvailableBytes()).put("total", st.getTotalBytes()).put("exact", true).toString();
+        } catch (Exception e) { return "{\"exact\":false}"; }
+    }
+
+    String batteryJson() {
+        try {
+            PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+            boolean ign = pm != null && pm.isIgnoringBatteryOptimizations(getPackageName());
+            return new JSONObject().put("ignoring", ign).put("maker", String.valueOf(Build.MANUFACTURER).toLowerCase()).toString();
+        } catch (Exception e) { return "{}"; }
+    }
+
+    void openBatterySettings() {
+        // the system list "battery optimization" — the user decides; no special permission is requested
+        Intent i = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+        try { startActivity(i); }
+        catch (Exception e) {
+            try { startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()))); } catch (Exception ignored) { }
         }
     }
 
@@ -361,6 +585,50 @@ public class MainActivity extends Activity {
             });
         }
 
+        // 🎙 voice search
+        @JavascriptInterface public void speechStart(final String lang) { main.post(() -> MainActivity.this.speechStart(lang)); }
+        @JavascriptInterface public void speechStop() { main.post(MainActivity.this::speechStop); }
+
+        // 💾 backup share sheet
+        @JavascriptInterface public String shareFile(String name, String mime, String text) { return MainActivity.this.shareFile(name, mime, text); }
+
+        // 🔔 notifications + background release check
+        @JavascriptInterface public boolean notify(String json) {
+            if (!ownPage) return false;
+            try {
+                JSONObject o = new JSONObject(json);
+                return Bg.notice(MainActivity.this, o.optInt("id", 3000), o.optString("title", ""), o.optString("body", ""), o.optString("link", ""));
+            } catch (Exception e) { return false; }
+        }
+        @JavascriptInterface public void bgSync(String json) { if (ownPage) Bg.syncReleases(MainActivity.this, json); }
+        @JavascriptInterface public String bgSeen() { return ownPage ? ReleaseWorker.take(MainActivity.this) : "{}"; }
+
+        // ⏰ scheduled downloads
+        @JavascriptInterface public void schedSet(String json) { if (ownPage) Bg.syncSched(MainActivity.this, json); }
+        @JavascriptInterface public String schedTake() { return ownPage ? SchedWorker.take(MainActivity.this) : "{}"; }
+        @JavascriptInterface public void schedAck(String id) { try { if (ownPage) SchedWorker.ack(MainActivity.this, Long.parseLong(id)); } catch (Exception ignored) { } }
+
+        // 💽 exact free space + battery-optimization status
+        @JavascriptInterface public String storageInfo() { return storageInfoJson(); }
+        @JavascriptInterface public String batteryInfo() { return batteryJson(); }
+        @JavascriptInterface public void openBatterySettings() { main.post(MainActivity.this::openBatterySettings); }
+
+        // 🚗 Android Auto library snapshot + 🏠 widget
+        @JavascriptInterface public boolean autoLib(String json) {
+            if (!ownPage || !AutoLib.save(MainActivity.this, json)) return false;
+            try {
+                String l = new JSONObject(json).optString("lang", "");
+                if (!l.equals(NowPlaying.appLang(MainActivity.this))) { NowPlaying.setLang(MainActivity.this, l); PlayerWidget.updateAll(MainActivity.this); }
+            } catch (Exception ignored) { }
+            PlaybackService.libraryChanged();
+            return true;
+        }
+        @JavascriptInterface public String widgetInfo() {
+            try { return new JSONObject().put("pin", PlayerWidget.pinSupported(MainActivity.this)).put("placed", PlayerWidget.hasWidgets(MainActivity.this)).toString(); }
+            catch (Exception e) { return "{}"; }
+        }
+        @JavascriptInterface public void widgetPin() { main.post(() -> PlayerWidget.requestPin(MainActivity.this)); }
+
         @JavascriptInterface public void setTheme(final String bg, final boolean light) {
             main.post(() -> {
                 try {
@@ -394,6 +662,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        speechStop();
         if (!isChangingConfigurations()) {
             PlaybackService.stop(this);
         }
@@ -420,6 +689,12 @@ public class MainActivity extends Activity {
                 pendingMic.deny();
             }
             pendingMic = null;
+        }
+        if (requestCode == REQ_SPEECH && pendingSpeech != null) {
+            String l = pendingSpeech;
+            pendingSpeech = null;
+            if (results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED) speechBegin(l);
+            else speechEvent("error", null, "perm"); // denied → a clear message, never fake text
         }
     }
 

@@ -485,6 +485,25 @@
       folNoteA: "هر ۶ ساعت در پس‌زمینه بررسی می‌شود (وقتی اینترنت هست)؛ اندروید ممکن است زمانش را کمی جابه‌جا کند.",
       folNoteW: "در ویندوز وقتی اپ باز است هر ۶ ساعت بررسی می‌شود؛ وگرنه در اجرای بعدی.",
       folNoteT: "داخل تلگرام وقتی مینی‌اپ را باز می‌کنی بررسی می‌شود.",
+      schNoteBgA: "در اندروید دانلود زمان‌بندی‌شده حتی وقتی برنامه بسته است در پس‌زمینه انجام می‌شود (فقط در بازه و روزهای انتخاب‌شده و با شرط وای‌فای / شارژ). آهنگ‌های دانلودشده با باز کردن بعدی برنامه، بدون اینترنت به آفلاین اضافه می‌شوند. بهینه‌سازی باتری ممکن است شروع را عقب بیندازد؛ زمان دقیق تضمین نمی‌شود.",
+      batTitle: "اجرا در پس‌زمینه و باتری",
+      batOn: "بهینه‌سازی باتری برای این برنامه روشن است؛ بررسی آهنگ‌های تازه و دانلودهای زمان‌بندی‌شده ممکن است دیرتر انجام شوند.",
+      batOff: "بهینه‌سازی باتری برای این برنامه خاموش است ✓",
+      batBtn: "تنظیمات بهینه‌سازی باتری",
+      batHint: "برای اجرای منظم‌تر، برنامه را از بهینه‌سازی باتری مستثنی کن. حتی در این حالت هم اندروید زمان دقیق را تضمین نمی‌کند.",
+      batXiaomi: "گوشی‌های شیائومی / ردمی / پوکو: در تنظیمات برنامه «شروع خودکار» را روشن و «صرفه‌جویی باتری» را روی «بدون محدودیت» بگذار؛ وگرنه کارهای پس‌زمینه ممکن است اصلاً اجرا نشوند.",
+      batOther: "بعضی سازنده‌ها (سامسونگ، هواوی، اوپو، …) محدودیت بیشتری دارند؛ در تنظیمات باتری، برنامه را «بدون محدودیت» کن.",
+      wgTitle: "ویجت صفحه‌ی اصلی",
+      wgAdd: "افزودن به صفحه‌ی اصلی",
+      wgPlaced: "روی صفحه‌ی اصلی هست ✓",
+      wgManual: "صفحه‌ی اصلی را لمس طولانی کن ← ویجت‌ها ← SoundCloud Player",
+      stoFreeExact: "فضای آزاد دستگاه",
+      stoApprox: "تقریبی",
+      stoOfDisk: (f, t) => `${f} آزاد از ${t}`,
+      stoExactSub: "حجم دانلودها = بایت‌های واقعی فایل‌های ذخیره‌شده؛ فضای آزاد = مقداری که سیستم برای همین حافظه گزارش می‌کند.",
+      stoApproxSub: "این محیط فضای آزاد واقعی دستگاه را نمی‌دهد؛ عدد بالا تخمین مرورگر است.",
+      bkSecret: "پشتیبان به‌خاطر وجود اطلاعات ورود ارسال نشد",
+      bgImported: (n) => `${n} آهنگ از دانلود پس‌زمینه به آفلاین اضافه شد`,
       recVidNoAudio: "این ویدیو صدا ندارد",
       recVidBad: "این فایل قابل تشخیص نیست",
       recVidBadSub: "ویدیو باید MP4 یا MOV باشد و صدایش AAC یا MP3",
@@ -959,6 +978,25 @@
       folNoteA: "Checked every 6 hours in the background (when online); Android may shift the exact time.",
       folNoteW: "On Windows it's checked every 6 hours while the app is open, otherwise on the next launch.",
       folNoteT: "Inside Telegram it's checked when you open the Mini App.",
+      schNoteBgA: "On Android scheduled downloads run in the background even when the app is closed (only inside the chosen window and days, with the Wi-Fi / charging conditions). Downloaded songs are added to Offline the next time you open the app, without internet. Battery optimization can delay the start; exact times aren't guaranteed.",
+      batTitle: "Background & battery",
+      batOn: "Battery optimization is on for this app; release checks and scheduled downloads may run later.",
+      batOff: "Battery optimization is off for this app ✓",
+      batBtn: "Battery optimization settings",
+      batHint: "For more regular runs, exempt the app from battery optimization. Even then Android doesn't guarantee exact times.",
+      batXiaomi: `Xiaomi / Redmi / POCO phones: in the app's settings turn on "Autostart" and set "Battery saver" to "No restrictions", otherwise background work may not run at all.`,
+      batOther: 'Some makers (Samsung, Huawei, OPPO, …) add extra limits; set the app to "Unrestricted" in its battery settings.',
+      wgTitle: "Home-screen widget",
+      wgAdd: "Add to home screen",
+      wgPlaced: "On your home screen ✓",
+      wgManual: "Long-press the home screen → Widgets → SoundCloud Player",
+      stoFreeExact: "Free space on device",
+      stoApprox: "approx.",
+      stoOfDisk: (f, t) => `${f} free of ${t}`,
+      stoExactSub: "Downloads size = the real bytes of the saved files; free space = what the system reports for this storage.",
+      stoApproxSub: "This environment doesn't expose the device's real free space; the number above is the browser's estimate.",
+      bkSecret: "The backup wasn't shared because it contained sign-in data",
+      bgImported: (n) => `${n} song(s) from background downloads added to Offline`,
       recVidNoAudio: "This video has no sound",
       recVidBad: "This file can't be recognized",
       recVidBadSub: "The video must be MP4 or MOV with AAC or MP3 audio",
@@ -1263,6 +1301,9 @@
     if (document.hidden) {
       recOnHide();
       vsStop();
+    } else if (S.me && NATIVE) {
+      folMergeNative();
+      schImport();
     }
   });
   window.addEventListener("pagehide", () => {
@@ -2144,6 +2185,7 @@
     OFF.ids.add(t.id);
     await offEvict(t.id);
     refreshOfflineUI();
+    autoLibPush();
   }
   async function offDel(id) {
     await offTxAll(["audio", "meta", "lyrics"], (st) => {
@@ -2158,6 +2200,7 @@
       URL.revokeObjectURL(OFF.arts.get(id));
       OFF.arts.delete(id);
     }
+    autoLibPush();
   }
   async function offClear() {
     await offTxAll(["audio", "meta", "lyrics"], (st) => {
@@ -3838,11 +3881,12 @@
       eq.classList.toggle("on", !eqFlat());
     }
   }
+  let pushQSig = "";
   function pushNative() {
     if (!(NATIVE == null ? void 0 : NATIVE.mediaState)) return;
     const t = S.queue[S.qi];
     try {
-      NATIVE.mediaState(JSON.stringify(t ? {
+      const st = t ? {
         id: t.id,
         title: t.title || "",
         artist: t.artist || "",
@@ -3851,8 +3895,20 @@
         loading: !!S.loadingTrack,
         position: Math.floor((audio.currentTime || 0) * 1e3),
         rate: PB.rate,
-        duration: Math.floor((audio.duration && isFinite(audio.duration) ? audio.duration : (t.duration_ms || 0) / 1e3) * 1e3)
-      } : { stop: true }));
+        duration: Math.floor((audio.duration && isFinite(audio.duration) ? audio.duration : (t.duration_ms || 0) / 1e3) * 1e3),
+        lang,
+        qi: S.qi
+      } : { stop: true, lang };
+      if (t) {
+        const base = Math.max(0, Math.min(S.qi - 20, S.queue.length - 100)), part = S.queue.slice(base, base + 100);
+        const sig = base + ":" + part.map((x) => x.id).join(",");
+        if (sig !== pushQSig) {
+          pushQSig = sig;
+          st.qbase = base;
+          st.queue = part.map((x) => ({ id: x.id, title: x.title || "", artist: x.artist || "" }));
+        }
+      } else pushQSig = "";
+      NATIVE.mediaState(JSON.stringify(st));
     } catch (e) {
     }
   }
@@ -3879,6 +3935,18 @@
         break;
       case "stop":
         audio.pause();
+        break;
+      case "qi": {
+        const i = Number(arg);
+        if (Number.isInteger(i) && i >= 0 && i < S.queue.length && !partyGuard()) {
+          S.qi = i;
+          loadCurrent(true);
+        }
+        break;
+      }
+      // Android Auto queue
+      case "playid":
+        autoPlay(arg);
         break;
     }
   };
@@ -4257,6 +4325,8 @@
       S.favs = new Set(d.tracks.map((t) => t.id));
       remember(d.tracks);
       S.favList = d.tracks;
+      autoMeta(d.tracks);
+      autoLibPush();
     } catch (e) {
     }
     favAutoRun("start");
@@ -4957,6 +5027,8 @@
     v_fol: "M15 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8m-9-2V7H4v3H1v2h3v3h2v-3h3v-2zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4",
     v_folok: "M9 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8m0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4m7.6-4.2 4.6-4.6 1.4 1.4-6 6-3.4-3.4 1.4-1.4z",
     v_voice: "M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3m5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11zM1 9h2v4H1zm20 0h2v4h-2z",
+    v_widget: "M4 5a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3zm3-1a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1zm1 2h3v4H8zm5 1h3v2h-3zM4 17h7v2H4zm9 0h7v2h-7zM4 20.5h16V22H4z",
+    v_battery: "M9 2h6v2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2zM7 6v14h10V6zm6 2-4 6h3l-1 4 4-6h-3z",
     v_clock: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16m-1 3v6l5 3 1-1.6-4-2.4V7z",
     v_backup: "M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A6 6 0 0 0 6 20h13a5 5 0 0 0 .35-9.96M14 13v4h-4v-4H7l5-5 5 5z",
     v_plane: "M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z",
@@ -5031,6 +5103,8 @@
       const x = PLX.get();
       x[id] = { name: fav ? "" : String(name || ""), fav: !!fav, ids: tracks.map((t) => t.id) };
       LS.set("sc_plx", x);
+      autoMeta(tracks);
+      autoLibPush();
     },
     async refresh() {
       if (!online()) return PLX.get();
@@ -5041,11 +5115,13 @@
           try {
             const d = await api(`/playlists/${p.id}`);
             out[p.id] = { name: p.is_favorites ? "" : p.name, fav: !!p.is_favorites, ids: (d.tracks || []).map((t) => t.id) };
+            autoMeta(d.tracks || []);
           } catch (e) {
             if (old[p.id]) out[p.id] = old[p.id];
           }
         }
         LS.set("sc_plx", out);
+        autoLibPush();
         return out;
       } catch (e) {
         return PLX.get();
@@ -5545,12 +5621,12 @@
     try {
       const n = await callNative("storageInfo");
       const x = typeof n === "string" ? JSON.parse(n) : n;
-      if (x && x.free >= 0) return x.free;
+      if (x && x.exact === true && x.free >= 0) return { free: Number(x.free), total: Number(x.total) || 0, exact: true };
     } catch (e) {
     }
     try {
       const e = await navigator.storage.estimate();
-      if (e && e.quota) return Math.max(0, e.quota - (e.usage || 0));
+      if (e && e.quota) return { free: Math.max(0, e.quota - (e.usage || 0)), total: e.quota, exact: false };
     } catch (e) {
     }
     return null;
@@ -5568,15 +5644,17 @@
     var _a2, _b2, _c2;
     const box = $("#stobox");
     if (!box) return;
+    if (free) S.stoFreeV = free;
+    else free = S.stoFreeV || null;
     S.stoSel = S.stoSel || /* @__PURE__ */ new Set();
     const metas = [...OFF.meta.values()], total = metas.reduce((a, m) => a + (m.size || 0), 0), favs = S.favs;
     const lim = OFF.limitMB ? OFF.limitMB * 1048576 : 0, pct = lim ? Math.min(100, Math.round(total / lim * 100)) : 0;
     const bar = (v, max) => `<div class="stbar"><i style="width:${max ? Math.max(2, Math.round(v / max * 100)) : 0}%"></i></div>`;
     const head = `<div class="card stoh"><div class="stog">
       <div><small>${L("stoTotal")}</small><b id="stotal" data-bytes="${total}">${fmtMB(total)}</b><span>${L("tracksN", metas.length)}</span></div>
-      <div><small>${L("stoFree")}</small><b>${free == null ? "—" : fmtMB(free)}</b><span>&nbsp;</span></div>
+      <div class="stofree ${(free == null ? void 0 : free.exact) ? "exact" : "approx"}"><small>${(free == null ? void 0 : free.exact) ? L("stoFreeExact") : `${L("stoFree")} <span class="badge">${L("stoApprox")}</span>`}</small><b>${free == null ? "—" : fmtMB(free.free)}</b><span>${(free == null ? void 0 : free.exact) && free.total ? L("stoOfDisk", fmtMB(free.free), fmtMB(free.total)) : "&nbsp;"}</span></div>
       <button data-act="offlimit"><small>${L("stoLimit")}</small><b>${OFF.limitMB ? fmtLimit(OFF.limitMB) : L("ofUnlimited")}</b><span>${lim ? `${pct}%` : "&nbsp;"}</span></button></div>
-      ${lim ? `<div class="upd-bar"><i style="width:${pct}%"></i></div>` : ""}</div>`;
+      ${lim ? `<div class="upd-bar"><i style="width:${pct}%"></i></div>` : ""}<div class="stsub stoacc">${(free == null ? void 0 : free.exact) ? L("stoExactSub") : L("stoApproxSub")}</div></div>`;
     if (!metas.length) {
       box.innerHTML = head + stoToolsCard() + emptyBox("offline", L("stoEmpty"));
       return;
@@ -5809,8 +5887,9 @@ ${L("schWifiUnknown")}`), L("download"))) return;
     if (!schRestored) return;
     const q = DLM.jobs.filter((j) => j.sched && j.st === "queued");
     LS.set("sc_schq", q.map((j) => ({ t: miniT(j.t), q: j.q || null, preset: j.preset || null })));
-    if (q.length !== schPersist.n) {
-      schPersist.n = q.length;
+    const sig = q.map((j) => j.t.id).join(",");
+    if (sig !== schPersist.sig) {
+      schPersist.sig = sig;
       schSyncNative();
     }
   }
@@ -5852,7 +5931,24 @@ ${L("schWifiUnknown")}`), L("download"))) return;
   function schSyncNative() {
     var _a2;
     try {
-      (_a2 = NATIVE == null ? void 0 : NATIVE.schedSet) == null ? void 0 : _a2.call(NATIVE, JSON.stringify({ on: SCH.on, from: SCH.from, to: SCH.to, days: SCH.days, wifi: SCH.wifi, charge: SCH.charge, pending: DLM.jobs.filter((j) => j.sched && j.st === "queued").length }));
+      const q = DLM.jobs.filter((j) => j.sched && j.st === "queued");
+      let pinned = 0;
+      for (const m of OFF.meta.values()) if (m.pinned) pinned += m.size || 0;
+      (_a2 = NATIVE == null ? void 0 : NATIVE.schedSet) == null ? void 0 : _a2.call(NATIVE, JSON.stringify({
+        on: SCH.on,
+        from: SCH.from,
+        to: SCH.to,
+        days: SCH.days,
+        wifi: SCH.wifi,
+        charge: SCH.charge,
+        pending: q.length,
+        api: API,
+        token: appToken || "",
+        lang,
+        limitMB: OFF.limitMB || 0,
+        usedBytes: pinned,
+        items: q.slice(0, 300).map((j) => ({ t: miniT(j.t), q: j.q || null, preset: j.preset || null }))
+      }));
     } catch (e) {
     }
   }
@@ -5866,15 +5962,16 @@ ${L("schWifiUnknown")}`), L("download"))) return;
   const dayOrder = () => lang === "fa" ? [6, 0, 1, 2, 3, 4, 5] : [0, 1, 2, 3, 4, 5, 6];
   function schSheet() {
     const d = S.schDraft = S.schDraft || JSON.parse(JSON.stringify({ on: SCH.on, from: SCH.from, to: SCH.to, days: SCH.days, wifi: SCH.wifi, charge: SCH.charge }));
-    const note = plat() === "android" ? L("schNoteA") : plat() === "windows" ? L("schNoteW") : L("schNoteT");
+    const note = plat() === "android" ? typeof (NATIVE == null ? void 0 : NATIVE.schedTake) === "function" ? L("schNoteBgA") : L("schNoteA") : plat() === "windows" ? L("schNoteW") : L("schNoteT");
     openSheet(`<div class="schs"><h3>${L("schTitle")}</h3>
     <button class="mi" data-act="schd" data-k="on">${swH(d.on)} <span>${L("schOn")}<small>${L("schSub")}</small></span></button>
     <div class="schtm"><label>${L("schFrom")}<input type="time" class="field" id="schfrom" value="${esc(d.from)}" dir="ltr"></label><label>${L("schTo")}<input type="time" class="field" id="schto" value="${esc(d.to)}" dir="ltr"></label></div>
     <div class="lyo">${L("schDays")}</div><div class="seg wrap">${dayOrder().map((k) => `<button class="chip ${d.days.includes(k) ? "on" : ""}" data-act="schday" data-d="${k}">${L("days")[k]}</button>`).join("")}</div>
     <button class="mi" data-act="schd" data-k="wifi">${swH(d.wifi)} <span>${L("schWifi")}</span></button>
     <button class="mi" data-act="schd" data-k="charge">${swH(d.charge)} <span>${L("schCharge")}</span></button>
-    <div class="lyo schnote">${note}</div>
+    <div class="lyo schnote">${note}</div><div id="schbat"></div>
     <div class="row2"><button class="btn" data-act="closesheet">${L("cancel")}</button><button class="btn pri" data-act="schsave">${L("schSave")}</button></div></div>`);
+    batFill("#schbat");
   }
   function schReadDraft() {
     var _a2, _b2;
@@ -5944,6 +6041,7 @@ ${L("schWifiUnknown")}`), L("download"))) return;
     } };
   }
   const bkName = () => `soundcloud-backup-${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.json`;
+  const bkHasSecret = (text) => /"sc_token"|x-app-token|x-init-data|"hash"\s*:|auth_date=/.test(text) || !!(appToken && appToken.length >= 16 && text.includes(appToken)) || !!(initData && text.includes(initData));
   function bkSheet() {
     const p = plat();
     openSheet(`<div class="bks"><div class="pyico">${I("v_backup")}</div><h3>${L("bkTitle")}</h3><p>${L("bkSub")}</p><div class="bkno">ℹ️ ${L("bkNoAudio")}</div>
@@ -5962,14 +6060,19 @@ ${L("schWifiUnknown")}`), L("download"))) return;
       return toast(L("err"));
     }
     const text = JSON.stringify(data, null, 1);
+    if (bkHasSecret(text)) return toastLong(L("bkSecret"));
     try {
       if (mode === "share" && (NATIVE == null ? void 0 : NATIVE.shareFile)) {
-        await callNative("shareFile", bkName(), "application/json", text);
+        const r = await callNative("shareFile", bkName(), "application/json", text);
+        if (r === "secret") return toastLong(L("bkSecret"));
+        if (r === "err") return toast(L("err"));
         closeSheet();
         return;
       }
       if (mode === "save" && (NATIVE == null ? void 0 : NATIVE.saveFile)) {
         const r = await callNative("saveFile", bkName(), text);
+        if (r === "secret") return toastLong(L("bkSecret"));
+        if (r === "err") return toast(L("err"));
         closeSheet();
         if (r === true || r === "ok") toast(L("bkSaved"));
         return;
@@ -6137,17 +6240,20 @@ ${L("schWifiUnknown")}`), L("download"))) return;
       for (const f of FOL.list) {
         const n = x[f.id];
         if (!n) continue;
-        const seen = new Set(f.seen || []);
+        const seen = new Set(f.seen || []), add = [];
         for (const t of n.news || []) if (t && t.id && !seen.has(t.id)) {
           seen.add(t.id);
+          add.push(t.id);
+          remember([t]);
           FOL.news.unshift({ t: miniT(t), a: f.id, an: f.username, at: tms(t.created_at), rd: t.release_date || null });
           ch = true;
         }
-        for (const id of n.seen || []) if (!seen.has(id)) {
+        for (const id of n.seen || []) if (id && !seen.has(id)) {
           seen.add(id);
+          add.push(id);
           ch = true;
         }
-        f.seen = [...seen].slice(-60);
+        f.seen = [...add, ...f.seen || []].slice(0, 60);
         if (n.alert_day && n.alert_day !== f.alert_day) {
           f.alert_day = n.alert_day;
           ch = true;
@@ -6237,7 +6343,9 @@ ${L("schWifiUnknown")}`), L("download"))) return;
     const link = fresh.length === 1 ? `t_${fresh[0].id}` : `a_${f.id}`;
     try {
       if (NATIVE && NATIVE.notify) {
-        NATIVE.notify(JSON.stringify({ id: 3e3 + Number(f.id) % 9e4, title, body, link }));
+        Promise.resolve(NATIVE.notify(JSON.stringify({ id: 3e3 + Number(f.id) % 9e4, title, body, link }))).then((ok) => {
+          if (ok === false || ok === "false") toastLong(`🔔 ${title}`);
+        }, () => toastLong(`🔔 ${title}`));
         return;
       }
     } catch (e) {
@@ -6257,7 +6365,7 @@ ${L("schWifiUnknown")}`), L("download"))) return;
     root().innerHTML = `<div class="view"><div class="hdr"><div class="logo">🔔 <b>${L("folTitle")}</b></div></div>
     <div class="card"><button class="it" data-act="folon"><div class="ico" style="background:#ff8a00">${I("v_bell")}</div><div class="l">${L("folAlerts")}<small>${L("folAlertsSub")}</small></div><div class="v">${swH(FOL.on)}</div></button>
       <button class="it" data-act="folcheck"><div class="ico" style="background:#0ea5e9">${I("retry")}</div><div class="l">${L("folCheck")}<small>${FOL.checkedAt ? L("folChecked", fmtWhen(FOL.checkedAt)) : L("folNever")}</small></div><div class="v">${FOL.busy ? `<span class="mini-spin"></span>` : ""}</div></button></div>
-    <div class="lyo">${note}</div>
+    <div class="lyo">${note}</div><div id="folbat"></div>
     ${news.length ? `<div class="lyo">${L("folNew")}</div><div class="list">${news.map((n, i) => `<div class="tr" data-act="play" data-id="${n.t.id}" data-ctx="${ctx}" data-i="${i}"><div class="art">${img(n.t.artwork_url, "t120x120")}</div>
         <div class="meta"><div class="t" dir="auto">${esc(n.t.title)}</div><div class="a"><span dir="auto">${esc(n.an || n.t.artist)}</span> · ${L("folReleased", fmtDate(n.rd || n.at))}</div></div></div>`).join("")}</div>` : ""}
     <div class="lyo">${L("folTitle")} (${FOL.list.length})</div>
@@ -6265,6 +6373,7 @@ ${L("schWifiUnknown")}`), L("download"))) return;
         <div class="meta"><div class="t" dir="auto">${esc(f.username)}</div><div class="a">${f.muted ? `${I("v_belloff", "ci")} ${L("folMute")}` : `${I("v_bell", "ci")} ${L("folAlerts")}`}</div></div>
         <button class="more ${f.muted ? "" : "on"}" data-act="folmute" data-id="${f.id}" aria-label="${esc(L("folMute"))}">${I(f.muted ? "v_belloff" : "v_bell")}</button>
         <button class="more" data-act="folun" data-id="${f.id}" aria-label="${esc(L("folUnfollow"))}">${I("close")}</button></div>`).join("")}</div>` : emptyBox("user", L("folNone"), L("folNoneSub"))}</div>`;
+    batFill("#folbat");
   }
   const folBtn = (u, small) => {
     const on = isFol(u.id);
@@ -6379,11 +6488,192 @@ ${L("schWifiUnknown")}`), L("download"))) return;
     if (r.reason === "corrupt") return recVidMsg("bad");
     return recVidMsg("none");
   }
+  const RECP_KEY = "sc_recentp";
+  audio.addEventListener("playing", () => {
+    const t = S.queue[S.qi];
+    if (!t || !t.id || isUnlockSrc()) return;
+    let arr = LS.get(RECP_KEY, []);
+    if (!Array.isArray(arr)) arr = [];
+    if (arr[0] && arr[0].id === t.id) return;
+    LS.set(RECP_KEY, [miniT(t), ...arr.filter((x) => x && x.id !== t.id)].slice(0, 30));
+    autoLibPush();
+  });
+  const AUTOM_KEY = "sc_autom";
+  function autoMeta(list) {
+    if (typeof (NATIVE == null ? void 0 : NATIVE.autoLib) !== "function" || !Array.isArray(list) || !list.length) return;
+    const c = LS.get(AUTOM_KEY, {}) || {};
+    for (const t of list) if (t && t.id) {
+      delete c[t.id];
+      c[t.id] = { id: t.id, title: String(t.title || ""), artist: String(t.artist || t.username || ""), duration_ms: Number(t.duration_ms) || 0, artwork_url: /^https:/.test(t.artwork_url || "") ? t.artwork_url : null };
+    }
+    const keys = Object.keys(c);
+    for (const k of keys.slice(0, Math.max(0, keys.length - 800))) delete c[k];
+    LS.set(AUTOM_KEY, c);
+  }
+  function autoLists() {
+    var _a2;
+    const mc = LS.get(AUTOM_KEY, {}) || {};
+    const meta = (id) => {
+      const x = S.tracks.get(id) || OFF.meta.get(id) || mc[id];
+      return x && x.title ? miniT(x) : null;
+    };
+    const plx = PLX.get();
+    const favIds = S.favList && S.favList.length ? null : ((_a2 = Object.values(plx).find((p) => p.fav)) == null ? void 0 : _a2.ids) || [];
+    return {
+      fav: (favIds ? favIds.map(meta).filter(Boolean) : S.favList.map(miniT)).slice(0, 200),
+      pls: Object.entries(plx).filter(([, p]) => !p.fav).slice(0, 30).map(([id, p]) => ({ id: String(id), name: plxName(p), tracks: (p.ids || []).slice(0, 200).map(meta).filter(Boolean) })),
+      off: offTracks().slice(0, 200).map((t) => {
+        var _a3;
+        return miniT(Object.assign({}, t, { artwork_url: (_a3 = OFF.meta.get(t.id)) == null ? void 0 : _a3.artwork_url }));
+      }),
+      rec: (LS.get(RECP_KEY, []) || []).filter((x) => x && x.id).slice(0, 30)
+    };
+  }
+  let autoT = null;
+  function autoLibPush(now) {
+    if (typeof (NATIVE == null ? void 0 : NATIVE.autoLib) !== "function") return;
+    clearTimeout(autoT);
+    autoT = setTimeout(() => {
+      try {
+        NATIVE.autoLib(JSON.stringify(appToken ? Object.assign({ lang }, autoLists()) : { lang }));
+      } catch (e) {
+      }
+    }, now ? 0 : 1500);
+  }
+  function autoPlay(arg) {
+    var _a2;
+    let a;
+    try {
+      a = typeof arg === "string" ? JSON.parse(arg) : arg;
+    } catch (e) {
+      return;
+    }
+    if (!a || !Number(a.id) || partyGuard()) return;
+    const id = Number(a.id), L0 = autoLists(), ln = String(a.list || "");
+    let list = ln === "fav" ? L0.fav : ln === "off" ? L0.off : ln === "rec" ? L0.rec : ln.startsWith("pl|") ? ((_a2 = L0.pls.find((p) => p.id === ln.slice(3))) == null ? void 0 : _a2.tracks) || [] : [];
+    let i = list.findIndex((t) => t.id === id);
+    if (i < 0) {
+      const m = S.tracks.get(id) || OFF.meta.get(id);
+      if (!m) return;
+      list = [miniT(m)];
+      i = 0;
+    }
+    list = list.map((t) => Object.assign({}, S.tracks.get(t.id) || {}, t));
+    remember(list);
+    playList(list, i);
+  }
+  async function schImport() {
+    if (typeof (NATIVE == null ? void 0 : NATIVE.schedTake) !== "function") {
+      schSyncNative();
+      return;
+    }
+    if (schImport.busy) return;
+    schImport.busy = true;
+    let n = 0;
+    try {
+      let x = NATIVE.schedTake();
+      if (typeof x === "string") x = JSON.parse(x || "{}");
+      x = x || {};
+      if (x.canceled) {
+        for (const j of DLM.jobs) if (j.sched && j.st === "queued") j.st = "cancel";
+      }
+      for (const [id, why] of Object.entries(x.failed || {})) {
+        const j = DLM.jobs.find((y) => y.t.id === Number(id) && y.sched && y.st === "queued");
+        if (j) {
+          j.st = "fail";
+          j.err = ["big", "drm", "q"].includes(why) ? why : why === "room" ? "big" : "net";
+        }
+      }
+      for (const d of Array.isArray(x.done) ? x.done : []) {
+        const id = Number(d && d.id);
+        if (!id) continue;
+        if (OFF.ids.has(id)) {
+          NATIVE.schedAck(String(id));
+          continue;
+        }
+        try {
+          const get = async (f) => {
+            if (!/^(audio|init|s\d{1,5})$/.test(f)) throw new Error("bad file");
+            const r = await fetch(`/bgdl/${id}/${f}`);
+            if (!r.ok) throw new Error("bgdl " + r.status);
+            return new Uint8Array(await r.arrayBuffer());
+          };
+          const t = Object.assign({}, S.tracks.get(id) || {}, miniT(d.track || { id }), { id });
+          let blob = null;
+          if (d.kind === "progressive") blob = new Blob([await get("audio")], { type: "audio/mpeg" });
+          else if (d.kind === "hls-aac" || d.kind === "hls-mp3") {
+            const init = d.init ? await get("init") : null, segs = [];
+            for (const f of d.files || []) segs.push(await get(f));
+            blob = await buildAudio(d.kind, init, segs, t);
+          }
+          if (!blob || !blob.size) throw new Error("empty");
+          await offPut(t, blob, true);
+          n++;
+          NATIVE.schedAck(String(id));
+          const j = DLM.jobs.find((y) => y.t.id === id && dlActive(y));
+          if (j) {
+            j.st = "done";
+            j.pct = 100;
+          }
+        } catch (e) {
+          console.warn("background download import", e);
+        }
+      }
+    } catch (e) {
+      console.warn("schImport", e);
+    } finally {
+      schImport.busy = false;
+    }
+    dlRefresh();
+    schSyncNative();
+    if (n) {
+      toast(L("bgImported", n));
+      autoLibPush();
+    }
+  }
+  async function batInfo() {
+    try {
+      const x = await callNative("batteryInfo");
+      return typeof x === "string" ? JSON.parse(x) : x || null;
+    } catch (e) {
+      return null;
+    }
+  }
+  async function batHtml() {
+    if (plat() !== "android" || typeof (NATIVE == null ? void 0 : NATIVE.batteryInfo) !== "function") return "";
+    const b = await batInfo();
+    if (!b) return "";
+    const mk = String(b.maker || "");
+    const extra = /xiaomi|redmi|poco/.test(mk) ? L("batXiaomi") : /samsung|huawei|honor|oppo|vivo|realme|oneplus/.test(mk) ? L("batOther") : "";
+    return `<div class="card batc"><div class="ch">${L("batTitle")}</div><div class="stsub">${b.ignoring ? L("batOff") : L("batOn")}</div>
+    <div class="stsub">${L("batHint")}</div>${extra ? `<div class="stsub">${extra}</div>` : ""}
+    <button class="btn sm" data-act="batopen">${I("v_battery")} ${L("batBtn")}</button></div>`;
+  }
+  async function batFill(sel) {
+    const h = await batHtml();
+    const el = $(sel);
+    if (el) el.innerHTML = h;
+  }
+  function wgInfo() {
+    var _a2;
+    try {
+      const x = (_a2 = NATIVE == null ? void 0 : NATIVE.widgetInfo) == null ? void 0 : _a2.call(NATIVE);
+      return x ? typeof x === "string" ? JSON.parse(x) : x : null;
+    } catch (e) {
+      return null;
+    }
+  }
+  function wgItem() {
+    const w = plat() === "android" ? wgInfo() : null;
+    if (!w) return "";
+    return `<button class="it" data-act="wgadd"><div class="ico" style="background:#ff5500">${I("v_widget")}</div><div class="l">${L("wgTitle")}<small>${w.placed ? L("wgPlaced") : w.pin ? L("wgAdd") : L("wgManual")}</small></div><div class="v"></div></button>`;
+  }
   function v15Start(sp) {
     schRestore();
-    schSyncNative();
+    schImport();
     folMergeNative();
     folSyncNative();
+    autoLibPush();
     if (!String(sp || "").startsWith("j_")) partyResume();
     setTimeout(() => {
       if (Date.now() - FOL.checkedAt > 6 * 36e5) folCheck();
@@ -6395,10 +6685,11 @@ ${L("schWifiUnknown")}`), L("download"))) return;
     ${OFF.ok ? `<button class="it" data-act="stoopen"><div class="ico" style="background:#f59e0b">${I("storage")}</div><div class="l">${L("stoTitle")}</div><div class="v">${fmtMB(offUsed())}</div></button>
     <button class="it" data-act="schopen"><div class="ico" style="background:#0ea5e9">${I("v_clock")}</div><div class="l">${L("schTitle")}</div><div class="v">${SCH.on ? `${SCH.from}–${SCH.to}` : L("schOff")}</div></button>` : ""}
     <button class="it" data-act="folopen"><div class="ico" style="background:#ff8a00">${I("v_bell")}</div><div class="l">${L("folTitle")}</div><div class="v">${FOL.list.length || ""}</div></button>
-    <button class="it" data-act="bkopen"><div class="ico" style="background:#6366f1">${I("v_backup")}</div><div class="l">${L("bkTitle")}</div><div class="v"></div></button></div>`;
+    <button class="it" data-act="bkopen"><div class="ico" style="background:#6366f1">${I("v_backup")}</div><div class="l">${L("bkTitle")}</div><div class="v"></div></button>
+    ${wgItem()}${plat() === "android" && typeof (NATIVE == null ? void 0 : NATIVE.batteryInfo) === "function" ? `<button class="it" data-act="batsheet"><div class="ico" style="background:#22c55e">${I("v_battery")}</div><div class="l">${L("batTitle")}</div><div class="v"></div></button>` : ""}</div>`;
   }
   async function v15Click(a, el, e) {
-    var _a2, _b2, _c2, _d2, _e2;
+    var _a2, _b2, _c2, _d2, _e2, _f2;
     const id = el.dataset.id;
     switch (a) {
       // party
@@ -6488,6 +6779,29 @@ ${L("schWifiUnknown")}`), L("download"))) return;
       case "schopen":
         S.schDraft = null;
         return schSheet();
+      case "batopen":
+        try {
+          (_d2 = NATIVE == null ? void 0 : NATIVE.openBatterySettings) == null ? void 0 : _d2.call(NATIVE);
+        } catch (e2) {
+        }
+        return;
+      case "batsheet": {
+        openSheet(`<div class="bats"><h3>${L("batTitle")}</h3><div id="batbox"><div class="spin"></div></div></div>`);
+        return batFill("#batbox");
+      }
+      case "wgadd": {
+        const w = wgInfo();
+        if (!w) return;
+        if (w.placed) return toast(L("wgPlaced"));
+        if (w.pin) {
+          try {
+            NATIVE.widgetPin();
+          } catch (e2) {
+          }
+          return;
+        }
+        return toastLong(L("wgManual"));
+      }
       case "schd": {
         const d = schReadDraft();
         if (!d) return;
@@ -6511,8 +6825,8 @@ ${L("schWifiUnknown")}`), L("download"))) return;
         closeSheet();
         schSyncNative();
         schTick();
-        if (((_d2 = view()) == null ? void 0 : _d2.type) === "downloads") drawDownloads();
-        else if (((_e2 = view()) == null ? void 0 : _e2.type) === "settings") render();
+        if (((_e2 = view()) == null ? void 0 : _e2.type) === "downloads") drawDownloads();
+        else if (((_f2 = view()) == null ? void 0 : _f2.type) === "settings") render();
         return toast(SCH.on ? schWhen() : L("schOff"));
       }
       case "schnow":
@@ -6736,6 +7050,9 @@ ${L("schWifiUnknown")}`), L("download"))) return;
     pushNative();
     rebuildChrome();
     showLogin();
+    folSyncNative();
+    schSyncNative();
+    autoLibPush(true);
   }
   const cmpVer = (a, b) => {
     const x = String(a).split(".").map(Number), y = String(b).split(".").map(Number);
@@ -6817,6 +7134,7 @@ ${L("schWifiUnknown")}`), L("download"))) return;
   }
   const NATIVE_ORIGIN = "https://appassets.androidplatform.net";
   function onNativeEvent(d) {
+    var _a2;
     if (!d || typeof d !== "object" || typeof d.__sc !== "string") return;
     if (d.__sc === "upd") onUpdEvent(d);
     if (d.__sc === "link" && S.me) openDeep(takeNativeLink());
@@ -6826,7 +7144,13 @@ ${L("schWifiUnknown")}`), L("download"))) return;
       schTick();
     }
     if (d.__sc === "speech") vsEvent(d);
-    if (d.__sc === "sched") schTick();
+    if (d.__sc === "sched") {
+      schImport().then(schTick);
+    }
+    if (d.__sc === "bgnews") {
+      folMergeNative();
+      if (((_a2 = view()) == null ? void 0 : _a2.type) === "follows") vFollows();
+    }
   }
   if (NATIVE == null ? void 0 : NATIVE.onEvent) {
     try {
@@ -6884,6 +7208,11 @@ ${L("schWifiUnknown")}`), L("download"))) return;
         $(".fp.show") && closePlayer();
       }
       return go({ type: "artist", id: Number(sp.slice(2)) });
+    }
+    if (sp === "np") {
+      if (!initial) closeSheet();
+      if (S.queue.length) openPlayer();
+      return;
     }
     if (sp.startsWith("s_")) {
       S.search.q = "";

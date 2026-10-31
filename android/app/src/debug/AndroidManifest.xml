@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DEBUG BUILDS ONLY (never in the release APK): test hooks driven over adb by .github/scripts/android-native.sh -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application android:networkSecurityConfig="@xml/nsc_debug">
+        <!-- adb shell am broadcast -a com.soundclouddl.player.DEBUG -n com.soundclouddl.player/.DebugReceiver --es op <op> -->
+        <receiver android:name=".DebugReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="com.soundclouddl.player.DEBUG" />
+            </intent-filter>
+        </receiver>
+        <!-- a stand-in for the system speech recognizer (emulators have no microphone input) -->
+        <service android:name=".DebugRecognitionService" android:exported="false">
+            <intent-filter>
+                <action android:name="android.speech.RecognitionService" />
+            </intent-filter>
+        </service>
+        <!-- a share target that checks what the backup share sheet really hands to other apps -->
+        <activity
+            android:name=".ShareCheckActivity"
+            android:exported="true"
+            android:label="SC Share Check"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/json" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

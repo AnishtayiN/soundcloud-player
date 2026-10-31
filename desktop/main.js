@@ -1,10 +1,10 @@
 // SoundCloud Player — Windows desktop shell (Electron 22: the last release supporting Windows 7 / 8 / 8.1)
-const { app, BrowserWindow, shell, ipcMain, Menu, nativeTheme, clipboard, net } = require("electron");
+const { app, BrowserWindow, shell, ipcMain, Menu, nativeTheme, clipboard, net, dialog, Notification } = require("electron");
 const path = require("path");
 const os = require("os");
 const fs = require("fs");
 const crypto = require("crypto");
-const { spawn } = require("child_process");
+const { spawn, execFile } = require("child_process");
 const { pathToFileURL } = require("url");
 
 // DevTools (Ctrl+Shift+I) and F5 reload only for development: `npm start`, or SC_DEVTOOLS=1 / --devtools on a packaged build
@@ -298,6 +298,74 @@ function netInfo() {
   return p;
 }
 ipcMain.handle("net-info", (e) => (fromApp(e) ? netInfo() : null));
+// ── v1.5.1: exact free space, backup "Save as…", system notifications ──
+// Free space of the drive that holds the app data (IndexedDB offline songs live in userData). Real numbers from
+// Windows (.NET DriveInfo through PowerShell, works on Windows 7) — on failure null → the app shows its labeled estimate.
+const PS_EXE = path.join(process.env.SystemRoot || "C:\\Windows", "System32", "WindowsPowerShell", "v1.0", "powershell.exe");
+let stoMemo = null;
+function storageInfo() {
+  if (stoMemo && Date.now() - stoMemo.at < 10000) return stoMemo.p;
+  const dir = app.getPath("userData");
+  const p = new Promise((resolve) => {
+    const done = (free, total) => resolve(free > 0 && total > 0 && free <= total ? { free, total, exact: true, drive: process.platform === "win32" ? path.parse(dir).root.slice(0, 2) : "/" } : null);
+    if (process.platform === "win32") {
+      const root = path.parse(dir).root; // "C:\\"
+      if (!/^[a-z]:\\$/i.test(root)) return resolve(null); // network path: no reliable number
+      const ps = `$d=New-Object System.IO.DriveInfo('${root[0]}');'{0}|{1}' -f $d.AvailableFreeSpace,$d.TotalSize`;
+      execFile(PS_EXE, ["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", ps], { windowsHide: true, timeout: 8000 }, (err, out) => {
+        if (err) return resolve(null);
+        const m = /(\d+)\|(\d+)/.exec(String(out)); m ? done(Number(m[1]), Number(m[2])) : resolve(null);
+      });
+    } else { // development on Linux / macOS
+      execFile("df", ["-kP", dir], { timeout: 5000 }, (err, out) => {
+        if (err) return resolve(null);
+        const f = String(out).trim().split(/\r?\n/).pop().split(/\s+/); done(Number(f[3]) * 1024, Number(f[1]) * 1024);
+      });
+    }
+  });
+  stoMemo = { at: Date.now(), p };
+  p.then((r) => { if (!r) stoMemo = null; });
+  return p;
+}
+ipcMain.handle("storage-info", (e) => (fromApp(e) ? storageInfo() : null));
+
+// backup "Save as…" — Windows save dialog; the file never contains sign-in data (checked again here)
+const SECRET_RE = /sc_token|x-app-token|x-init-data|"hash"\s*:|auth_date=|appToken|initData/i;
+ipcMain.handle("save-file", async (e, name, text) => {
+  if (!fromApp(e)) return "err";
+  name = String(name || ""); text = String(text || "");
+  if (!/^[\w.-]{1,80}\.json$/.test(name) || text.length > 30e6) return "err";
+  if (SECRET_RE.test(text)) return "secret";
+  try {
+    const r = await dialog.showSaveDialog(win, { defaultPath: path.join(app.getPath("documents"), name), filters: [{ name: "JSON", extensions: ["json"] }] });
+    if (r.canceled || !r.filePath) return "canceled";
+    fs.writeFileSync(r.filePath, text, "utf8");
+    return "ok";
+  } catch (_) { return "err"; }
+});
+
+// new-release alerts as real Windows notifications (shown by the app while it is running, also minimized —
+// Windows has no background job for this app once it is closed; the app checks again on the next launch)
+const notes = new Map();
+ipcMain.handle("notify", (e, json) => {
+  if (!fromApp(e)) return false;
+  let n; try { n = JSON.parse(String(json || "")); } catch (_) { return false; }
+  if (!n || typeof n !== "object" || !Notification.isSupported()) return false;
+  const title = String(n.title || "").slice(0, 120), body = String(n.body || "").slice(0, 300);
+  const link = /^(t_\d{1,15}|a_\d{1,15}|np)$/.test(String(n.link || "")) ? String(n.link) : "";
+  if (!title) return false;
+  const key = String(n.id || title);
+  try { const old = notes.get(key); if (old) old.close(); } catch (_) { /* gone */ }
+  const note = new Notification({ title, body, icon: path.join(__dirname, "web", "icon.png"), silent: false });
+  note.on("click", () => {
+    if (link) { pendingLink = link; toWeb({ __sc: "link" }); }
+    if (win) { if (win.isMinimized()) win.restore(); win.show(); win.focus(); }
+  });
+  note.on("close", () => { if (notes.get(key) === note) notes.delete(key); });
+  notes.set(key, note); // keep a reference so the click handler isn't garbage-collected
+  note.show();
+  return true;
+});
 on("set-theme", (_e, bg) => { if (win && /^#[0-9a-f]{6}$/i.test(bg)) win.setBackgroundColor(bg); });
 
 app.on("second-instance", (_e, argv) => {
