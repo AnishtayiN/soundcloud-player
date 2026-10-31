@@ -2,7 +2,7 @@
 <!-- DEBUG BUILDS ONLY (never in the release APK): test hooks driven over adb by .github/scripts/android-native.sh -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application android:networkSecurityConfig="@xml/nsc_debug">
-        <!-- adb shell am broadcast -a com.soundclouddl.player.DEBUG -n com.soundclouddl.player/.DebugReceiver --es op <op> -->
+        <!-- adb shell am broadcast -n com.soundclouddl.player/.DebugReceiver (extra: es op NAME), see DebugReceiver.java -->
         <receiver android:name=".DebugReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="com.soundclouddl.player.DEBUG" />
