@@ -35,6 +35,7 @@ public class DebugReceiver extends BroadcastReceiver {
             case "rel_now": Bg.runReleaseCheckNow(ctx); break;                 // the real ReleaseWorker via WorkManager
             case "sched_now": Bg.runSchedNow(ctx); break;                      // the real SchedWorker via WorkManager
             case "speech": ctx.getSharedPreferences("debug", Context.MODE_PRIVATE).edit().putString("speech", String.valueOf(i.getStringExtra("mode") == null ? "" : i.getStringExtra("mode"))).apply(); break;
+            case "mock_api": ctx.getSharedPreferences("debug", Context.MODE_PRIVATE).edit().putBoolean("mock_api", i.getBooleanExtra("on", false)).commit(); Log.i(T, "mock_api " + i.getBooleanExtra("on", false)); break;
             case "close": Log.i(T, "close " + MainActivity.closeTask()); break;
             case "widget": PlayerWidget.updateAll(ctx); Log.i(T, "widget placed=" + PlayerWidget.hasWidgets(ctx) + " active=" + PlaybackService.isActive() + " playing=" + PlaybackService.isPlaying()); break;
             case "dump": dump(ctx, goAsync()); break;

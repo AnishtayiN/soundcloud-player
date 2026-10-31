@@ -102,6 +102,16 @@ public class MainActivity extends Activity {
 
     static boolean inForeground() { return resumed && alive(); }
 
+    /** emulator tests only: the debug APK can answer the app's API calls from a local mock server (see src/debug/DebugMockApi).
+     *  Release builds have no such class, no debug receiver to switch it on and are not debuggable — this stays null. */
+    interface MockApi { WebResourceResponse intercept(WebResourceRequest r); }
+    static volatile MockApi mockApi;
+    private void loadMockApi() {
+        if (!Bg.debuggable(this) || !getSharedPreferences("debug", MODE_PRIVATE).getBoolean("mock_api", false)) { mockApi = null; return; }
+        try { mockApi = (MockApi) Class.forName(getPackageName() + ".DebugMockApi").getDeclaredConstructor().newInstance(); }
+        catch (Exception e) { mockApi = null; }
+    }
+
     /** closes the app like swiping it away from recents (used by the debug test receiver) */
     static boolean closeTask() {
         final MainActivity a = current.get();
@@ -121,6 +131,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         current = new WeakReference<>(this);
+        loadMockApi();
 
         Window w = getWindow();
         WindowCompat.setDecorFitsSystemWindows(w, false);
@@ -333,6 +344,8 @@ public class MainActivity extends Activity {
         web.setWebViewClient(new WebViewClient() {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                MockApi m = mockApi;
+                if (m != null) { WebResourceResponse r = m.intercept(request); if (r != null) return r; }
                 return assets.shouldInterceptRequest(request.getUrl());
             }
 

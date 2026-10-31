@@ -7373,7 +7373,19 @@ ${L("schWifiUnknown")}`), L("download"))) return;
       recVideoFile,
       L,
       fmtMB,
-      offDel
+      offDel,
+      vsOpen,
+      autoLists,
+      autoLibPush,
+      autoPlay,
+      schImport,
+      schSyncNative,
+      folMergeNative,
+      folSyncNative,
+      stoFree,
+      batHtml,
+      dayKey,
+      DLM_jobs: () => DLM.jobs
     };
   }
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", boot) : boot();
