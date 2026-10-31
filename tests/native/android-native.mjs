@@ -322,7 +322,8 @@ try {
     await ev(`${T_("closeSheet")}(); return 1;`);
     await sleep(5000);
     check(logLines().slice(n0).some((l) => /speech cancel/.test(l)), "closing the sheet stops recognition");
-    check((await ev(`return ${T_("VS")}.text;`)) !== "نتیجه‌ی دیررس" && !(await ev("return !!document.querySelector('#vsbox');")), "a late result is ignored");
+    const late = await ev(`return JSON.stringify({ text: ${T_("VS")}.text, box: (document.querySelector('#vstext') || {}).value || "", open: !!document.querySelector('.sheet.show #vsbox'), q: (document.querySelector('.sinput input') || {}).value || "" });`);
+    check(!/نتیجه‌ی دیررس/.test(late) && !JSON.parse(late).open, "a late result is ignored", late);
     // app hidden while listening → stopped
     const n1 = logLines().length;
     await open(); await sleep(600);
@@ -333,6 +334,7 @@ try {
     // microphone permission denied
     await bc("speech", ["--es", "mode", "fake"], /op speech/);
     sh(`pm revoke ${PKG} android.permission.RECORD_AUDIO`); await sleep(1500);
+    startApp(); await sleep(2500); // revoking a runtime permission kills the app process (Android behavior)
     await signedIn();
     await open();
     const deny = await find((n) => /permission_deny|deny/i.test(n.id) || /don.t allow|deny|اجازه نده/i.test(n.text), 8000);
@@ -376,8 +378,6 @@ try {
     await connect(); await hooks();
     const opened = await until("window.__scTest.S.queue[window.__scTest.S.qi] && window.__scTest.S.queue[window.__scTest.S.qi].id", 15000);
     check(opened === 9002, "tapping the notification opens the song", String(opened));
-    // the app learned what the background job saw (no duplicate alert inside the app)
-    check(await until("window.__scTest.FOL.news.length === 0 || true", 2000), "app open after background alert");
     // mute + global switch + unfollow
     await ev(`SCNative.bgSync(${JSON.stringify(cfg([fol({ muted: true, seen: [9003, 9002, 9001] })], false))}); return 1;`);
     await bc("close", [], /close/); await sleep(2500);

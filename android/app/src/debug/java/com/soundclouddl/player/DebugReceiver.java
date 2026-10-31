@@ -75,7 +75,9 @@ public class DebugReceiver extends BroadcastReceiver {
     }
 
     /** connects to our own MediaBrowserService exactly like Android Auto does, lists the tree, optionally plays */
-    private static void browse(final Context ctx, final String play, final String ctl, final PendingResult pr) {
+    private static void browse(final Context rctx, final String play, final String ctl, final PendingResult pr) {
+        // a receiver's own context may not bind services → the application context (Android Auto binds the same way)
+        final Context ctx = rctx.getApplicationContext();
         final Handler h = new Handler(Looper.getMainLooper());
         final MediaBrowserCompat[] mb = new MediaBrowserCompat[1];
         final JSONObject out = new JSONObject();
