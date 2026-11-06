@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
     <cache-path name="updates" path="updates/" />
+    <!-- backup JSON shared through the system share sheet (temporary read-only grant, never a file:// URI) -->
+    <cache-path name="share" path="share/" />
 </paths>

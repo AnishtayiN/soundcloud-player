@@ -35,6 +35,10 @@ contextBridge.exposeInMainWorld("SCNative", {
   cancelUpdate: () => ipcRenderer.send("upd-cancel"),
   installUpdate: () => ipcRenderer.send("upd-install"),
   netInfo: () => ipcRenderer.invoke("net-info").then((r) => (r && typeof r === "object" ? { known: !!r.known, ok: !!r.ok, type: String(r.type || "") } : { known: false })).catch(() => ({ known: false })), // explicit user tap → main re-verifies SHA-256, then runs the installer
+  // v1.5.1
+  storageInfo: () => ipcRenderer.invoke("storage-info").then((r) => (r && r.exact === true && r.free > 0 && r.total > 0 ? { free: Number(r.free), total: Number(r.total), exact: true } : null)).catch(() => null),
+  saveFile: (name, text) => ipcRenderer.invoke("save-file", String(name), String(text)).then((r) => String(r || "err")).catch(() => "err"),
+  notify: (json) => ipcRenderer.invoke("notify", String(json)).then((r) => r === true).catch(() => false),
   onEvent: (fn) => {
     if (typeof fn !== "function" || listeners.length) return; // one subscriber (the app) only
     listeners.push(fn);

@@ -1,5 +1,122 @@
 # Changelog
 
+## v1.5.1 — تکمیل کارهای نیمه‌تمام v1.5.0: ابزارک، اندروید اتو، تشخیص گفتار بومی، کارهای پس‌زمینه، اشتراک پشتیبان، فضای دقیق، صفحه‌ی دعوت
+
+This release completes the parts of v1.5.0 that were missing or only worked while the app was open. The design (dark/orange), the name, the package (`com.soundclouddl.player`) and the architecture stay the same: shared `web/app.js`, Android WebView, Windows Electron 22, the existing Supabase function `scbot`, and the bot @SoundClouddl_RoBot.
+- Persian-first is unchanged: default `fa`, `dir="rtl"`, `android:supportsRtl="true"`. New strings were added in fa and en (`STR`, `values/strings.xml`, `values-fa/strings.xml`); no existing Persian string was changed or removed.
+- Nothing from P0/P1, v1.4.0 or v1.5.0 was reverted, and no feature was removed.
+- There are no new client keys or secrets. Background jobs use only the user's existing app token (`x-app-token`) and the existing function.
+- No fake data: the widget, notifications, progress, free space and voice text all come from the real player, WorkManager, StatFs or SpeechRecognizer.
+
+**What was incomplete in v1.5.0 and is complete now**
+
+| # | Part | v1.5.0 | v1.5.1 |
+|---|---|---|---|
+| 1 | Android home widget | did not exist | real widget on the existing `PlaybackService` / MediaSession |
+| 2 | Android Auto | did not exist | MediaBrowserService on the same session |
+| 3 | Voice search on Android | Web Speech only; the WebView usually has no recognizer, so the app showed "not available" | native `SpeechRecognizer` (fa-IR) through the bridge |
+| 4 | New-release alerts | only while the app was open | Android: WorkManager every ~6 h, even with the app closed |
+| 5 | Scheduled downloads | only while the app was open | Android: WorkManager with the window, weekdays, Wi-Fi and charging, persisted across reboots |
+| 6 | Backup on Android | download only, no share sheet | `ACTION_SEND` + FileProvider share sheet |
+| 7 | Free space | browser estimate (`navigator.storage.estimate`) shown as if exact | Android StatFs / Windows DriveInfo, exact; the estimate is labeled «تقریبی» |
+| 8 | Invite link `/j/<code>` | the link existed but the page didn't (404) | invite page implemented (Netlify function) + public session-info API |
+
+### 1. Android home widget — ابزارک صفحه‌ی اصلی
+- Standard size (4×1 cells, resizable horizontally and vertically). Shows the cover, title, artist and state, plus ⏮ ⏯ ⏭. Tapping the cover or title opens the full player.
+- Updated only by the existing `PlaybackService` (no second player engine). It updates on track change, play, pause and loading; the buttons send the same commands as the media notification.
+- When the service is stopped, the widget shows the last saved track with a ▶ button and «پخش متوقف شده · برای باز کردن برنامه لمس کن»; it never shows "playing". A tap opens the app.
+- The last state is kept in the app's private `now_playing` preferences, so after a reboot or after the app is closed the widget shows the last real track.
+- Persian RTL layout (`widget_player.xml`) with an LTR copy for English (`widget_player_ltr.xml`); the language comes from the app. Dark/orange.
+- In Settings, the widget item uses `requestPinAppWidget` when the launcher supports it, otherwise it shows how to add the widget from the launcher.
+- Fixed with this work: a pause from the widget, notification, Android Auto or headset while a song is still loading used to be overridden by the autoplay when loading finished. It now stays paused.
+
+**Files:** `PlayerWidget.java`, `NowPlaying.java`, `PlaybackService.java`, `MainActivity.java`, `res/layout/widget_player.xml`, `res/layout/widget_player_ltr.xml`, `res/xml/player_widget_info.xml`, `res/drawable/widget_*.xml`, `AndroidManifest.xml`, `values{,-fa}/strings.xml`, `web/app.js`
+
+### 2. Android Auto — اندروید اتو
+- `PlaybackService` is now also a `MediaBrowserServiceCompat` on the same MediaSession. Root categories: «علاقه‌مندی‌ها», «پلی‌لیست‌ها», «آفلاین», «اخیراً پخش‌شده».
+- The library is a token-free device snapshot (`files/auto_lib.json`) that the web app writes when favorites, playlists, downloads, recent plays, the language or the sign-in change. Signing out empties it.
+- Only Android Auto, the system and this app can list the library (`trusted()` checks the package / uid); any other client gets an empty root.
+- Supported: play from a list, play/pause, next/previous, and choosing from the queue (`setQueue` + `skipToQueueItem`). There is no text input and no video (Auto rules).
+- Playback needs the app's web player. If the app isn't running, Auto shows «اول برنامه را روی گوشی باز کن، بعد از اینجا پخش کن». Android doesn't allow starting an activity from the background, so this cannot be done silently.
+- Windows keeps media keys and SMTC as before.
+
+**Files:** `AutoLib.java`, `PlaybackService.java`, `res/xml/automotive_app_desc.xml`, `res/drawable/ic_auto_*.xml`, `AndroidManifest.xml`, `values{,-fa}/strings.xml`, `web/app.js`
+
+### 3. Native speech bridge for voice search — تشخیص گفتار بومی
+- On Android, voice search uses `SpeechRecognizer` with `fa-IR` (`en-US` when the app is in English) via `SCAndroid.speechStart/speechStop`.
+- Only our own page may start it (`ownPage`, the v1.3.1 origin check); events are posted only to the app origin.
+- Partial and final results are shown, and the text stays editable before searching. Microphone permission uses the existing runtime-permission flow.
+- Closing the sheet, navigating, leaving the page, hiding the app (`onStop`) or a new run always cancels recognition. Late results are dropped by a run counter.
+- No recognizer, denied permission, no speech, network or language errors each show a clear Persian message and never insert text.
+- The Mini App and Windows are unchanged: Web Speech where available, otherwise the honest "not available" message.
+
+**Files:** `MainActivity.java`, `web/app.js`, `web/index.html`
+
+### 4. Background new-release check + system notification — بررسی آهنگ تازه در پس‌زمینه
+- **Android:** periodic WorkManager job `release-check` (6 h with a 1 h flex window, network required) that runs while the app is closed. It calls the existing `/releases` endpoint with the user's own app token.
+- Notifications use the existing channel. A tap opens the song (one new song) or the artist (several).
+- The v1.5.0 rules are kept:
+  - only songs published after following;
+  - each track alerts once;
+  - at most one summary per artist per day;
+  - per-artist mute and a global switch;
+  - unfollowing stops all checks.
+- What the background job saw is merged back into the app (`bgSeen`), so the app never repeats an alert.
+- Settings say honestly that battery optimization can delay checks and that no exact time is guaranteed. The new «اجرا در پس‌زمینه و باتری» card shows the real optimization state, opens the system setting, and has notes for Xiaomi/Redmi/POCO ("Autostart", "No restrictions") and other strict OEMs.
+- Manual trigger for testing: «آزمایش بررسی پس‌زمینه» on the followed-artists page runs the real WorkManager job once (`SCAndroid.bgCheckNow`, same rules, same notification; the app can be closed right after). Debug builds also accept the adb broadcast `rel_now`. «بررسی الان» still runs the in-app check.
+- **Windows:** no background job once the app is closed. Electron 22 has no OS-scheduled task in the existing desktop pattern, and adding a Windows service or Task Scheduler entry would change the architecture. While the app runs (also minimized) it checks every 6 h and shows real Windows notifications (`Notification`); otherwise it checks on the next launch. The app says so: «در ویندوز وقتی اپ باز است هر ۶ ساعت بررسی می‌شود؛ وگرنه در اجرای بعدی.»
+
+**Files:** `ReleaseWorker.java`, `Bg.java`, `MainActivity.java`, `AndroidManifest.xml`, `android/app/build.gradle` (`androidx.work:work-runtime:2.9.1`), `desktop/main.js`, `desktop/preload.js`, `web/app.js`
+
+### 5. Background scheduled downloads — دانلود زمان‌بندی‌شده در پس‌زمینه
+- **Android:** a WorkManager job `sched-dl` with constraints: Wi-Fi only → `UNMETERED`, charging → `requiresCharging`. It starts inside the chosen window and weekdays.
+- WorkManager persists the queue and window across reboots, and the job is rescheduled for the next window.
+- Before each song, the real size is checked against `limitMB` and the free space.
+- A progress notification shows «در حال دانلود N از M» with real bytes and a «لغو» button.
+- Downloads go to `bgdl/<id>.part` and are renamed only when complete. Leaving the window, losing Wi-Fi, a cancel or a system stop deletes the partial file; the song stays queued and starts again in the next window.
+- Finished songs are imported into the offline library on the next app start, from the device and without internet (`schedTake` / `schedAck`).
+- Settings note: «…بهینه‌سازی باتری ممکن است شروع را عقب بیندازد؛ زمان دقیق تضمین نمی‌شود.» The battery card from part 4 applies here too.
+- **Windows:** no background download when the app is closed (same reason as part 4). Downloads run while the app is open and continue on the next launch. The UI says so (`schNoteW`); nothing is faked.
+
+**Files:** `SchedWorker.java`, `SchedCancelReceiver.java`, `Bg.java`, `MainActivity.java` (`/bgdl/` handler), `AndroidManifest.xml`, `values{,-fa}/strings.xml`, `web/app.js`
+
+### 6. Android backup share — اشتراک‌گذاری پشتیبان
+- «اشتراک‌گذاری پشتیبان» opens the system share sheet (`ACTION_SEND` + `FileProvider`, `content://` only, temporary read-only grant, no `file://`).
+- Before sharing, both the web app (`bkHasSecret`) and the native side check that the file contains no token or secret (`sc_token`, `x-app-token`, `x-init-data`, initData hash…). If one is found, nothing is shared and a Persian message is shown. The Windows "Save as…" dialog does the same check.
+- **Older backups:** v1.5.0 backups never contained tokens. The export used the `BK_KEYS` whitelist, and import accepts only `BK_KEYS`, so there was nothing to remove.
+- The shared file imports on a clean profile: merge without duplicates, or replace after a confirmation (the existing v1.5.0 import).
+
+**Files:** `MainActivity.java`, `res/xml/file_paths.xml`, `desktop/main.js`, `desktop/preload.js`, `web/app.js`
+
+### 7. Exact free space — فضای آزاد دقیق
+- Android: `StatFs` on the volume that holds the app data (IndexedDB offline songs) via `SCAndroid.storageInfo()`. Windows: free and total space of the drive holding `userData` via .NET `DriveInfo` (works on Windows 7).
+- The offline size is the sum of the real blob bytes in IndexedDB, so it matches the free-space figure.
+- Fallback (Mini App / browser): the old `navigator.storage.estimate()` figure, now explicitly labeled «تقریبی» with an explanation.
+
+**Files:** `MainActivity.java`, `desktop/main.js`, `desktop/preload.js`, `web/app.js`, `web/app.css`
+
+### 8. Listen-together invite page — صفحه‌ی دعوت
+- `https://soundclouddl-player.netlify.app/j/<code>` is served by the Netlify function `open` (`/j/*` in `_redirects`). It reads the new public endpoint `GET /api/public/party/<code>`, which returns only the bot name, the track title / artist / cover and the state (200 active, 410 expired/ended, 404 unknown). It exposes no user ids.
+- Active session: track info with «باز کردن در برنامه» (`scplayer://j/<code>`), «باز کردن در تلگرام» (`t.me/SoundClouddl_RoBot?start=j_<code>`) and «دانلود برنامه». If the app doesn't open, the page shows a hint and highlights the download button.
+- Expired, ended and invalid codes each show a clear Persian message. Typing the code in the app still works.
+- Android (`/j/` App Link + `scplayer://j/`) and Windows (`scplayer://` protocol) open the session directly when the app is installed.
+
+**Files:** backend `supabase/functions/scbot/src/api.ts` (public party route, live since loader v17); site `site-src/open.js`, `site/_redirects`, `site/open.html`; app `AndroidManifest.xml`, `MainActivity.java`, `desktop/main.js`, `web/app.js`
+
+### Tests
+- `tests/v151.spec.mjs`: 12 Playwright tests for the web side of every part. Full web suite: 97/97 (85 + 12).
+- `tests/native/android-native.mjs` + `.github/workflows/android-native.yml`: Android 13 emulator (API 33) running the real debug APK against a local mock API. Covers:
+  - the widget on the launcher (controls, track change, app closed);
+  - Android Auto browse and control through `MediaBrowserCompat`;
+  - native speech (recognition, no recognizer, no speech, stop, late result, permission denied);
+  - background release checks with notifications while the app is closed (mute, unfollow);
+  - scheduled downloads (window, Wi-Fi, charging, cancel from the notification, leaving the window, resume, reboot);
+  - the backup share sheet + file read through the grant + clean-profile import + no token;
+  - StatFs vs `df`;
+  - invite links.
+- `tests/native/cdp-check.mjs` (Windows CI): `storageInfo` equals .NET `DriveInfo` on the runner; `saveFile` refuses a token; `notify` works.
+- Debug-only helpers live in `android/app/src/debug/` (`DebugReceiver`, `DebugRecognitionService`, `DebugMockApi`, `ShareCheckActivity`). They are not in the release APK, and the mock-API hook is inert in release builds.
+
 ## v1.5.0 — گوش دادن هم‌زمان، جستجوی صوتی و آفلاین، حافظه، پشتیبان، زمان‌بندی دانلود، آهنگ‌های تازه، تشخیص از ویدیو
 
 Nothing here changes the UI design (dark/orange), the app name, the package (`com.soundclouddl.player`) or the architecture: shared `web/app.js`, Android WebView, Windows Electron 22, the existing Supabase function `scbot`, bot @SoundClouddl_RoBot.

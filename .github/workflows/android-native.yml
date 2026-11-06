@@ -1,0 +1,54 @@
+name: Android native (widget, Auto, speech, background jobs, share, storage, invite)
+
+# v1.5.1: the native halves of the features run on a real Android emulator (debug build of this branch).
+# See tests/native/android-native.mjs for what is real and what is mocked (bot API + media + speech input).
+on:
+  pull_request:
+    paths: ["android/**", "web/**", "tests/native/**", ".github/scripts/android-native.sh", ".github/workflows/android-native.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  emulator:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.10.2"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Build a debug APK from this branch
+        run: |
+          mkdir -p android/app/src/main/assets/www
+          cp -r web/* android/app/src/main/assets/www/
+          cd android && gradle assembleDebug --no-daemon --stacktrace
+          cp app/build/outputs/apk/debug/app-debug.apk ../SoundCloud-Player-debug.apk
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Native checks (Android 13 emulator)
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: bash .github/scripts/android-native.sh
+      - name: Upload screenshots + results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-native
+          path: e2e-native/

@@ -6,4 +6,25 @@
     <string name="next">بعدی</string>
     <string name="prev">قبلی</string>
     <string name="close">بستن</string>
+    <string name="widget_desc">در حال پخش: کاور، نام آهنگ و پخش / توقف / بعدی / قبلی</string>
+    <string name="widget_empty">هنوز آهنگی پخش نشده</string>
+    <string name="widget_playing">در حال پخش</string>
+    <string name="widget_paused">متوقف موقت</string>
+    <string name="widget_stopped">پخش متوقف شده · برای باز کردن برنامه لمس کن</string>
+    <string name="widget_open">باز کردن پخش‌کننده</string>
+    <string name="auto_favorites">علاقه‌مندی‌ها</string>
+    <string name="auto_playlists">پلی‌لیست‌ها</string>
+    <string name="auto_offline">آفلاین</string>
+    <string name="auto_recent">اخیراً پخش‌شده</string>
+    <string name="auto_open_app">اول برنامه را روی گوشی باز کن، بعد از اینجا پخش کن</string>
+    <string name="rel_new_one">آهنگ تازه از %1$s</string>
+    <string name="rel_new_n">%1$d آهنگ تازه از %2$s</string>
+    <string name="dl_channel">دانلودهای زمان‌بندی‌شده</string>
+    <string name="dl_title">در حال دانلود %1$d از %2$d</string>
+    <string name="dl_cancel">لغو</string>
+    <string name="dl_done">%1$d آهنگ در پس‌زمینه دانلود شد</string>
+    <string name="dl_done_sub">با باز کردن بعدی برنامه به آفلاین اضافه می‌شوند (بدون نیاز به اینترنت)</string>
+    <string name="dl_window_end">بازه‌ی دانلود تمام شد؛ در بازه‌ی بعدی ادامه پیدا می‌کند</string>
+    <string name="dl_canceled">دانلودهای زمان‌بندی‌شده لغو شد</string>
+    <string name="share_backup">اشتراک‌گذاری پشتیبان</string>
 </resources>

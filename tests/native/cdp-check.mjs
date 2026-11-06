@@ -49,6 +49,20 @@ R.netInfo = await ev("(window.SCNative && SCNative.netInfo) ? Promise.resolve(SC
 R.htmlDir = await ev("document.documentElement.dir"); R.htmlLang = await ev("document.documentElement.lang");
 if (SHOT) { const s = await c.send("Page.captureScreenshot", { format: "png" }); fs.mkdirSync(path.dirname(SHOT), { recursive: true }); fs.writeFileSync(SHOT, Buffer.from(s.data, "base64")); }
 const fails = verdict(R);
+// v1.5.1 desktop bridge: exact free space of the app-data drive, backup "Save as" refuses secrets, system notifications
+if (await ev("!!(window.SCNative && SCNative.platform === 'windows' && SCNative.storageInfo)")) {
+  R.storage = await ev("SCNative.storageInfo()", true);
+  try {
+    const root = path.parse(process.env.APPDATA || process.cwd()).root, st = fs.statfsSync(root);
+    R.storageSys = { root, free: st.bavail * st.bsize, total: st.blocks * st.bsize };
+    const s = R.storage || {};
+    if (!(s.exact === true && Math.abs(s.free - R.storageSys.free) <= Math.max(256 << 20, R.storageSys.free * 0.02))) fails.push(`free space ${s.free} differs from the system value ${R.storageSys.free}`);
+    if (!(Math.abs(s.total - R.storageSys.total) <= R.storageSys.total * 0.02)) fails.push(`disk size ${s.total} differs from the system value ${R.storageSys.total}`);
+  } catch (e) { fails.push("storage check failed: " + e.message); }
+  R.saveSecret = await ev(`SCNative.saveFile("t.json", JSON.stringify({ sc_token: "x" }))`, true);
+  if (R.saveSecret !== "secret") fails.push("saveFile did not refuse a file with a token: " + R.saveSecret);
+  R.notify = await ev(`SCNative.notify(JSON.stringify({ id: 1, title: "آهنگ تازه از تست", body: "CI", link: "t_1" }))`, true); // reported, OS-dependent
+}
 if (R.htmlDir !== "rtl" || R.htmlLang !== "fa") fails.push(`UI is not Persian/RTL (${R.htmlLang}/${R.htmlDir})`);
 R.fails = fails;
 fs.mkdirSync(path.dirname(path.resolve(OUT)), { recursive: true });
