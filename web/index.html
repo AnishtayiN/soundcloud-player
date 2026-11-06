@@ -31,6 +31,7 @@
         notify: A.notify ? function (json) { return A.notify(String(json)); } : undefined,
         bgSync: A.bgSync ? function (json) { A.bgSync(String(json)); } : undefined,
         bgSeen: A.bgSeen ? function () { return A.bgSeen(); } : undefined,
+        bgCheckNow: A.bgCheckNow ? function () { A.bgCheckNow(); } : undefined,
         schedSet: A.schedSet ? function (json) { A.schedSet(String(json)); } : undefined,
         schedTake: A.schedTake ? function () { return A.schedTake(); } : undefined,
         schedAck: A.schedAck ? function (id) { A.schedAck(String(id)); } : undefined,

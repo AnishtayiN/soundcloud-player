@@ -26,7 +26,7 @@ const native = (page, d) => T(page, (d) => window.postMessage(d, location.origin
 const NATIVE_V151 = () => {
   const rec = (name, ret) => (...a) => { window.__nativeCalls.push([name, ...a]); return ret; };
   Object.assign(window.SCNative, { notify: rec("notify", true), bgSync: rec("bgSync"), schedSet: rec("schedSet"), schedAck: rec("schedAck"), autoLib: rec("autoLib", true),
-    widgetPin: rec("widgetPin"), openBatterySettings: rec("openBatterySettings"), shareFile: rec("shareFile", "ok"), speechStart: rec("speechStart"), speechStop: rec("speechStop") });
+    widgetPin: rec("widgetPin"), openBatterySettings: rec("openBatterySettings"), shareFile: rec("shareFile", "ok"), speechStart: rec("speechStart"), speechStop: rec("speechStop"), bgCheckNow: rec("bgCheckNow") });
   window.SCNative.takeLink = () => { const l = window.__link || ""; window.__link = ""; return l; };
 };
 const offPut = (page, list) => T(page, async (list) => {
@@ -218,6 +218,13 @@ test.describe("background release alerts", () => {
     expect(await T(page, () => window.__scTest.FOL.news.length)).toBe(1);
     // native got the merged state back (so it won't alert again either)
     expect(JSON.parse((await nCalls(page, "bgSync")).pop()[1]).list[0]).toEqual(expect.objectContaining({ seen: [9100], alert_day: today }));
+    // manual trigger of the real background job (Settings → follows): fresh list first, then the worker
+    await T(page, () => window.__scTest.go({ type: "follows" }));
+    const nSync = (await nCalls(page, "bgSync")).length;
+    await page.click("[data-act=folbgnow]");
+    await expect.poll(async () => (await nCalls(page, "bgCheckNow")).length).toBe(1);
+    expect((await nCalls(page, "bgSync")).length).toBe(nSync + 1);
+    await expect(page.locator(".toast")).toContainText("بررسی پس‌زمینه شروع شد");
     // tapping a summary notification ("a_<artist>")
     await T(page, () => { window.__link = "a_77"; window.postMessage({ __sc: "link" }, location.origin); });
     await expect.poll(() => T(page, () => { const v = window.__scTest.S.stack.at(-1); return v.type + ":" + v.id; })).toBe("artist:77");

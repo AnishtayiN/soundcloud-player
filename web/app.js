@@ -485,6 +485,9 @@
       folNoteA: "هر ۶ ساعت در پس‌زمینه بررسی می‌شود (وقتی اینترنت هست)؛ اندروید ممکن است زمانش را کمی جابه‌جا کند.",
       folNoteW: "در ویندوز وقتی اپ باز است هر ۶ ساعت بررسی می‌شود؛ وگرنه در اجرای بعدی.",
       folNoteT: "داخل تلگرام وقتی مینی‌اپ را باز می‌کنی بررسی می‌شود.",
+      folBgTest: "آزمایش بررسی پس‌زمینه",
+      folBgTestSub: "همان کار پس‌زمینه‌ی اندروید را الان اجرا می‌کند؛ اگر آهنگ تازه‌ای باشد، اعلان سیستمی می‌آید (می‌توانی برنامه را ببندی)",
+      folBgStarted: "بررسی پس‌زمینه شروع شد؛ نتیجه به‌صورت اعلان سیستمی نشان داده می‌شود",
       schNoteBgA: "در اندروید دانلود زمان‌بندی‌شده حتی وقتی برنامه بسته است در پس‌زمینه انجام می‌شود (فقط در بازه و روزهای انتخاب‌شده و با شرط وای‌فای / شارژ). آهنگ‌های دانلودشده با باز کردن بعدی برنامه، بدون اینترنت به آفلاین اضافه می‌شوند. بهینه‌سازی باتری ممکن است شروع را عقب بیندازد؛ زمان دقیق تضمین نمی‌شود.",
       batTitle: "اجرا در پس‌زمینه و باتری",
       batOn: "بهینه‌سازی باتری برای این برنامه روشن است؛ بررسی آهنگ‌های تازه و دانلودهای زمان‌بندی‌شده ممکن است دیرتر انجام شوند.",
@@ -978,6 +981,9 @@
       folNoteA: "Checked every 6 hours in the background (when online); Android may shift the exact time.",
       folNoteW: "On Windows it's checked every 6 hours while the app is open, otherwise on the next launch.",
       folNoteT: "Inside Telegram it's checked when you open the Mini App.",
+      folBgTest: "Test the background check",
+      folBgTestSub: "Runs the Android background job right now; a new song shows a system notification (you can close the app)",
+      folBgStarted: "Background check started; the result appears as a system notification",
       schNoteBgA: "On Android scheduled downloads run in the background even when the app is closed (only inside the chosen window and days, with the Wi-Fi / charging conditions). Downloaded songs are added to Offline the next time you open the app, without internet. Battery optimization can delay the start; exact times aren't guaranteed.",
       batTitle: "Background & battery",
       batOn: "Battery optimization is on for this app; release checks and scheduled downloads may run later.",
@@ -6374,7 +6380,8 @@ ${L("schWifiUnknown")}`), L("download"))) return;
     const ctx = setCtx("fol", nl);
     root().innerHTML = `<div class="view"><div class="hdr"><div class="logo">🔔 <b>${L("folTitle")}</b></div></div>
     <div class="card"><button class="it" data-act="folon"><div class="ico" style="background:#ff8a00">${I("v_bell")}</div><div class="l">${L("folAlerts")}<small>${L("folAlertsSub")}</small></div><div class="v">${swH(FOL.on)}</div></button>
-      <button class="it" data-act="folcheck"><div class="ico" style="background:#0ea5e9">${I("retry")}</div><div class="l">${L("folCheck")}<small>${FOL.checkedAt ? L("folChecked", fmtWhen(FOL.checkedAt)) : L("folNever")}</small></div><div class="v">${FOL.busy ? `<span class="mini-spin"></span>` : ""}</div></button></div>
+      <button class="it" data-act="folcheck"><div class="ico" style="background:#0ea5e9">${I("retry")}</div><div class="l">${L("folCheck")}<small>${FOL.checkedAt ? L("folChecked", fmtWhen(FOL.checkedAt)) : L("folNever")}</small></div><div class="v">${FOL.busy ? `<span class="mini-spin"></span>` : ""}</div></button>
+      ${typeof (NATIVE == null ? void 0 : NATIVE.bgCheckNow) === "function" ? `<button class="it" data-act="folbgnow"><div class="ico" style="background:#7c3aed">${I("v_bell")}</div><div class="l">${L("folBgTest")}<small>${L("folBgTestSub")}</small></div></button>` : ""}</div>
     <div class="lyo">${note}</div><div id="folbat"></div>
     ${news.length ? `<div class="lyo">${L("folNew")}</div><div class="list">${news.map((n, i) => `<div class="tr" data-act="play" data-id="${n.t.id}" data-ctx="${ctx}" data-i="${i}"><div class="art">${img(n.t.artwork_url, "t120x120")}</div>
         <div class="meta"><div class="t" dir="auto">${esc(n.t.title)}</div><div class="a"><span dir="auto">${esc(n.an || n.t.artist)}</span> · ${L("folReleased", fmtDate(n.rd || n.at))}</div></div></div>`).join("")}</div>` : ""}
@@ -6864,6 +6871,16 @@ ${L("schWifiUnknown")}`), L("download"))) return;
       case "folcheck":
         folCheck(true);
         return vFollows();
+      case "folbgnow": {
+        if (!FOL.list.length) return toast(L("folNoNew"));
+        if (!online()) return toast(L("bkOnline"));
+        folSyncNative();
+        try {
+          NATIVE.bgCheckNow();
+        } catch (e2) {
+        }
+        return toast(L("folBgStarted"));
+      }
       case "folmute": {
         e && e.stopPropagation();
         const f = FOL.list.find((x) => x.id === Number(id));

@@ -91,7 +91,7 @@ public class DebugReceiver extends BroadcastReceiver {
             @Override public void onConnected() {
                 try {
                     final String root = mb[0].getRoot();
-                    out.put("root", root);
+                    out.put("rootId", root);
                     final MediaControllerCompat mc = new MediaControllerCompat(ctx, mb[0].getSessionToken());
                     final String[] folders = {root, "fav", "pls", "off", "rec"};
                     final int[] left = {folders.length};

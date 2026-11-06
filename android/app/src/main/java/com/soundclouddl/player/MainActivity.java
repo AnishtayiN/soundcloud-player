@@ -615,6 +615,8 @@ public class MainActivity extends Activity {
         }
         @JavascriptInterface public void bgSync(String json) { if (ownPage) Bg.syncReleases(MainActivity.this, json); }
         @JavascriptInterface public String bgSeen() { return ownPage ? ReleaseWorker.take(MainActivity.this) : "{}"; }
+        // "test the background check" in Settings → the real ReleaseWorker once, via WorkManager (same rules)
+        @JavascriptInterface public void bgCheckNow() { if (ownPage) Bg.runReleaseCheckNow(MainActivity.this); }
 
         // ⏰ scheduled downloads
         @JavascriptInterface public void schedSet(String json) { if (ownPage) Bg.syncSched(MainActivity.this, json); }

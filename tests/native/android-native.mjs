@@ -272,7 +272,7 @@ try {
     await ev(`${T_("autoLibPush")}(true); return 1;`); await sleep(2500);
     let b = await browse();
     fs.writeFileSync(path.join(OUT, "auto-browse.json"), JSON.stringify(b, null, 2));
-    const root = b && b[b.root];
+    const root = b && b[b.rootId];
     check(root && root.map((x) => x.id).join(",") === "fav,pls,off,rec", "Auto root: favorites / playlists / offline / recent", root && root.map((x) => x.title).join(" | "));
     check(root && root.every((x) => /[\u0600-\u06FF]/.test(x.title)), "Auto category names are Persian (app language)");
     check(b && b.fav && b.fav.length === PL[1].length && b.fav.every((x) => x.playable), "Auto favorites list = the app's favorites", b && b.fav && b.fav.length);
